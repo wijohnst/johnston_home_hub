@@ -16,6 +16,13 @@ export const makeServer = ({ environment = "test" } = {}) => {
 			this.get('/users', (schema) => {
 				return schema.users.all()
 			})
+
+			this.get('/pets/feeder', () => ({
+				feedStatus: {
+					breakfast : ['Opal', 'Rudy', 'Bella'],
+					dinner: ['Opal']
+				}
+			}))
 		},
 	})
 

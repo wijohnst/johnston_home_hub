@@ -12,7 +12,15 @@ import { ReactComponent as OpalIcon } from "../../assets/images/opal.svg";
 import { ReactComponent as RudyIcon } from "../../assets/images/rudy.svg";
 import { ReactComponent as BellaIcon } from "../../assets/images/bella.svg";
 
+enum MealTypes {
+  BREAKFAST,
+  DINNER,
+}
 const PetFeeder = (): React.ReactElement => {
+  const [targetMeal, setTargetMeal] = React.useState<MealTypes>(
+    MealTypes.BREAKFAST
+  );
+
   return (
     <Container>
       <Row>
