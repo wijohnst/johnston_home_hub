@@ -1,4 +1,7 @@
 import React from "react";
+
+import PetFeeder from "./features/petFeeder/PetFeeder";
+
 import "./App.css";
 
 type Props = {};
@@ -6,7 +9,7 @@ type Props = {};
 const App = (props: Props) => {
   return (
     <>
-      <span>App Works</span>
+      <PetFeeder />
     </>
   );
 };
