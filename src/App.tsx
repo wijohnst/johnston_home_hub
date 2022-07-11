@@ -1,10 +1,14 @@
 import React from "react";
-
 import "./App.css";
+
 type Props = {};
 
 const App = (props: Props) => {
-  return <div>App Works</div>;
+  return (
+    <>
+      <span>App Works</span>
+    </>
+  );
 };
 
 export default App;
