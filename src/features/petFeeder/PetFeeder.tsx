@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -23,7 +23,7 @@ import { ReactComponent as OpalIcon } from "../../assets/images/opal.svg";
 import { ReactComponent as RudyIcon } from "../../assets/images/rudy.svg";
 import { ReactComponent as BellaIcon } from "../../assets/images/bella.svg";
 
-import { fetchFeederData, Pet } from "./petFeederApi";
+import { fetchFeederData, Pet, updateFeederStatus } from "./petFeederApi";
 
 enum MealTypes {
   BREAKFAST = "breakfast",
@@ -43,6 +43,9 @@ const getPetIcon = (iconId: string): React.ReactElement => {
   }
 };
 const PetFeeder = (): React.ReactElement => {
+  const mutation = useMutation((petsToUpdate: string[]) => {
+    return updateFeederStatus(petsToUpdate);
+  });
   const [targetMeal, setTargetMeal] = React.useState<MealTypes>(
     MealTypes.BREAKFAST
   );
@@ -116,6 +119,18 @@ const PetFeeder = (): React.ReactElement => {
                 </MealButtonWrapper>
               </MealControls>
             </Col>
+          </Row>
+          <Row>
+            <Button
+              variant="outline-dark"
+              onClick={() => {
+                if (pets) {
+                  mutation.mutate(pets.map((pet: Pet) => pet.name));
+                }
+              }}
+            >
+              Feed All
+            </Button>
           </Row>
         </Container>
       )}

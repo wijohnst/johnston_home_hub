@@ -6,12 +6,14 @@ export const makeServer = ({ environment = "test" } = {}) => {
 		models: {
 			user: Model,
 			pet: Model,
+			feedStaus: Model,
 		},
 		seeds(server) {
 			// server.create("user", { name: "Bob" })
 			server.create("pet", { id: "000-1" ,name: "Opal", species: 0,  iconId: 'brown-dog'});
 			server.create("pet", { id: "000-2", name: "Rudy", species: 1, iconId: 'grey-cat'});
 			server.create("pet",{ id: "000-3", name: "Bella", species: 1, iconId: 'torty-cat'});
+			// server.create("feedStatus", { date: new Date(), } )
 		},
 		routes() {
 			this.namespace = "api"
@@ -24,9 +26,16 @@ export const makeServer = ({ environment = "test" } = {}) => {
 				pets: this.schema.pets.all().models,
 				feedStatus: {
 					breakfast : ['Rudy', 'Bella'],
-					dinner: ['Opal']
+					dinner: []
 				}
 			}))
+
+			let newIdIndex = 4;
+
+			this.patch('/pets/feeder', (schema, request) => {
+				const attrs = JSON.parse(request.requestBody);
+				console.log(attrs);
+			})
 		},
 	})
 
