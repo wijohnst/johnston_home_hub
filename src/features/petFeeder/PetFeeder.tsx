@@ -5,10 +5,19 @@ import { useQuery } from "react-query";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Button from "react-bootstrap/Button";
 
 import PetIcon from "./PetIcon/PetIcon";
 
-import { PetName, IconNameWrapper } from "./PetFeeder.style";
+import {
+  FeederHeader,
+  FeederSubheader,
+  PetName,
+  IconNameWrapper,
+  MealControls,
+  MealButtonWrapper,
+  MealStatus,
+} from "./PetFeeder.style";
 
 import { ReactComponent as OpalIcon } from "../../assets/images/opal.svg";
 import { ReactComponent as RudyIcon } from "../../assets/images/rudy.svg";
@@ -38,7 +47,7 @@ const PetFeeder = (): React.ReactElement => {
     MealTypes.BREAKFAST
   );
 
-  const { isFetched, isFetching, data } = useQuery(
+  const { isFetched, isFetching, data, isRefetching } = useQuery(
     "feederData",
     fetchFeederData
   );
@@ -48,9 +57,19 @@ const PetFeeder = (): React.ReactElement => {
 
   return (
     <>
-      {isFetching && <span>Fetching Feeder Data...</span>}
+      {isFetching && !isRefetching && <span>Fetching Feeder Data...</span>}
       {isFetched && (
         <Container>
+          <Row>
+            <FeederHeader>Baby Dinner Time</FeederHeader>
+            <FeederSubheader>
+              <b>Meal:</b>{" "}
+              {targetMeal
+                .trim()
+                .toLowerCase()
+                .replace(/^\w/, (c) => c.toUpperCase())}
+            </FeederSubheader>
+          </Row>
           <Row>
             {pets?.map((pet: Pet) => (
               <Col key={`pet-icon-${pet.id}`}>
@@ -64,10 +83,39 @@ const PetFeeder = (): React.ReactElement => {
                   <IconNameWrapper>
                     {getPetIcon(pet.iconId)}
                     <PetName>{pet.name}</PetName>
+                    <MealStatus>
+                      {targetFeedStatus && targetFeedStatus.includes(pet.name)
+                        ? ""
+                        : "has not been fed"}
+                    </MealStatus>
                   </IconNameWrapper>
                 </PetIcon>
               </Col>
             ))}
+          </Row>
+          <Row>
+            <Col>
+              <MealControls>
+                <MealButtonWrapper>
+                  <Button
+                    variant="outline-dark"
+                    disabled={targetMeal === MealTypes.BREAKFAST}
+                    onClick={() => setTargetMeal(MealTypes.BREAKFAST)}
+                  >
+                    Breakfast
+                  </Button>
+                </MealButtonWrapper>
+                <MealButtonWrapper>
+                  <Button
+                    variant="outline-dark"
+                    disabled={targetMeal === MealTypes.DINNER}
+                    onClick={() => setTargetMeal(MealTypes.DINNER)}
+                  >
+                    Dinner
+                  </Button>
+                </MealButtonWrapper>
+              </MealControls>
+            </Col>
           </Row>
         </Container>
       )}
