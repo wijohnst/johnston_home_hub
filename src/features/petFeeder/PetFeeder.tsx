@@ -11,45 +11,54 @@ import { PetName, IconNameWrapper } from "./PetFeeder.style";
 import { ReactComponent as OpalIcon } from "../../assets/images/opal.svg";
 import { ReactComponent as RudyIcon } from "../../assets/images/rudy.svg";
 import { ReactComponent as BellaIcon } from "../../assets/images/bella.svg";
+import { useQuery } from "react-query";
+import { fetchFeederData } from "./petFeederApi";
 
 enum MealTypes {
-  BREAKFAST,
-  DINNER,
+  BREAKFAST = "breakfast",
+  DINNER = "dinner",
 }
 const PetFeeder = (): React.ReactElement => {
   const [targetMeal, setTargetMeal] = React.useState<MealTypes>(
     MealTypes.BREAKFAST
   );
 
+  const { isFetched, isFetching } = useQuery("feederData", fetchFeederData);
+
   return (
-    <Container>
-      <Row>
-        <Col>
-          <PetIcon isFed={false}>
-            <IconNameWrapper>
-              <OpalIcon />
-              <PetName>Opal</PetName>
-            </IconNameWrapper>
-          </PetIcon>
-        </Col>
-        <Col>
-          <PetIcon isFed={true}>
-            <IconNameWrapper>
-              <RudyIcon />
-              <PetName>Rudy</PetName>
-            </IconNameWrapper>
-          </PetIcon>
-        </Col>
-        <Col>
-          <PetIcon isFed={true}>
-            <IconNameWrapper>
-              <BellaIcon />
-              <PetName>Bella</PetName>
-            </IconNameWrapper>
-          </PetIcon>
-        </Col>
-      </Row>
-    </Container>
+    <>
+      {isFetching && <span>Fetching Feeder Data...</span>}
+      {isFetched && (
+        <Container>
+          <Row>
+            <Col>
+              <PetIcon isFed={false}>
+                <IconNameWrapper>
+                  <OpalIcon />
+                  <PetName>Opal</PetName>
+                </IconNameWrapper>
+              </PetIcon>
+            </Col>
+            <Col>
+              <PetIcon isFed={true}>
+                <IconNameWrapper>
+                  <RudyIcon />
+                  <PetName>Rudy</PetName>
+                </IconNameWrapper>
+              </PetIcon>
+            </Col>
+            <Col>
+              <PetIcon isFed={true}>
+                <IconNameWrapper>
+                  <BellaIcon />
+                  <PetName>Bella</PetName>
+                </IconNameWrapper>
+              </PetIcon>
+            </Col>
+          </Row>
+        </Container>
+      )}
+    </>
   );
 };
 
