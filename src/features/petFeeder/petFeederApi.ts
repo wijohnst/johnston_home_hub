@@ -1,10 +1,14 @@
 import axios from "axios";
-import { Patch } from "immer";
 
 export enum Species {
   DOG,
   CAT,
   BIRD,
+}
+
+export enum MealTypes {
+  BREAKFAST = "breakfast",
+  DINNER = "dinner",
 }
 export interface Pet {
   id: string;
@@ -15,7 +19,11 @@ export interface Pet {
 
 export type Pets = Pet[];
 export interface FeedStatus {
+  // human readable date string - 'MM/dd/yyyy'
+  date: string;
+  // Array of pet names representing pets that have been fed breakfast
   breakfast: string[];
+  // Array of pet names representing pets that have been fed dinner
   dinner: string[];
 }
 
@@ -24,7 +32,7 @@ export interface FeederData {
   feedStatus: FeedStatus;
 }
 
-export type UpdateFeederStatusResponse = void;
+export type UpdateFeederStatusResponse = FeedStatus;
 
 export const fetchFeederData = async (): Promise<FeederData> => {
   try {
@@ -40,12 +48,18 @@ export const fetchFeederData = async (): Promise<FeederData> => {
 };
 
 export const updateFeederStatus = async (
+  targetDate: string,
+  targetMeal: MealTypes,
   petsToUpdate: string[]
 ): Promise<UpdateFeederStatusResponse> => {
   try {
     const { data } = await axios.patch<UpdateFeederStatusResponse>(
       "api/pets/feeder",
-      petsToUpdate,
+      {
+        targetDate,
+        targetMeal,
+        petsToUpdate,
+      },
       {
         headers: {
           "Content-Type": "application/json",
@@ -53,7 +67,7 @@ export const updateFeederStatus = async (
         },
       }
     );
-    console.log(data);
+    return data;
   } catch (error: any) {
     return error;
   }

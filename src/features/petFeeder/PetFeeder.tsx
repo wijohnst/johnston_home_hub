@@ -1,11 +1,12 @@
 import * as React from "react";
 
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
+import Spinner from "react-bootstrap/Spinner";
 
 import PetIcon from "./PetIcon/PetIcon";
 
@@ -23,12 +24,12 @@ import { ReactComponent as OpalIcon } from "../../assets/images/opal.svg";
 import { ReactComponent as RudyIcon } from "../../assets/images/rudy.svg";
 import { ReactComponent as BellaIcon } from "../../assets/images/bella.svg";
 
-import { fetchFeederData, Pet, updateFeederStatus } from "./petFeederApi";
-
-enum MealTypes {
-  BREAKFAST = "breakfast",
-  DINNER = "dinner",
-}
+import {
+  fetchFeederData,
+  Pet,
+  updateFeederStatus,
+  MealTypes,
+} from "./petFeederApi";
 
 const getPetIcon = (iconId: string): React.ReactElement => {
   switch (iconId) {
@@ -39,15 +40,31 @@ const getPetIcon = (iconId: string): React.ReactElement => {
     case "torty-cat":
       return <BellaIcon />;
     default:
+      //TODO: Replace with generic pet icon
       return <span>NO ICON</span>;
   }
 };
 const PetFeeder = (): React.ReactElement => {
-  const mutation = useMutation((petsToUpdate: string[]) => {
-    return updateFeederStatus(petsToUpdate);
-  });
   const [targetMeal, setTargetMeal] = React.useState<MealTypes>(
     MealTypes.BREAKFAST
+  );
+
+  const queryClient = useQueryClient();
+
+  const updateFeedStatusMutation = useMutation(
+    "feederUpdate",
+    (petsToUpdate: string[]) => {
+      return updateFeederStatus(
+        data?.feedStatus.date ?? "",
+        targetMeal,
+        petsToUpdate
+      );
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("feederData");
+      },
+    }
   );
 
   const { isFetched, isFetching, data, isRefetching } = useQuery(
@@ -58,24 +75,59 @@ const PetFeeder = (): React.ReactElement => {
   const targetFeedStatus = data?.feedStatus[targetMeal];
   const pets = data?.pets;
 
+  const handleIndividualClick = (targetPet: string): void => {
+    if (targetFeedStatus) {
+      !data?.feedStatus[targetMeal].includes(targetPet)
+        ? updateFeedStatusMutation.mutate([...targetFeedStatus, targetPet])
+        : updateFeedStatusMutation.mutate(
+            targetFeedStatus.filter((petName: string) => petName !== targetPet)
+          );
+    }
+  };
+
   return (
     <>
-      {isFetching && !isRefetching && <span>Fetching Feeder Data...</span>}
+      {isFetching && !isRefetching && (
+        <Container>
+          <Spinner animation="border" />
+        </Container>
+      )}
       {isFetched && (
         <Container>
           <Row>
-            <FeederHeader>Baby Dinner Time</FeederHeader>
-            <FeederSubheader>
-              <b>Meal:</b>{" "}
-              {targetMeal
-                .trim()
-                .toLowerCase()
-                .replace(/^\w/, (c) => c.toUpperCase())}
-            </FeederSubheader>
+            <Col>
+              <FeederHeader>BDT</FeederHeader>
+            </Col>
+            <Col>
+              <FeederSubheader>
+                <b>Meal:</b>{" "}
+                {targetMeal
+                  .trim()
+                  .toLowerCase()
+                  .replace(/^\w/, (c) => c.toUpperCase())}
+              </FeederSubheader>
+            </Col>
+            <Col>
+              <FeederSubheader>
+                <b>Date:</b>
+                {data?.feedStatus.date}
+              </FeederSubheader>
+            </Col>
           </Row>
           <Row>
             {pets?.map((pet: Pet) => (
-              <Col key={`pet-icon-${pet.id}`}>
+              <Col
+                key={`pet-icon-${pet.id}`}
+                // onClick={() =>
+                //   targetFeedStatus
+                //     ? updateFeedStatusMutation.mutate([
+                //         ...targetFeedStatus,
+                //         pet.name,
+                //       ])
+                //     : console.log("Click...")
+                // }
+                onClick={() => handleIndividualClick(pet.name)}
+              >
                 <PetIcon
                   isFed={
                     targetFeedStatus
@@ -122,14 +174,26 @@ const PetFeeder = (): React.ReactElement => {
           </Row>
           <Row>
             <Button
-              variant="outline-dark"
+              disabled={targetFeedStatus?.length === pets?.length}
               onClick={() => {
                 if (pets) {
-                  mutation.mutate(pets.map((pet: Pet) => pet.name));
+                  updateFeedStatusMutation.mutate(
+                    pets.map((pet: Pet) => pet.name)
+                  );
                 }
               }}
             >
-              Feed All
+              {updateFeedStatusMutation.isLoading ? (
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+              ) : (
+                "Feed all pets"
+              )}
             </Button>
           </Row>
         </Container>
