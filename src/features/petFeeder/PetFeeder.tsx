@@ -118,14 +118,6 @@ const PetFeeder = (): React.ReactElement => {
             {pets?.map((pet: Pet) => (
               <Col
                 key={`pet-icon-${pet.id}`}
-                // onClick={() =>
-                //   targetFeedStatus
-                //     ? updateFeedStatusMutation.mutate([
-                //         ...targetFeedStatus,
-                //         pet.name,
-                //       ])
-                //     : console.log("Click...")
-                // }
                 onClick={() => handleIndividualClick(pet.name)}
               >
                 <PetIcon
