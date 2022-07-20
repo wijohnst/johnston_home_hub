@@ -16,8 +16,8 @@ export const makeServer = ({ environment = "test" } = {}) => {
 			server.create("pet", { id: "000-2", name: "Rudy", species: 1, iconId: 'grey-cat'});
 			server.create("pet",{ id: "000-3", name: "Bella", species: 1, iconId: 'torty-cat'});
 			server.create("feedStatus", { date: format(new Date(), 'MM/dd/yyyy'), breakfast : ['Rudy', 'Bella'], dinner: []})
-			server.create("chore", { id: "000-1", name: "Mow Grass", intervalDays: 7, lastCompleted: new Date('July 10, 2022 00:00:00') })
-			server.create("chore", { id: "000-2", name: "Do Laundry", intervalDays: 3, lastCompleted: new Date('July 11, 2022 00:00:00') })
+			server.create("chore", { id: "000-1", name: "Mow Grass", intervalDays: 7, lastCompleted: new Date('July 15, 2022 00:00:00') })
+			server.create("chore", { id: "000-2", name: "Do Laundry", intervalDays: 3, lastCompleted: new Date('July 16, 2022 00:00:00') })
 		},
 		routes() {
 			this.namespace = "api"

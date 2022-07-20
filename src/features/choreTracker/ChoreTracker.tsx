@@ -16,8 +16,14 @@ const ChoreTracker = (props: Props) => {
 
   return (
     <ChoreTrackerWrapper>
+      <h1>Chores</h1>
       {chores ? (
-        chores.map((chore) => <ChoreBar chore={chore} />)
+        chores.map((chore) => (
+          <ChoreBar
+            chore={chore}
+            key={`${chore.name}-${chore.lastCompleted}`}
+          />
+        ))
       ) : (
         <span>Fetching chores...</span>
       )}

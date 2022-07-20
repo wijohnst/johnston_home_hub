@@ -11,7 +11,7 @@ import ChoreTracker from "./features/choreTracker/ChoreTracker";
 
 import "./App.css";
 
-import { WidgetWrapper } from "./App.style";
+import { AppWrapper, WidgetWrapper } from "./App.style";
 
 type Props = {};
 
@@ -20,20 +20,22 @@ const App = (props: Props) => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Container>
-        <Row>
-          <Col md="auto">
-            <WidgetWrapper>
-              <ChoreTracker />
-            </WidgetWrapper>
-          </Col>
-          <Col>
-            <WidgetWrapper>
-              <PetFeeder />
-            </WidgetWrapper>
-          </Col>
-        </Row>
-      </Container>
+      <AppWrapper>
+        <Container>
+          <Row>
+            <Col md={3}>
+              <WidgetWrapper>
+                <ChoreTracker />
+              </WidgetWrapper>
+            </Col>
+            <Col>
+              <WidgetWrapper>
+                <PetFeeder />
+              </WidgetWrapper>
+            </Col>
+          </Row>
+        </Container>
+      </AppWrapper>
     </QueryClientProvider>
   );
 };
