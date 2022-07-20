@@ -1,9 +1,7 @@
 // Global Imports
 import styled from "styled-components";
 
-export const FeederHeader = styled.h1`
-  text-decoration: underline;
-`;
+export const FeederHeader = styled.h1``;
 
 export const FeederSubheader = styled.h2`
   font-size: 1.5rem;
