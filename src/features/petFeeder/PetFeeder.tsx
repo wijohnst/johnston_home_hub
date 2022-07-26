@@ -55,7 +55,7 @@ const PetFeeder = (): React.ReactElement => {
     "feederUpdate",
     (petsToUpdate: string[]) => {
       return updateFeederStatus(
-        data?.feedStatus.date ?? "",
+        responseData?.data.feedStatus.date ?? "",
         targetMeal,
         petsToUpdate
       );
@@ -67,17 +67,19 @@ const PetFeeder = (): React.ReactElement => {
     }
   );
 
-  const { isFetched, isFetching, data, isRefetching } = useQuery(
-    "feederData",
-    fetchFeederData
-  );
+  const {
+    isFetched,
+    isFetching,
+    data: responseData,
+    isRefetching,
+  } = useQuery("feederData", fetchFeederData);
 
-  const targetFeedStatus = data?.feedStatus[targetMeal];
-  const pets = data?.pets;
+  const targetFeedStatus = responseData?.data.feedStatus[targetMeal];
+  const pets = responseData?.data.pets;
 
   const handleIndividualClick = (targetPet: string): void => {
     if (targetFeedStatus) {
-      !data?.feedStatus[targetMeal].includes(targetPet)
+      !responseData?.data.feedStatus[targetMeal]?.includes(targetPet)
         ? updateFeedStatusMutation.mutate([...targetFeedStatus, targetPet])
         : updateFeedStatusMutation.mutate(
             targetFeedStatus.filter((petName: string) => petName !== targetPet)
@@ -110,14 +112,14 @@ const PetFeeder = (): React.ReactElement => {
             <Col>
               <FeederSubheader>
                 <b>Date:</b>
-                {data?.feedStatus.date}
+                {responseData?.data?.feedStatus.date}
               </FeederSubheader>
             </Col>
           </Row>
           <Row>
-            {pets?.map((pet: Pet) => (
+            {pets?.map((pet: Pet, index: number) => (
               <Col
-                key={`pet-icon-${pet.id}`}
+                key={`pet-icon-${pet._id}`}
                 onClick={() => handleIndividualClick(pet.name)}
               >
                 <PetIcon

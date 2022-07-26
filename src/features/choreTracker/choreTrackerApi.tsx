@@ -13,7 +13,7 @@ export interface ChoreData {
 
 export const fetchChoreData = async (): Promise<ChoreData> => {
   try {
-    const { data } = await axios.get<ChoreData>("api/chores", {
+    const { data } = await axios.get<ChoreData>("chores", {
       headers: {
         Accept: "application/json",
       },

@@ -11,7 +11,7 @@ export enum MealTypes {
   DINNER = "dinner",
 }
 export interface Pet {
-  id: string;
+  _id: string;
   name: string;
   species: Species;
   iconId: string;
@@ -28,19 +28,26 @@ export interface FeedStatus {
 }
 
 export interface FeederData {
-  pets: Pets;
-  feedStatus: FeedStatus;
+  staus: string;
+  message: string;
+  data: {
+    pets: Pets;
+    feedStatus: FeedStatus;
+  };
 }
 
 export type UpdateFeederStatusResponse = FeedStatus;
 
 export const fetchFeederData = async (): Promise<FeederData> => {
   try {
-    const { data } = await axios.get<FeederData>("api/pets/feeder", {
-      headers: {
-        Accept: "application/json",
-      },
-    });
+    const { data } = await axios.get<FeederData>(
+      "http://localhost:3001/feeder/feederData",
+      {
+        headers: {
+          Accept: "application/json",
+        },
+      }
+    );
     return data;
   } catch (error: any) {
     return error;
@@ -54,7 +61,7 @@ export const updateFeederStatus = async (
 ): Promise<UpdateFeederStatusResponse> => {
   try {
     const { data } = await axios.patch<UpdateFeederStatusResponse>(
-      "api/pets/feeder",
+      "pets/feeder",
       {
         targetDate,
         targetMeal,
@@ -72,11 +79,3 @@ export const updateFeederStatus = async (
     return error;
   }
 };
-
-/*
- * WHAT DO YOU NEED TO DO?
-
-	1. PATCH FeederData.feedStatus with updated Pet/s names when fed
-	2. Add UI to PetFeeder to feed all pets
-	3. Add functionality to PetFeeder UI to feed individual pet
- */

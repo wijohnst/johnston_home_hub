@@ -20,7 +20,7 @@ export const makeServer = ({ environment = "test" } = {}) => {
 			server.create("chore", { id: "000-2", name: "Do Laundry", intervalDays: 3, lastCompleted: new Date('July 16, 2022 00:00:00') })
 		},
 		routes() {
-			this.namespace = "api"
+			// this.namespace = "api"
 
 			this.get('/users', (schema) => {
 				return schema.users.all()

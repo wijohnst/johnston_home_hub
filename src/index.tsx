@@ -5,10 +5,10 @@ import { store } from "./app/store";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "./index.css";
-import { makeServer } from "./server";
+// import { makeServer } from "./server";
 
-process.env.NODE_ENV === "development" &&
-  makeServer({ environment: "development" });
+// process.env.NODE_ENV === "development" &&
+//   makeServer({ environment: "development" });
 
 const container = document.getElementById("root")!;
 const root = createRoot(container);
