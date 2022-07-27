@@ -1,6 +1,4 @@
 import axios from "axios";
-import { number } from "yup";
-
 export interface Chore {
   _id: string;
   name: string;
@@ -56,5 +54,30 @@ export const postNewChore = async (
     console.error(error);
   } finally {
     console.log("POST: new chore complete...");
+  }
+};
+
+export const updateExistingChoreCompletionDate = async (
+  choreId: string
+): Promise<any> => {
+  try {
+    console.log("Updating chore completion date...");
+    const { data } = await axios.patch<{ status: number; message: string }>(
+      "http://localhost:3001/chores/",
+      {
+        choreId,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    );
+    return data;
+  } catch (error) {
+    console.error(error);
+  } finally {
+    console.log("PATCH: chore update request complete...");
   }
 };

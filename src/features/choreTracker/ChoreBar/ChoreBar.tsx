@@ -1,4 +1,7 @@
 import React from "react";
+
+import { useMutation, useQueryClient } from "react-query";
+
 import add from "date-fns/add";
 import parseISO from "date-fns/parseISO";
 import intervalToDuration from "date-fns/intervalToDuration";
@@ -6,7 +9,7 @@ import format from "date-fns/format";
 
 import ProgressBar from "react-bootstrap/ProgressBar";
 
-import { Chore } from "../choreTrackerApi";
+import { Chore, updateExistingChoreCompletionDate } from "../choreTrackerApi";
 
 import {
   ChoreBarWrapper,
@@ -14,7 +17,11 @@ import {
   ProgressDatesWrapper,
   Dates,
   ChoreDates,
+  NameCheckWrapper,
 } from "./ChoreBar.style";
+
+import { ReactComponent as GreyCheck } from "../../../assets/images/grey_check.svg";
+import { ReactComponent as GreenCheck } from "../../../assets/images/green_check.svg";
 
 type Props = {
   chore: Chore;
@@ -78,6 +85,8 @@ const getVariant = (
 };
 
 const ChoreBar = ({ chore }: Props) => {
+  const queryClient = useQueryClient();
+
   const timeLeftToCompletePercentage = React.useMemo(
     () => deriveTimeLeftToCompletePercentage(chore),
     [chore]
@@ -88,9 +97,32 @@ const ChoreBar = ({ chore }: Props) => {
     [timeLeftToCompletePercentage]
   );
 
+  const updateExistingChoreCompletionDateMutation = useMutation(
+    "choreCompletionDateUpdate",
+    (choreId: string) => {
+      return updateExistingChoreCompletionDate(choreId);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("choreData");
+      },
+    }
+  );
+
+  const handleCheckClick = () => {
+    updateExistingChoreCompletionDateMutation.mutate(chore._id);
+  };
+
   return (
     <ChoreBarWrapper>
-      <ChoreName>{chore.name}</ChoreName>
+      <NameCheckWrapper>
+        <ChoreName>{chore.name}</ChoreName>
+        {timeLeftToCompletePercentage < 1 ? (
+          <GreenCheck />
+        ) : (
+          <GreyCheck onClick={handleCheckClick} />
+        )}
+      </NameCheckWrapper>
       <ProgressDatesWrapper>
         <ProgressBar
           striped

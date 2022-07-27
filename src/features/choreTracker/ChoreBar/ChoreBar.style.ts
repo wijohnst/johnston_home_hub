@@ -5,6 +5,11 @@ export const ChoreBarWrapper = styled.div`
   margin: 0.25rem 0 0.5rem 0;
 `;
 
+export const NameCheckWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
 export const ProgressDatesWrapper = styled.div``;
 
 export const Dates = styled.div`
