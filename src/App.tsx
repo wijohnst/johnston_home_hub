@@ -24,7 +24,9 @@ const App = (props: Props) => {
         <Container>
           <Row>
             <Col md={3}>
-              <WidgetWrapper>{/* <ChoreTracker /> */}</WidgetWrapper>
+              <WidgetWrapper>
+                <ChoreTracker />
+              </WidgetWrapper>
             </Col>
             <Col>
               <WidgetWrapper>

@@ -1,23 +1,28 @@
 import axios from "axios";
 
 export interface Chore {
-  id: string;
+  _id: string;
   name: string;
   intervalDays: number;
   lastCompleted: Date;
 }
 
 export interface ChoreData {
-  chores: Chore[];
+  message: string;
+  status: number;
+  data: Chore[];
 }
 
 export const fetchChoreData = async (): Promise<ChoreData> => {
   try {
-    const { data } = await axios.get<ChoreData>("chores", {
-      headers: {
-        Accept: "application/json",
-      },
-    });
+    const { data } = await axios.get<ChoreData>(
+      "http://localhost:3001/chores/",
+      {
+        headers: {
+          Accept: "application/json",
+        },
+      }
+    );
     return data;
   } catch (error: any) {
     return error;
