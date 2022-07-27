@@ -1,6 +1,12 @@
 import * as React from "react";
 
 import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+import * as yup from "yup";
+
+import { useQuery, useMutation, useQueryClient } from "react-query";
+import { fetchChoreData, postNewChore } from "../choreTrackerApi";
 
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -13,9 +19,49 @@ type Props = {
   handleHide: () => void;
 };
 const AddChoreModal = ({ isShown, handleHide }: Props): React.ReactElement => {
-  const { handleSubmit, control } = useForm();
+  const { data } = useQuery("choreData", fetchChoreData);
+  const choreNames = React.useMemo(() => {
+    const chores = data?.data;
+    return chores?.map((chore) => chore.name);
+  }, [data]);
 
-  const onSubmit = (data: { [key: string]: string }) => console.log(data);
+  const formSchema = yup.object().shape({
+    name: yup
+      .string()
+      .test(
+        "is-chore-unique",
+        "This chore already exists. Please select a unique name.",
+        (value) => {
+          if (choreNames?.includes(value ?? "")) {
+            return false;
+          }
+          return true;
+        }
+      )
+      .required("Please include a name."),
+    intervalDays: yup.string().required(),
+  });
+  const { handleSubmit, control, formState } = useForm({
+    resolver: yupResolver(formSchema),
+  });
+
+  const queryClient = useQueryClient();
+
+  const addNewChoreMutation = useMutation(
+    "addNewChore",
+    (data: any) => {
+      return postNewChore(data.name, data.intervalDays, data.lastCompleted);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("choreData");
+        handleHide();
+      },
+    }
+  );
+
+  const onSubmit = (data: { [key: string]: string | Date }) =>
+    addNewChoreMutation.mutate(data);
 
   return (
     <Modal show={isShown} onHide={handleHide}>
@@ -47,8 +93,11 @@ const AddChoreModal = ({ isShown, handleHide }: Props): React.ReactElement => {
                     isInvalid={!!error}
                   />
                 )}
-                rules={{ required: true }}
               />
+              {formState.errors.name && (
+                //@ts-ignore
+                <Form.Text>{formState.errors.name.message}</Form.Text>
+              )}
             </Form.Group>
             <Form.Group>
               <Form.Label>
@@ -69,7 +118,6 @@ const AddChoreModal = ({ isShown, handleHide }: Props): React.ReactElement => {
                     isInvalid={!!error}
                   />
                 )}
-                rules={{ required: true }}
               />
             </Form.Group>
             <Form.Group>
@@ -92,7 +140,6 @@ const AddChoreModal = ({ isShown, handleHide }: Props): React.ReactElement => {
                     isInvalid={!!error}
                   />
                 )}
-                rules={{ required: true }}
               />
             </Form.Group>
             <Button variant="primary" type="submit">
