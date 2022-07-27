@@ -19,6 +19,8 @@ export interface Pet {
 
 export type Pets = Pet[];
 export interface FeedStatus {
+  // UUID from mongoDB
+  _id: string;
   // human readable date string - 'MM/dd/yyyy'
   date: string;
   // Array of pet names representing pets that have been fed breakfast
@@ -61,7 +63,7 @@ export const updateFeederStatus = async (
 ): Promise<UpdateFeederStatusResponse> => {
   try {
     const { data } = await axios.patch<UpdateFeederStatusResponse>(
-      "pets/feeder",
+      "http://localhost:3001/feeder/feederData",
       {
         targetDate,
         targetMeal,
