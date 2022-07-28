@@ -12,6 +12,7 @@ import ChoreTracker from "./features/choreTracker/ChoreTracker";
 import "./App.css";
 
 import { AppWrapper, WidgetWrapper } from "./App.style";
+import ShoppingLists from "./features/shoppingLists/ShoppingLists";
 
 type Props = {};
 
@@ -31,6 +32,9 @@ const App = (props: Props) => {
             <Col>
               <WidgetWrapper>
                 <PetFeeder />
+              </WidgetWrapper>
+              <WidgetWrapper>
+                <ShoppingLists />
               </WidgetWrapper>
             </Col>
           </Row>
