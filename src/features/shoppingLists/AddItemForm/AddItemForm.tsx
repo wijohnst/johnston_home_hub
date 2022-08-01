@@ -66,6 +66,7 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
     []
   );
 
+  // TODO-  Update to fetch known aisles from aisles collection
   const aisles = React.useMemo(() => Object.values(AislesEnum), []);
 
   const queryClient = useQueryClient();
@@ -73,12 +74,11 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
   const addShoppingListItemMutation = useMutation(
     "addShoppingListItem",
     (data: { _id: string; itemData: any }) => {
-      console.log("Mutation", data._id);
-      console.log("Mutation", data.itemData);
       return addItemToShoppingList(data._id, data.itemData);
     },
     {
       onSuccess: () => {
+        console.log("Item added successfully...");
         queryClient.invalidateQueries("shoppingLists");
         handleCancel();
       },
@@ -93,6 +93,7 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
       store: data.store,
       url: data.url ?? null,
       aisle: data.aisle ?? null,
+      category: category,
     };
 
     addShoppingListItemMutation.mutate({ _id, itemData });
@@ -132,10 +133,8 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
         />
       </Form.Group>
       {category === ShoppingListCategoriesEnum.GROCERY && (
-        <>
-          <Form.Group className="mb-3">
-            <Form.Label>Aisle</Form.Label>
-          </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Aisle</Form.Label>
           <Aisle>
             <Controller
               control={control}
@@ -173,7 +172,7 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
               </span>
             )}
           </Aisle>
-        </>
+        </Form.Group>
       )}
       <Form.Group className="mb-3">
         <Form.Label>Store Name</Form.Label>
