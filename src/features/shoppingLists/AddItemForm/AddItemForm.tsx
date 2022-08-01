@@ -2,23 +2,31 @@ import React from "react";
 
 import { useForm, Controller, useWatch } from "react-hook-form";
 
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient, useQuery } from "react-query";
 
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
 import {
   addItemToShoppingList,
+  getAllAisles,
   ShoppingListCategoriesEnum,
+  Store,
+  Aisle,
 } from "../shoppingListsApi";
 
-import { SubmitButton, Quantity, Store, Aisle } from "./AddItemForm.style";
+import {
+  SubmitButton,
+  Quantity,
+  Store as StoreWrapper,
+  Aisle as AisleWrapper,
+} from "./AddItemForm.style";
 import { AislesEnum, QuantityUnitsEnum } from "../../../constants";
 
 type Props = {
   category: ShoppingListCategoriesEnum;
   handleCancel: () => void;
-  stores: string[];
+  stores: Store[];
   _id: string;
 };
 const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
@@ -60,19 +68,22 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
     }
   }, [aisleValue]);
 
+  const queryClient = useQueryClient();
+
   //TODO - Persist custom units / move to BE for quantities
   const qunatityUnits = React.useMemo(
     () => Object.values(QuantityUnitsEnum),
     []
   );
 
-  // TODO-  Update to fetch known aisles from aisles collection
-  const aisles = React.useMemo(() => Object.values(AislesEnum), []);
-
-  const queryClient = useQueryClient();
+  const { isFetched: areIslesFetched, data: aisles } = useQuery(
+    "aisles",
+    getAllAisles
+  );
 
   const addShoppingListItemMutation = useMutation(
     "addShoppingListItem",
+    //@ts-ignorets-ignore
     (data: { _id: string; itemData: any }) => {
       return addItemToShoppingList(data._id, data.itemData);
     },
@@ -87,18 +98,32 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
 
   const onSubmit = (data: { [key: string]: string }) => {
     const quantityString = `${data.ammount} ${data.unit}`;
+
+    const store = isCustomStore
+      ? {
+          _id: null,
+          name: data.store,
+          category,
+        }
+      : stores.find((store) => store._id === data.store);
+
+    const aisle: any = isCustomAisle
+      ? {
+          _id: null,
+          aisle: data.aisle,
+        }
+      : aisles?.find((aisle) => aisle._id === data.aisle);
+
     const itemData = {
       name: data.name,
       quantity: quantityString,
-      store: data.store,
+      store,
       url: data.url ?? null,
-      aisle: data.aisle ?? null,
+      aisle: aisle,
       category: category,
     };
 
     addShoppingListItemMutation.mutate({ _id, itemData });
-
-    // console.log(itemData);
   };
 
   const handleCustomUnitCancelClick = () => {
@@ -135,7 +160,7 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
       {category === ShoppingListCategoriesEnum.GROCERY && (
         <Form.Group className="mb-3">
           <Form.Label>Aisle</Form.Label>
-          <Aisle>
+          <AisleWrapper>
             <Controller
               control={control}
               name="aisle"
@@ -144,11 +169,15 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
                   return (
                     <Form.Select onChange={onChange}>
                       <option>Please select an aisle.</option>
-                      {aisles.map((aisle: string) => (
-                        <option key={`option-${aisle}`} value={aisle}>
-                          {aisle}
-                        </option>
-                      ))}
+                      {areIslesFetched &&
+                        aisles?.map((aisle: Aisle) => (
+                          <option
+                            key={`option-${aisle.aisle}`}
+                            value={aisle._id}
+                          >
+                            {aisle.aisle}
+                          </option>
+                        ))}
                       <option value="custom">Add a custom aisle?</option>
                     </Form.Select>
                   );
@@ -171,12 +200,12 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
                 Cancel?
               </span>
             )}
-          </Aisle>
+          </AisleWrapper>
         </Form.Group>
       )}
       <Form.Group className="mb-3">
         <Form.Label>Store Name</Form.Label>
-        <Store>
+        <StoreWrapper>
           <Controller
             control={control}
             name="store"
@@ -185,9 +214,9 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
                 return (
                   <Form.Select onChange={onChange}>
                     <option>Please select a store.</option>
-                    {stores.map((store: string) => (
-                      <option key={`option-${store}`} value={store}>
-                        {store}
+                    {stores.map((store: Store) => (
+                      <option key={`option-${store.name}`} value={store._id}>
+                        {store.name}
                       </option>
                     ))}
                     <option value="custom">Add a custom store?</option>
@@ -212,7 +241,7 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
               Cancel?
             </span>
           )}
-        </Store>
+        </StoreWrapper>
       </Form.Group>
       <Form.Group className="mb-3">
         <Form.Label>Quantity</Form.Label>

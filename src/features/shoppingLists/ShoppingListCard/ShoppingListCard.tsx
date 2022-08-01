@@ -23,6 +23,7 @@ import {
   EditListLink,
 } from "./ShoppingListCard.style";
 import AddItemForm from "../AddItemForm/AddItemForm";
+import { store } from "../../../app/store";
 
 type Props = {
   shoppingList: ShoppingList;
@@ -34,17 +35,26 @@ const ShoppingListCard = ({ shoppingList }: Props) => {
     [shoppingList]
   );
 
+  const storeIds = Array.from(new Set(stores.map((store) => store._id)));
+
+  const storesSet = storeIds
+    .map((storeId: string) => stores.find((store) => store._id === storeId))
+    .filter((store) => Boolean(store));
+
   const [targetStore, setTargetStore] = React.useState("all");
   const [showAddItemForm, setShowAddItemForm] = React.useState(false);
   const [isEdit, setIsEdit] = React.useState(false);
   const [idsToDelete, setIdsToDelete] = React.useState<string[]>([]);
 
+  /*
+		This filters the shoppingList `Items` that are shown, filtering based on store name
+	*/
   const targetItems = React.useMemo(() => {
     if (targetStore === "all") {
       return shoppingList.items;
     }
 
-    return shoppingList.items.filter(
+    return shoppingList?.items.filter(
       (item: Item) => item.store.name === targetStore
     );
   }, [targetStore, shoppingList.items]);
@@ -61,16 +71,21 @@ const ShoppingListCard = ({ shoppingList }: Props) => {
           <StoreButtons>
             <StoresHeading>Stores:</StoresHeading>
             <ButtonGroup>
-              {Array.from(stores).map((store: Store) => (
-                <Button
-                  variant={targetStore === store.name ? "primary" : "secondary"}
-                  onClick={() => setTargetStore(store.name)}
-                  size="sm"
-                  key={`${store.name}-button`}
-                >
-                  {store.name}
-                </Button>
-              ))}
+              {storeIds.map((storeId: string) => {
+                const [store] = stores.filter((store) => store._id === storeId);
+                return (
+                  <Button
+                    variant={
+                      targetStore === store?.name ? "primary" : "secondary"
+                    }
+                    onClick={() => setTargetStore(store?.name)}
+                    size="sm"
+                    key={`${store?.name}-button`}
+                  >
+                    {store?.name}
+                  </Button>
+                );
+              })}
               <Button
                 variant={targetStore === "all" ? "primary" : "secondary"}
                 size="sm"
@@ -102,7 +117,9 @@ const ShoppingListCard = ({ shoppingList }: Props) => {
                   )}
                   <div className="ms-2 me-auto">
                     <div className="fw-bold">{item.name}</div>
-                    {"aisle" in item && <span>{item.aisle.aisle}</span>}
+                    {"aisle" in item && (
+                      <span>{item?.aisle.aisle ?? "No Aisle"}</span>
+                    )}
                     {"url" in item && (
                       <Card.Link href={`${item.url}`}>Link</Card.Link>
                     )}
@@ -118,7 +135,8 @@ const ShoppingListCard = ({ shoppingList }: Props) => {
             <AddItemForm
               category={shoppingList.category}
               handleCancel={() => setShowAddItemForm(false)}
-              stores={stores.map((store) => store.name)}
+              // @ts-ignore
+              stores={storesSet}
               _id={shoppingList._id}
             />
           )}

@@ -77,7 +77,6 @@ export const addItemToShoppingList = async (
   itemData: Item | GroceryItem | OnlineItem
 ): Promise<DefaultResponse> => {
   try {
-    console.log(itemData);
     const { data } = await axios.patch<DefaultResponse>(
       "http://localhost:3001/shoppingList",
       {
@@ -100,5 +99,32 @@ export const addItemToShoppingList = async (
     };
   } finally {
     console.log("PATCH: /shoppingList/ completed...");
+  }
+};
+
+interface GetAislesResponse extends DefaultResponse {
+  aisles: Aisle[];
+}
+
+/**
+ * HTTP request that returns an array of `Aisles`
+ *
+ * @returns {Promise<Aisle[] | void>}
+ */
+export const getAllAisles = async (): Promise<Aisle[] | void> => {
+  try {
+    const {
+      data: { aisles },
+    } = await axios.get<GetAislesResponse>(
+      "http://localhost:3001/shoppingList/aisles",
+      {
+        headers: {
+          Accept: "application/json",
+        },
+      }
+    );
+    return aisles;
+  } catch (error) {
+    console.error(error);
   }
 };
