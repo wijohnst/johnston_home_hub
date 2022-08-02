@@ -21,7 +21,7 @@ import {
   Store as StoreWrapper,
   Aisle as AisleWrapper,
 } from "./AddItemForm.style";
-import { AislesEnum, QuantityUnitsEnum } from "../../../constants";
+import { QuantityUnitsEnum } from "../../../constants";
 
 type Props = {
   category: ShoppingListCategoriesEnum;

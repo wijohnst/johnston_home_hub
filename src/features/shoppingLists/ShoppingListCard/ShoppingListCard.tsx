@@ -1,5 +1,7 @@
 import React from "react";
 
+import { QueryClient, useMutation, useQueryClient } from "react-query";
+
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import Badge from "react-bootstrap/Badge";
@@ -11,6 +13,7 @@ import {
   GroceryItem,
   Item,
   OnlineItem,
+  removeItemFromShoppingList,
   ShoppingList,
   Store,
 } from "../shoppingListsApi";
@@ -23,13 +26,14 @@ import {
   EditListLink,
 } from "./ShoppingListCard.style";
 import AddItemForm from "../AddItemForm/AddItemForm";
-import { store } from "../../../app/store";
 
 type Props = {
   shoppingList: ShoppingList;
 };
 
 const ShoppingListCard = ({ shoppingList }: Props) => {
+  const QueryClient = useQueryClient();
+
   const stores: Store[] = React.useMemo(
     () => shoppingList.items.map((item) => item.store),
     [shoppingList]
@@ -62,6 +66,20 @@ const ShoppingListCard = ({ shoppingList }: Props) => {
   React.useEffect(() => {
     setIdsToDelete([]);
   }, [isEdit]);
+
+  const removeShoppingListItemMutation = useMutation(
+    "removeShoppingListItem",
+    () => {
+      return removeItemFromShoppingList(shoppingList._id, idsToDelete);
+    },
+    {
+      onSuccess: () => {
+        console.log("Items removed successfully...");
+        QueryClient.invalidateQueries("shoppingLists");
+        setIsEdit(false);
+      },
+    }
+  );
 
   return (
     <ShoppingListCardWrapper>
@@ -112,7 +130,15 @@ const ShoppingListCard = ({ shoppingList }: Props) => {
                   {isEdit && (
                     <Form.Check
                       type="checkbox"
-                      onClick={() => console.log(item)}
+                      onClick={() => {
+                        if (idsToDelete.includes(item._id)) {
+                          setIdsToDelete(
+                            idsToDelete.filter((id: string) => id !== item._id)
+                          );
+                        } else {
+                          setIdsToDelete([...idsToDelete, item._id]);
+                        }
+                      }}
                     />
                   )}
                   <div className="ms-2 me-auto">
@@ -155,7 +181,8 @@ const ShoppingListCard = ({ shoppingList }: Props) => {
               <Button
                 variant="danger"
                 disabled={idsToDelete.length === 0}
-              >{`Delete ${idsToDelete.length} items`}</Button>
+                onClick={() => removeShoppingListItemMutation.mutate()}
+              >{`Remove ${idsToDelete.length} items`}</Button>
             </SubmitButton>
           )}
         </Card.Body>

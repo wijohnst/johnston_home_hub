@@ -128,3 +128,27 @@ export const getAllAisles = async (): Promise<Aisle[] | void> => {
     console.error(error);
   }
 };
+
+export const removeItemFromShoppingList = async (
+  targetListId: string,
+  idsToDelete: string[]
+): Promise<DefaultResponse> => {
+  try {
+    const { data } = await axios.delete<DefaultResponse>(
+      "http://localhost:3001/shoppingList/",
+      {
+        data: {
+          targetListId: targetListId,
+          idsToDelete: idsToDelete,
+        },
+      }
+    );
+    return data;
+  } catch (error) {
+    console.error(error);
+    return {
+      status: 400,
+      message: "Removing shopping list item failed.",
+    };
+  }
+};
