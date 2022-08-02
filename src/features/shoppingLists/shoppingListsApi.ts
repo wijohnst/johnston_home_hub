@@ -1,5 +1,7 @@
 import axios from "axios";
+
 import { DefaultResponse } from "../../SharedTypes";
+import { DefaultURL } from "../../constants";
 
 export enum ShoppingListCategoriesEnum {
   GROCERY = "Grocery",
@@ -60,6 +62,27 @@ export const fetchShoppingLists = async (): Promise<ShoppingList[] | void> => {
       }
     );
     return shoppingLists;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+interface FetchStoresResponse extends DefaultResponse {
+  stores: Store[];
+}
+export const fetchStores = async (): Promise<Store[] | void> => {
+  try {
+    const {
+      data: { stores },
+    } = await axios.get<FetchStoresResponse>(
+      `${DefaultURL}/shoppingList/stores`,
+      {
+        headers: {
+          Accept: "application/json",
+        },
+      }
+    );
+    return stores;
   } catch (error) {
     console.error(error);
   }

@@ -91,6 +91,7 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
       onSuccess: () => {
         console.log("Item added successfully...");
         queryClient.invalidateQueries("shoppingLists");
+        isCustomStore && queryClient.invalidateQueries("stores");
         handleCancel();
       },
     }

@@ -6,7 +6,11 @@ import Container from "react-bootstrap/Container";
 import Spinner from "react-bootstrap/Spinner";
 import Row from "react-bootstrap/Row";
 
-import { fetchShoppingLists, ShoppingList } from "./shoppingListsApi";
+import {
+  fetchShoppingLists,
+  fetchStores,
+  ShoppingList,
+} from "./shoppingListsApi";
 import { ShoppingListsHeader } from "./ShoppingList.style";
 import ShoppingListCard from "./ShoppingListCard/ShoppingListCard";
 
@@ -20,6 +24,11 @@ const ShoppingLists = (props: Props) => {
     data: shoppingLists,
   } = useQuery("shoppingLists", fetchShoppingLists);
 
+  const { isFetched: storesAreFetched, data: stores = [] } = useQuery(
+    "stores",
+    fetchStores
+  );
+
   return (
     <Container>
       <ShoppingListsHeader>Shopping Lists</ShoppingListsHeader>
@@ -29,6 +38,7 @@ const ShoppingLists = (props: Props) => {
           {shoppingLists?.map((shoppingList: ShoppingList) => (
             <ShoppingListCard
               shoppingList={shoppingList}
+              storesList={storesAreFetched ? stores : []}
               key={`shoppingList-${shoppingList._id}`}
             />
           ))}

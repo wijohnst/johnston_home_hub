@@ -29,9 +29,10 @@ import AddItemForm from "../AddItemForm/AddItemForm";
 
 type Props = {
   shoppingList: ShoppingList;
+  storesList: Store[];
 };
 
-const ShoppingListCard = ({ shoppingList }: Props) => {
+const ShoppingListCard = ({ shoppingList, storesList }: Props) => {
   const QueryClient = useQueryClient();
 
   const stores: Store[] = React.useMemo(
@@ -39,11 +40,11 @@ const ShoppingListCard = ({ shoppingList }: Props) => {
     [shoppingList]
   );
 
-  const storeIds = Array.from(new Set(stores.map((store) => store._id)));
+  const categoryStores = storesList.filter(
+    (store: Store) => store.category === shoppingList.category
+  );
 
-  const storesSet = storeIds
-    .map((storeId: string) => stores.find((store) => store._id === storeId))
-    .filter((store) => Boolean(store));
+  const storeIds = Array.from(new Set(stores.map((store) => store._id)));
 
   const [targetStore, setTargetStore] = React.useState("all");
   const [showAddItemForm, setShowAddItemForm] = React.useState(false);
@@ -161,8 +162,7 @@ const ShoppingListCard = ({ shoppingList }: Props) => {
             <AddItemForm
               category={shoppingList.category}
               handleCancel={() => setShowAddItemForm(false)}
-              // @ts-ignore
-              stores={storesSet}
+              stores={categoryStores}
               _id={shoppingList._id}
             />
           )}

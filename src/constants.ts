@@ -13,3 +13,5 @@ export enum AislesEnum {
   PHARMACY = "Phramacy",
   CLEANING = "Cleaning Supplies",
 }
+
+export const DefaultURL = "http://localhost:3001";
