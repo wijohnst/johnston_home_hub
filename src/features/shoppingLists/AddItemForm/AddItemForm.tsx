@@ -1,6 +1,8 @@
 import React from "react";
 
-import { useForm, Controller, useWatch } from "react-hook-form";
+import { useForm, Controller, useWatch, useFormState } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 import { useMutation, useQueryClient, useQuery } from "react-query";
 
@@ -30,7 +32,16 @@ type Props = {
   _id: string;
 };
 const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
-  const { handleSubmit, control, setValue } = useForm();
+  const formSchema = yup.object().shape({
+    name: yup.string().required("Please enter an item name."),
+    aisle: yup.string().required("Please enter an aisle name."),
+    store: yup.string().required("Please enter a store name."),
+  });
+
+  const { handleSubmit, control, setValue, formState } = useForm({
+    resolver: yupResolver(formSchema),
+  });
+
   const unitValue = useWatch({
     control,
     name: "unit",
@@ -149,14 +160,19 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
         <Controller
           control={control}
           name="name"
-          render={({ field: { onChange } }) => (
+          render={({ field: { onChange }, fieldState: { error } }) => (
             <Form.Control
               type="text"
               placeholder="Enter an item name."
               onChange={onChange}
+              isInvalid={!!error}
             />
           )}
         />
+        {formState.errors.name && (
+          //@ts-expect-error
+          <Form.Text>{formState.errors.name.message}</Form.Text>
+        )}
       </Form.Group>
       {category === ShoppingListCategoriesEnum.GROCERY && (
         <Form.Group className="mb-3">
@@ -165,10 +181,10 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
             <Controller
               control={control}
               name="aisle"
-              render={({ field: { onChange } }) => {
+              render={({ field: { onChange }, fieldState: { error } }) => {
                 if (!isCustomAisle) {
                   return (
-                    <Form.Select onChange={onChange}>
+                    <Form.Select onChange={onChange} isInvalid={!!error}>
                       <option>Please select an aisle.</option>
                       {areIslesFetched &&
                         aisles?.map((aisle: Aisle) => (
@@ -202,6 +218,10 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
               </span>
             )}
           </AisleWrapper>
+          {formState.errors.aisle && (
+            //@ts-expect-error
+            <Form.Text>{formState.errors.aisle.message}</Form.Text>
+          )}
         </Form.Group>
       )}
       <Form.Group className="mb-3">
@@ -210,10 +230,10 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
           <Controller
             control={control}
             name="store"
-            render={({ field: { onChange } }) => {
+            render={({ field: { onChange }, fieldState: { error } }) => {
               if (!isCustomStore) {
                 return (
-                  <Form.Select onChange={onChange}>
+                  <Form.Select onChange={onChange} isInvalid={!!error}>
                     <option>Please select a store.</option>
                     {stores.map((store: Store) => (
                       <option key={`option-${store.name}`} value={store._id}>
@@ -243,6 +263,10 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
             </span>
           )}
         </StoreWrapper>
+        {formState.errors.store && (
+          //@ts-expect-error
+          <Form.Text>{formState.errors.store.message}</Form.Text>
+        )}
       </Form.Group>
       <Form.Group className="mb-3">
         <Form.Label>Quantity</Form.Label>
