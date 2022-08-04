@@ -1,21 +1,23 @@
 import React from "react";
 
-import { useForm, Controller, useWatch, useFormState } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-import { useMutation, useQueryClient, useQuery } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
 import {
   addItemToShoppingList,
-  getAllAisles,
   ShoppingListCategoriesEnum,
   Store,
   Aisle,
+  AllItemsUnion,
 } from "../shoppingListsApi";
+
+import { getEntryValueById } from "./AddItemForm.utils";
 
 import {
   SubmitButton,
@@ -23,22 +25,34 @@ import {
   Store as StoreWrapper,
   Aisle as AisleWrapper,
 } from "./AddItemForm.style";
+
 import { QuantityUnitsEnum } from "../../../constants";
+import AutoCompleteInput from "../../../components/AutoCompleteInput/AutoCompleteInput";
 
 type Props = {
   category: ShoppingListCategoriesEnum;
   handleCancel: () => void;
   stores: Store[];
   _id: string;
+  items: AllItemsUnion[];
+  aisles: Aisle[];
 };
-const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
+
+const AddItemForm = ({
+  category,
+  handleCancel,
+  stores,
+  _id,
+  items,
+  aisles,
+}: Props) => {
   const formSchema = yup.object().shape({
     name: yup.string().required("Please enter an item name."),
     aisle: yup.string().required("Please enter an aisle name."),
     store: yup.string().required("Please enter a store name."),
   });
 
-  const { handleSubmit, control, setValue, formState } = useForm({
+  const { handleSubmit, control, setValue, formState, getValues } = useForm({
     resolver: yupResolver(formSchema),
   });
 
@@ -57,9 +71,17 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
     name: "aisle",
   });
 
+  const nameValue = useWatch({
+    control,
+    name: "name",
+  });
+
   const [isCustomUnit, setIsCustomUnit] = React.useState(false);
   const [isCustomStore, setIsCustomStore] = React.useState(false);
   const [isCustomAisle, setIsCustomAisle] = React.useState(false);
+  const [suggestedItem, setSuggestedItem] = React.useState<any | undefined>(
+    undefined
+  );
 
   React.useEffect(() => {
     if (unitValue === "custom") {
@@ -79,17 +101,38 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
     }
   }, [aisleValue]);
 
+  React.useEffect(() => {
+    //TODO: Fix typing of `matchedItem`
+    const matchedItem = items.find(
+      (item: AllItemsUnion) => item.name === nameValue
+    );
+    if (matchedItem) {
+      const storeValue = getEntryValueById<string>(
+        stores,
+        "_id",
+        // @ts-ignore - `matchedItem` typing is incorrect
+        matchedItem.store
+      );
+
+      setSuggestedItem(matchedItem);
+      setValue("store", storeValue);
+
+      setValue(
+        "aisle",
+        //@ts-ignore - matchedItem is incorrectly typed
+        getEntryValueById<string>(aisles, "_id", matchedItem.aisle)
+      );
+    } else {
+      setSuggestedItem(undefined);
+    }
+  }, [nameValue, items, stores, aisles, setValue]);
+
   const queryClient = useQueryClient();
 
   //TODO - Persist custom units / move to BE for quantities
   const qunatityUnits = React.useMemo(
     () => Object.values(QuantityUnitsEnum),
     []
-  );
-
-  const { isFetched: areIslesFetched, data: aisles } = useQuery(
-    "aisles",
-    getAllAisles
   );
 
   const addShoppingListItemMutation = useMutation(
@@ -100,7 +143,6 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
     },
     {
       onSuccess: () => {
-        console.log("Item added successfully...");
         queryClient.invalidateQueries("shoppingLists");
         isCustomStore && queryClient.invalidateQueries("stores");
         handleCancel();
@@ -126,16 +168,22 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
         }
       : aisles?.find((aisle) => aisle._id === data.aisle);
 
+    const dbItemData = items.find(
+      (item: AllItemsUnion) => item.name === data.name
+    );
+
     const itemData = {
+      _id: dbItemData?._id,
       name: data.name,
       quantity: quantityString,
-      store,
+      store: store,
       url: data.url ?? null,
-      aisle: aisle,
+      aisle: data.aisle,
       category: category,
     };
 
-    addShoppingListItemMutation.mutate({ _id, itemData });
+    console.log(itemData);
+    // addShoppingListItemMutation.mutate({ _id, itemData });
   };
 
   const handleCustomUnitCancelClick = () => {
@@ -161,18 +209,16 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
           control={control}
           name="name"
           render={({ field: { onChange }, fieldState: { error } }) => (
-            <Form.Control
-              type="text"
-              placeholder="Enter an item name."
+            <AutoCompleteInput
               onChange={onChange}
-              isInvalid={!!error}
+              properties={items.map((item: AllItemsUnion) => ({
+                key: "name",
+                suggestionMatcher: item.name,
+              }))}
+              isInvalid={!!formState.errors.name}
             />
           )}
         />
-        {formState.errors.name && (
-          //@ts-expect-error
-          <Form.Text>{formState.errors.name.message}</Form.Text>
-        )}
       </Form.Group>
       {category === ShoppingListCategoriesEnum.GROCERY && (
         <Form.Group className="mb-3">
@@ -182,21 +228,29 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
               control={control}
               name="aisle"
               render={({ field: { onChange }, fieldState: { error } }) => {
-                if (!isCustomAisle) {
+                if (!isCustomAisle && !suggestedItem) {
                   return (
                     <Form.Select onChange={onChange} isInvalid={!!error}>
                       <option>Please select an aisle.</option>
-                      {areIslesFetched &&
-                        aisles?.map((aisle: Aisle) => (
-                          <option
-                            key={`option-${aisle.aisle}`}
-                            value={aisle._id}
-                          >
-                            {aisle.aisle}
-                          </option>
-                        ))}
+                      {aisles?.map((aisle: Aisle) => (
+                        <option key={`option-${aisle.aisle}`} value={aisle._id}>
+                          {aisle.aisle}
+                        </option>
+                      ))}
                       <option value="custom">Add a custom aisle?</option>
                     </Form.Select>
+                  );
+                }
+                if (!isCustomAisle && suggestedItem) {
+                  return (
+                    <Form.Control
+                      type="text"
+                      value={
+                        aisles.find(
+                          (aisle: Aisle) => aisle._id === suggestedItem.aisle
+                        )?.aisle
+                      }
+                    />
                   );
                 } else {
                   return (
@@ -231,7 +285,7 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
             control={control}
             name="store"
             render={({ field: { onChange }, fieldState: { error } }) => {
-              if (!isCustomStore) {
+              if (!isCustomStore && !suggestedItem) {
                 return (
                   <Form.Select onChange={onChange} isInvalid={!!error}>
                     <option>Please select a store.</option>
@@ -242,6 +296,18 @@ const AddItemForm = ({ category, handleCancel, stores, _id }: Props) => {
                     ))}
                     <option value="custom">Add a custom store?</option>
                   </Form.Select>
+                );
+              }
+              if (!isCustomStore && suggestedItem) {
+                return (
+                  <Form.Control
+                    type="text"
+                    value={
+                      stores.find(
+                        (store: Store) => store._id === suggestedItem.store
+                      )?.name
+                    }
+                  />
                 );
               } else {
                 return (

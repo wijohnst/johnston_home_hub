@@ -39,6 +39,16 @@ export interface OnlineItem extends Item {
   store: Store;
 }
 
+export type AllItemsUnion = Item | GroceryItem | OnlineItem;
+
+export interface AllItems {
+  hardware: Item[];
+  grocery: GroceryItem[];
+  online: OnlineItem[];
+  uncategorized: Item[];
+  [key: string]: AllItemsUnion[];
+}
+
 export interface ShoppingList {
   _id: string;
   category: ShoppingListCategoriesEnum;
@@ -134,7 +144,7 @@ interface GetAislesResponse extends DefaultResponse {
  *
  * @returns {Promise<Aisle[] | void>}
  */
-export const getAllAisles = async (): Promise<Aisle[] | void> => {
+export const getAllAisles = async (): Promise<Aisle[]> => {
   try {
     const {
       data: { aisles },
@@ -149,9 +159,39 @@ export const getAllAisles = async (): Promise<Aisle[] | void> => {
     return aisles;
   } catch (error) {
     console.error(error);
+    return [];
   }
 };
 
+export interface GetAllItemsResponse extends DefaultResponse {
+  allItems: AllItems;
+}
+
+export const getAllItems = async (): Promise<AllItems | void> => {
+  try {
+    const {
+      data: { allItems },
+    } = await axios.get<GetAllItemsResponse>(
+      `${DefaultURL}/shoppingList/items`,
+      {
+        headers: {
+          Accept: "application/json",
+        },
+      }
+    );
+    return allItems;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+/**
+ * HTTP request that removes the idsToDelete from the targetList.items array
+ *
+ * @param {string} targetListId
+ * @param {string[]} idsToDelete
+ * @returns
+ */
 export const removeItemFromShoppingList = async (
   targetListId: string,
   idsToDelete: string[]

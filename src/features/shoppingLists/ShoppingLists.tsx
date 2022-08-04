@@ -10,6 +10,8 @@ import {
   fetchShoppingLists,
   fetchStores,
   ShoppingList,
+  getAllItems,
+  getAllAisles,
 } from "./shoppingListsApi";
 import { ShoppingListsHeader } from "./ShoppingList.style";
 import ShoppingListCard from "./ShoppingListCard/ShoppingListCard";
@@ -29,6 +31,16 @@ const ShoppingLists = (props: Props) => {
     fetchStores
   );
 
+  const { isFetched: itemsAreFetched, data: allItems } = useQuery(
+    "allItems",
+    getAllItems
+  );
+
+  const { isFetched: aislesAreFetched, data: aisles } = useQuery(
+    "aisles",
+    getAllAisles
+  );
+
   return (
     <Container>
       <ShoppingListsHeader>Shopping Lists</ShoppingListsHeader>
@@ -39,6 +51,12 @@ const ShoppingLists = (props: Props) => {
             <ShoppingListCard
               shoppingList={shoppingList}
               storesList={storesAreFetched ? stores : []}
+              items={
+                itemsAreFetched && allItems
+                  ? allItems[shoppingList.category.toLowerCase()]
+                  : []
+              }
+              aisles={aislesAreFetched && aisles ? aisles : []}
               key={`shoppingList-${shoppingList._id}`}
             />
           ))}

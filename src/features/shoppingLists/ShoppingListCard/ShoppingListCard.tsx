@@ -10,6 +10,8 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
 import {
+  Aisle,
+  AllItemsUnion,
   GroceryItem,
   Item,
   OnlineItem,
@@ -30,9 +32,16 @@ import AddItemForm from "../AddItemForm/AddItemForm";
 type Props = {
   shoppingList: ShoppingList;
   storesList: Store[];
+  items: AllItemsUnion[];
+  aisles: Aisle[];
 };
 
-const ShoppingListCard = ({ shoppingList, storesList }: Props) => {
+const ShoppingListCard = ({
+  shoppingList,
+  storesList,
+  items,
+  aisles,
+}: Props) => {
   const QueryClient = useQueryClient();
 
   const stores: Store[] = React.useMemo(
@@ -164,6 +173,8 @@ const ShoppingListCard = ({ shoppingList, storesList }: Props) => {
               handleCancel={() => setShowAddItemForm(false)}
               stores={categoryStores}
               _id={shoppingList._id}
+              items={items}
+              aisles={aisles}
             />
           )}
           {!isEdit && (
