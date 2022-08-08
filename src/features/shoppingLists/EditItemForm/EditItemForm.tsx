@@ -12,7 +12,7 @@ import {
   updateItem,
 } from "../shoppingListsApi";
 
-import Form from "react-bootstrap/form";
+import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
 import { SubmitButton, Quantity } from "../../../SharedStyles";
