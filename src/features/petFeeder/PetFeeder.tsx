@@ -112,7 +112,7 @@ const PetFeeder = (): React.ReactElement => {
             <Col>
               <FeederSubheader>
                 <b>Date:</b>
-                {responseData?.data?.feedStatus.date}
+                {responseData?.data?.feedStatus?.date}
               </FeederSubheader>
             </Col>
           </Row>
