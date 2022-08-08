@@ -77,7 +77,7 @@ export const fetchShoppingLists = async (): Promise<ShoppingList[] | void> => {
     const {
       data: { shoppingLists },
     } = await axios.get<FetchShoppingListsResponse>(
-      "http://0.0.0.0:3001/shoppingList/",
+      `${DefaultURL}/shoppingList/`,
       {
         headers: {
           Accept: "application/json",
@@ -124,7 +124,7 @@ export const addItemToShoppingList = async (
 ): Promise<DefaultResponse> => {
   try {
     const { data } = await axios.patch<DefaultResponse>(
-      "http://localhost:3001/shoppingList",
+      `${DefaultURL}/shoppingList`,
       {
         _shoppingListId: _shoppingListId,
         item: itemData,
@@ -162,7 +162,7 @@ export const getAllAisles = async (): Promise<Aisle[]> => {
     const {
       data: { aisles },
     } = await axios.get<GetAislesResponse>(
-      "http://localhost:3001/shoppingList/aisles",
+      `${DefaultURL}/shoppingList/aisles`,
       {
         headers: {
           Accept: "application/json",
@@ -211,7 +211,7 @@ export const removeItemFromShoppingList = async (
 ): Promise<DefaultResponse> => {
   try {
     const { data } = await axios.delete<DefaultResponse>(
-      "http://localhost:3001/shoppingList/",
+      `${DefaultURL}/shoppingList/`,
       {
         data: {
           targetListId: targetListId,
@@ -240,7 +240,7 @@ export const updateItem = async (
 ): Promise<DefaultResponse> => {
   try {
     const { data } = await axios.patch<DefaultResponse>(
-      "http://localhost:3001/shoppingList/item",
+      `${DefaultURL}/shoppingList/item`,
       {
         itemData,
       }
