@@ -14,4 +14,7 @@ export enum AislesEnum {
   CLEANING = "Cleaning Supplies",
 }
 
-export const DefaultURL = "http://localhost:3001";
+export const DefaultURL =
+  !process.env.NODE_ENV || process.env.NODE_ENV === "development"
+    ? "http://localhost:3001"
+    : "https://johnston-home-hub.herokuapp.com";
