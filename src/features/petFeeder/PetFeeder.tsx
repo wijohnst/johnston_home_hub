@@ -74,7 +74,7 @@ const PetFeeder = (): React.ReactElement => {
     isRefetching,
   } = useQuery("feederData", fetchFeederData);
 
-  const targetFeedStatus = responseData?.data.feedStatus[targetMeal];
+  const targetFeedStatus = responseData?.data?.feedStatus[targetMeal];
   const pets = responseData?.data.pets;
 
   const handleIndividualClick = (targetPet: string): void => {
