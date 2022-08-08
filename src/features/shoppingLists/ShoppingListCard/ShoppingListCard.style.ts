@@ -1,6 +1,8 @@
 // Global Imports
 import styled from "styled-components";
 
+import Badge from "react-bootstrap/Badge";
+
 export const ShoppingListCardWrapper = styled.div`
   margin: 0.5rem 0 0.5rem 0;
 `;
@@ -26,6 +28,12 @@ export const EditListLink = styled.span`
   flex-grow: 1;
   justify-content: flex-end;
 
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+export const EditItemBadge = styled(Badge)`
   &:hover {
     cursor: pointer;
   }

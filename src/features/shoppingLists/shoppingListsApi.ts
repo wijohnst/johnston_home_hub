@@ -9,14 +9,14 @@ export enum ShoppingListCategoriesEnum {
   ONLINE = "Online",
 }
 
-export interface Store {
-  _id: string;
+export interface Store<IdType = string> {
+  _id: IdType;
   name: string;
-  category: ShoppingListCategoriesEnum;
+  category: string | undefined;
 }
 
-export interface Aisle {
-  _id: string;
+export interface Aisle<IdType = string> {
+  _id: IdType;
   aisle: string;
 }
 export interface Item {
@@ -24,6 +24,19 @@ export interface Item {
   name: string;
   store: Store;
   quantity: string;
+  category: string | undefined;
+}
+
+/**
+ * This type is what is sent from FE to BE when creating / updating an Item in a ShoppingList
+ */
+export interface ItemData {
+  _id: string;
+  name: string;
+  quantity: string;
+  store: Store<undefined> | Store<string>;
+  url: string | undefined;
+  aisle: Aisle<undefined> | Aisle<string>;
   category: string | undefined;
 }
 
@@ -64,7 +77,7 @@ export const fetchShoppingLists = async (): Promise<ShoppingList[] | void> => {
     const {
       data: { shoppingLists },
     } = await axios.get<FetchShoppingListsResponse>(
-      "http://localhost:3001/shoppingList/",
+      "http://0.0.0.0:3001/shoppingList/",
       {
         headers: {
           Accept: "application/json",
@@ -212,6 +225,32 @@ export const removeItemFromShoppingList = async (
     return {
       status: 400,
       message: "Removing shopping list item failed.",
+    };
+  }
+};
+
+/**
+ *	Updates an Item in the database
+ *
+ * @param { ItemData }itemData
+ * @returns {Promise<DefaultResponse>}
+ */
+export const updateItem = async (
+  itemData: ItemData
+): Promise<DefaultResponse> => {
+  try {
+    const { data } = await axios.patch<DefaultResponse>(
+      "http://localhost:3001/shoppingList/item",
+      {
+        itemData,
+      }
+    );
+    return data;
+  } catch (error) {
+    console.error(error);
+    return {
+      status: 400,
+      message: "Updating item failed.",
     };
   }
 };
