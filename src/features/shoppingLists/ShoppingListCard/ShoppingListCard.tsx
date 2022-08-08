@@ -1,6 +1,6 @@
 import React from "react";
 
-import { QueryClient, useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
@@ -26,8 +26,11 @@ import {
   SubmitButton,
   ShoppingListCardWrapper,
   EditListLink,
+  EditItemBadge,
 } from "./ShoppingListCard.style";
+
 import AddItemForm from "../AddItemForm/AddItemForm";
+import EditItemForm from "../EditItemForm/EditItemForm";
 
 type Props = {
   shoppingList: ShoppingList;
@@ -57,6 +60,9 @@ const ShoppingListCard = ({
 
   const [targetStore, setTargetStore] = React.useState("all");
   const [showAddItemForm, setShowAddItemForm] = React.useState(false);
+  const [itemToEdit, setItemToEdit] = React.useState<AllItemsUnion | undefined>(
+    undefined
+  );
   const [isEdit, setIsEdit] = React.useState(false);
   const [idsToDelete, setIdsToDelete] = React.useState<string[]>([]);
 
@@ -160,9 +166,20 @@ const ShoppingListCard = ({
                       <Card.Link href={`${item.url}`}>Link</Card.Link>
                     )}
                   </div>
-                  <Badge bg="success" pill>
-                    {item.quantity}
-                  </Badge>
+                  {!isEdit && (
+                    <Badge bg="success" pill>
+                      {item.quantity}
+                    </Badge>
+                  )}
+                  {isEdit && (
+                    <EditItemBadge
+                      bg="warning"
+                      pill
+                      onClick={() => [setItemToEdit(item), setIsEdit(false)]}
+                    >
+                      Edit Item
+                    </EditItemBadge>
+                  )}
                 </ListGroup.Item>
               )
             )}
@@ -175,6 +192,14 @@ const ShoppingListCard = ({
               _id={shoppingList._id}
               items={items}
               aisles={aisles}
+            />
+          )}
+          {!!itemToEdit && (
+            <EditItemForm
+              itemToEdit={itemToEdit}
+              handleCancel={() => setItemToEdit(undefined)}
+              aisles={aisles}
+              stores={stores}
             />
           )}
           {!isEdit && (

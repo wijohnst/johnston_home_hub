@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useForm, Controller, useWatch } from "react-hook-form";
+import { useForm, Controller, useWatch, FieldValues } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
@@ -8,6 +8,7 @@ import { useMutation, useQueryClient } from "react-query";
 
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import Badge from "react-bootstrap/Badge";
 
 import {
   addItemToShoppingList,
@@ -19,9 +20,9 @@ import {
 
 import { getEntryValueById } from "./AddItemForm.utils";
 
+import { SubmitButton, Quantity } from "../../../SharedStyles";
+
 import {
-  SubmitButton,
-  Quantity,
   Store as StoreWrapper,
   Aisle as AisleWrapper,
 } from "./AddItemForm.style";
@@ -42,7 +43,7 @@ const AddItemForm = ({
   category,
   handleCancel,
   stores,
-  _id,
+  _id: targetListId,
   items,
   aisles,
 }: Props) => {
@@ -52,7 +53,7 @@ const AddItemForm = ({
     store: yup.string().required("Please enter a store name."),
   });
 
-  const { handleSubmit, control, setValue, formState, getValues } = useForm({
+  const { handleSubmit, control, setValue, formState } = useForm({
     resolver: yupResolver(formSchema),
   });
 
@@ -130,7 +131,7 @@ const AddItemForm = ({
   const queryClient = useQueryClient();
 
   //TODO - Persist custom units / move to BE for quantities
-  const qunatityUnits = React.useMemo(
+  const quantityUnits = React.useMemo(
     () => Object.values(QuantityUnitsEnum),
     []
   );
@@ -145,12 +146,13 @@ const AddItemForm = ({
       onSuccess: () => {
         queryClient.invalidateQueries("shoppingLists");
         isCustomStore && queryClient.invalidateQueries("stores");
+        isCustomAisle && queryClient.invalidateQueries("aisles");
         handleCancel();
       },
     }
   );
 
-  const onSubmit = (data: { [key: string]: string }) => {
+  const onSubmit = (data: FieldValues) => {
     const quantityString = `${data.ammount} ${data.unit}`;
 
     const store = isCustomStore
@@ -178,12 +180,13 @@ const AddItemForm = ({
       quantity: quantityString,
       store: store,
       url: data.url ?? null,
-      aisle: data.aisle,
+      aisle: aisle,
       category: category,
     };
 
     console.log(itemData);
-    // addShoppingListItemMutation.mutate({ _id, itemData });
+
+    addShoppingListItemMutation.mutate({ _id: targetListId, itemData });
   };
 
   const handleCustomUnitCancelClick = () => {
@@ -203,6 +206,7 @@ const AddItemForm = ({
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)} style={{ margin: "1rem 0 0 0" }}>
+      <h4>Add A New Item to List</h4>
       <Form.Group className="mb-3">
         <Form.Label>Item Name</Form.Label>
         <Controller
@@ -243,14 +247,15 @@ const AddItemForm = ({
                 }
                 if (!isCustomAisle && suggestedItem) {
                   return (
-                    <Form.Control
-                      type="text"
-                      value={
-                        aisles.find(
-                          (aisle: Aisle) => aisle._id === suggestedItem.aisle
-                        )?.aisle
-                      }
-                    />
+                    <h3>
+                      <Badge bg="success" pill>
+                        {
+                          aisles.find(
+                            (aisle: Aisle) => aisle._id === suggestedItem.aisle
+                          )?.aisle
+                        }
+                      </Badge>
+                    </h3>
                   );
                 } else {
                   return (
@@ -300,14 +305,15 @@ const AddItemForm = ({
               }
               if (!isCustomStore && suggestedItem) {
                 return (
-                  <Form.Control
-                    type="text"
-                    value={
-                      stores.find(
-                        (store: Store) => store._id === suggestedItem.store
-                      )?.name
-                    }
-                  />
+                  <h3>
+                    <Badge bg="success" pill>
+                      {
+                        stores.find(
+                          (store: Store) => store._id === suggestedItem.store
+                        )?.name
+                      }
+                    </Badge>
+                  </h3>
                 );
               } else {
                 return (
@@ -356,7 +362,7 @@ const AddItemForm = ({
                 return (
                   <Form.Select onChange={onChange}>
                     <option>Please select a unit.</option>
-                    {qunatityUnits.map((unit: string) => (
+                    {quantityUnits.map((unit: string) => (
                       <option key={`option-${unit}`} value={unit}>
                         {unit}
                       </option>
