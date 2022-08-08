@@ -1,4 +1,6 @@
 import axios from "axios";
+
+import { DefaultURL } from "../../constants";
 export interface Chore {
   _id: string;
   name: string;
@@ -14,14 +16,11 @@ export interface ChoreData {
 
 export const fetchChoreData = async (): Promise<ChoreData> => {
   try {
-    const { data } = await axios.get<ChoreData>(
-      "http://localhost:3001/chores/",
-      {
-        headers: {
-          Accept: "application/json",
-        },
-      }
-    );
+    const { data } = await axios.get<ChoreData>(`${DefaultURL}/chores/`, {
+      headers: {
+        Accept: "application/json",
+      },
+    });
     return data;
   } catch (error: any) {
     return error;
@@ -36,7 +35,7 @@ export const postNewChore = async (
   try {
     console.log("Posting new chore...");
     const { data } = await axios.post<{ status: number; message: string }>(
-      "http://localhost:3001/chores/",
+      `${DefaultURL}/chores/`,
       {
         name,
         intervalDays,
@@ -63,7 +62,7 @@ export const updateExistingChoreCompletionDate = async (
   try {
     console.log("Updating chore completion date...");
     const { data } = await axios.patch<{ status: number; message: string }>(
-      "http://localhost:3001/chores/",
+      `${DefaultURL}/chores/`,
       {
         choreId,
       },

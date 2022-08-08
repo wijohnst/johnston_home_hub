@@ -30,7 +30,9 @@ const App = (props: Props) => {
               </WidgetWrapper>
             </Col>
             <Col>
-              <WidgetWrapper>{/* <PetFeeder /> */}</WidgetWrapper>
+              <WidgetWrapper>
+                <PetFeeder />
+              </WidgetWrapper>
               <WidgetWrapper>
                 <ShoppingLists />
               </WidgetWrapper>

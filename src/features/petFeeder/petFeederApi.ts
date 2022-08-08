@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import { DefaultURL } from "../../constants";
+
 export enum Species {
   DOG,
   CAT,
@@ -43,7 +45,7 @@ export type UpdateFeederStatusResponse = FeedStatus;
 export const fetchFeederData = async (): Promise<FeederData> => {
   try {
     const { data } = await axios.get<FeederData>(
-      "http://localhost:3001/feeder/feederData",
+      `${DefaultURL}/feeder/feederData`,
       {
         headers: {
           Accept: "application/json",
@@ -63,7 +65,7 @@ export const updateFeederStatus = async (
 ): Promise<UpdateFeederStatusResponse> => {
   try {
     const { data } = await axios.patch<UpdateFeederStatusResponse>(
-      "http://localhost:3001/feeder/feederData",
+      `${DefaultURL}/feeder/feederData`,
       {
         targetDate,
         targetMeal,
