@@ -234,7 +234,7 @@ const ShoppingListCard = ({
               itemToEdit={itemToEdit}
               handleCancel={() => setItemToEdit(undefined)}
               aisles={aisles}
-              stores={stores}
+              stores={categoryStores}
             />
           )}
           {!isEdit && (
