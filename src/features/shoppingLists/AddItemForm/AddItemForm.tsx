@@ -51,6 +51,8 @@ const AddItemForm = ({
     name: yup.string().required("Please enter an item name."),
     aisle: yup.string().required("Please enter an aisle name."),
     store: yup.string().required("Please enter a store name."),
+    ammount: yup.string().required("Quantity is required."),
+    unit: yup.string().required("Please select a unit."),
   });
 
   const { handleSubmit, control, setValue, formState } = useForm({
@@ -346,21 +348,22 @@ const AddItemForm = ({
           <Controller
             control={control}
             name="ammount"
-            render={({ field: { onChange } }) => (
+            render={({ field: { onChange }, fieldState: { error } }) => (
               <Form.Control
                 type="number"
                 placeholder="Enter a number."
                 onChange={onChange}
+                isInvalid={!!error}
               />
             )}
           />
           <Controller
             control={control}
             name="unit"
-            render={({ field: { onChange } }) => {
+            render={({ field: { onChange }, fieldState: { error } }) => {
               if (!isCustomUnit) {
                 return (
-                  <Form.Select onChange={onChange}>
+                  <Form.Select onChange={onChange} isInvalid={!!error}>
                     <option>Please select a unit.</option>
                     {quantityUnits.map((unit: string) => (
                       <option key={`option-${unit}`} value={unit}>
@@ -390,6 +393,9 @@ const AddItemForm = ({
             </span>
           )}
         </Quantity>
+        {formState.errors.unit && (
+          <Form.Text>Please provide a quantity.</Form.Text>
+        )}
       </Form.Group>
       {category === ShoppingListCategoriesEnum.ONLINE && (
         <>

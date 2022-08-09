@@ -74,6 +74,8 @@ const EditItemForm = ({ itemToEdit, handleCancel, aisles, stores }: Props) => {
       aisle: isGroceryItem ? itemToEdit?.aisle.aisle : "",
       store: itemToEdit.store._id,
       url: isOnlineItem ? itemToEdit.url : "",
+      unit: "ea.",
+      ammount: 1,
     },
   });
 
