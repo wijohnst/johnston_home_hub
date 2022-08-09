@@ -20,6 +20,8 @@ import {
   Store,
 } from "../shoppingListsApi";
 
+import { getDataToShare } from "./getDataToShare";
+
 import {
   StoreButtons,
   StoresHeading,
@@ -27,10 +29,14 @@ import {
   ShoppingListCardWrapper,
   EditListLink,
   EditItemBadge,
+  CardHeader,
+  ShareIconWrapper,
 } from "./ShoppingListCard.style";
 
 import AddItemForm from "../AddItemForm/AddItemForm";
 import EditItemForm from "../EditItemForm/EditItemForm";
+
+import { ReactComponent as ShareIcon } from "../../../assets/images/share_icon.svg";
 
 type Props = {
   shoppingList: ShoppingList;
@@ -97,11 +103,40 @@ const ShoppingListCard = ({
     }
   );
 
+  const handleShareClick = async (): Promise<void> => {
+    const targetShoppingList: ShoppingList = {
+      ...shoppingList,
+      items: targetItems,
+    };
+    const dataToShare: ShareData = getDataToShare(
+      targetShoppingList,
+      targetStore
+    );
+
+    try {
+      if (navigator && navigator.share) {
+        console.log("Sharing data...");
+        const result = await navigator.share(dataToShare);
+        console.log(result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <ShoppingListCardWrapper>
       <Card>
         <Card.Body>
-          <Card.Title>{shoppingList.category}</Card.Title>
+          <CardHeader>
+            <Card.Title>{shoppingList.category}</Card.Title>
+            {/* Web Share API has limited browser support. (Not supported by Chrome on Mac) */}
+            {navigator && navigator.share && (
+              <ShareIconWrapper onClick={handleShareClick}>
+                <ShareIcon />
+              </ShareIconWrapper>
+            )}
+          </CardHeader>
           <StoreButtons>
             <StoresHeading>Stores:</StoresHeading>
             <ButtonGroup>

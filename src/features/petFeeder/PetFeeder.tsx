@@ -98,7 +98,7 @@ const PetFeeder = (): React.ReactElement => {
         <Container>
           <Row>
             <Col>
-              <FeederHeader>BDT</FeederHeader>
+              <FeederHeader>Pet Feeder</FeederHeader>
             </Col>
             <Col>
               <FeederSubheader>

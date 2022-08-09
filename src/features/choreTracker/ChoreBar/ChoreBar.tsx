@@ -131,7 +131,7 @@ const ChoreBar = ({ chore }: Props) => {
         />
         <Dates>
           <ChoreDates>
-            {format(parseISO(chore.lastCompleted.toString()), "EEE dd/yy")}
+            {format(parseISO(chore.lastCompleted.toString()), "EEE MM/dd")}
           </ChoreDates>
           <ChoreDates>
             {format(
@@ -139,7 +139,7 @@ const ChoreBar = ({ chore }: Props) => {
                 parseISO(chore.lastCompleted.toString()),
                 chore.intervalDays
               ),
-              "EEE dd/yy"
+              "EEE MM/dd"
             )}
           </ChoreDates>
         </Dates>

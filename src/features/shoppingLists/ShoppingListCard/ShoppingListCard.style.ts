@@ -7,6 +7,23 @@ export const ShoppingListCardWrapper = styled.div`
   margin: 0.5rem 0 0.5rem 0;
 `;
 
+export const CardHeader = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const ShareIconWrapper = styled.div`
+  height: 1rem;
+  width: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0rem 1rem 0rem 1rem;
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
 export const StoreButtons = styled.div`
   display: flex;
   justify-content: flex-start;
