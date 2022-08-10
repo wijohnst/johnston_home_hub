@@ -13,3 +13,10 @@ export const WidgetWrapper = styled.section`
   border-radius: 10px 10px 10px 10px;
   padding: 0.25rem 0.25rem 0.25rem 0.25rem;
 `;
+
+export const RevealableWidgetWrapper = styled(WidgetWrapper)<{
+  isRevealed: boolean;
+}>`
+  height: ${(props) => (props.isRevealed ? "auto" : "32%")};
+  overflow: hidden;
+`;

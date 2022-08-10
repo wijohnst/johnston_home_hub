@@ -42,27 +42,29 @@ const ShoppingLists = (props: Props) => {
   );
 
   return (
-    <Container>
-      <ShoppingListsHeader>Shopping Lists</ShoppingListsHeader>
-      {isFetching && !isRefetching && <Spinner animation="border" />}
-      {isFetched && (
-        <Row>
-          {shoppingLists?.map((shoppingList: ShoppingList) => (
-            <ShoppingListCard
-              shoppingList={shoppingList}
-              storesList={storesAreFetched ? stores : []}
-              items={
-                itemsAreFetched && allItems
-                  ? allItems[shoppingList.category.toLowerCase()]
-                  : []
-              }
-              aisles={aislesAreFetched && aisles ? aisles : []}
-              key={`shoppingList-${shoppingList._id}`}
-            />
-          ))}
-        </Row>
-      )}
-    </Container>
+    <>
+      <Container>
+        <ShoppingListsHeader>Shopping Lists</ShoppingListsHeader>
+        {isFetching && !isRefetching && <Spinner animation="border" />}
+        {isFetched && (
+          <Row>
+            {shoppingLists?.map((shoppingList: ShoppingList) => (
+              <ShoppingListCard
+                shoppingList={shoppingList}
+                storesList={storesAreFetched ? stores : []}
+                items={
+                  itemsAreFetched && allItems
+                    ? allItems[shoppingList.category.toLowerCase()]
+                    : []
+                }
+                aisles={aislesAreFetched && aisles ? aisles : []}
+                key={`shoppingList-${shoppingList._id}`}
+              />
+            ))}
+          </Row>
+        )}
+      </Container>
+    </>
   );
 };
 
