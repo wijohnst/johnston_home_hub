@@ -1,7 +1,10 @@
 import React from "react";
 
+import * as yup from "yup";
+
 import { useMutation, useQueryClient } from "react-query";
 import { useForm, Controller, FieldValues, useWatch } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import { QuantityUnitsEnum } from "../../../constants";
 import {
@@ -64,6 +67,14 @@ const EditItemForm = ({ itemToEdit, handleCancel, aisles, stores }: Props) => {
     []
   );
 
+  const formSchema = yup.object().shape({
+    name: yup.string().required("Please enter an item name."),
+    aisle: yup.string().required("Please enter an aisle name."),
+    store: yup.string().required("Please enter a store name."),
+    ammount: yup.string().required("Quantity is required."),
+    unit: yup.string().required("Please select a unit."),
+  });
+
   const [isCustomAisle, setIsCustomAisle] = React.useState(false);
   const [isCustomStore, setIsCustomStore] = React.useState(false);
   const [isCustomUnit, setIsCustomUnit] = React.useState(false);
@@ -77,6 +88,7 @@ const EditItemForm = ({ itemToEdit, handleCancel, aisles, stores }: Props) => {
       unit: "ea.",
       ammount: 1,
     },
+    resolver: yupResolver(formSchema),
   });
 
   const aisleValue = useWatch({
