@@ -7,6 +7,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
+import Badge from "react-bootstrap/Badge";
 
 import PetIcon from "./PetIcon/PetIcon";
 
@@ -101,19 +102,15 @@ const PetFeeder = (): React.ReactElement => {
               <FeederHeader>Pet Feeder</FeederHeader>
             </Col>
             <Col>
-              <FeederSubheader>
-                <b>Meal:</b>{" "}
-                {targetMeal
-                  .trim()
-                  .toLowerCase()
-                  .replace(/^\w/, (c) => c.toUpperCase())}
-              </FeederSubheader>
-            </Col>
-            <Col>
-              <FeederSubheader>
-                <b>Date:</b>
-                {responseData?.data?.feedStatus?.date}
-              </FeederSubheader>
+              <h3>
+                <Badge pill bg="success">
+                  {`${targetMeal
+                    .trim()
+                    .toLowerCase()
+                    .replace(/^\w/, (c) => c.toUpperCase())} -
+                  ${responseData?.data?.feedStatus?.date}`}
+                </Badge>
+              </h3>
             </Col>
           </Row>
           <Row>
