@@ -102,7 +102,6 @@ const ShoppingListCard = ({
     },
     {
       onSuccess: () => {
-        console.log("Items removed successfully...");
         QueryClient.invalidateQueries("shoppingLists");
         setIsEdit(false);
       },

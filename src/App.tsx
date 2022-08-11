@@ -21,9 +21,9 @@ import RevealButton from "./components/RevealButton/RevealButton";
 
 type Props = {};
 
-const App = (props: Props) => {
-  const queryClient = new QueryClient();
+const queryClient = new QueryClient();
 
+const App = (props: Props) => {
   const [areAllShoppingListsShown, setAreAllShopingListsShown] =
     React.useState(false);
 
