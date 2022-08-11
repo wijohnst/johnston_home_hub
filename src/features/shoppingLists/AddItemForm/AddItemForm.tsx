@@ -49,14 +49,22 @@ const AddItemForm = ({
 }: Props) => {
   const formSchema = yup.object().shape({
     name: yup.string().required("Please enter an item name."),
-    aisle: yup.string().required("Please enter an aisle name."),
+    aisle:
+      category === ShoppingListCategoriesEnum.GROCERY
+        ? yup.string().required("Please enter an aisle name.")
+        : yup.string().nullable(),
     store: yup.string().required("Please enter a store name."),
     ammount: yup.string().required("Quantity is required."),
     unit: yup.string().required("Please select a unit."),
+    url:
+      category === ShoppingListCategoriesEnum.ONLINE
+        ? yup.string().required("Please enter a link to the product")
+        : yup.string().nullable(),
   });
 
   const { handleSubmit, control, setValue, formState } = useForm({
     resolver: yupResolver(formSchema),
+    context: { category: category },
   });
 
   const unitValue = useWatch({
@@ -398,22 +406,24 @@ const AddItemForm = ({
         )}
       </Form.Group>
       {category === ShoppingListCategoriesEnum.ONLINE && (
-        <>
-          <Form.Group className="mb-3">
-            <Form.Label>Link</Form.Label>
-            <Controller
-              control={control}
-              name="url"
-              render={({ field: { onChange } }) => (
-                <Form.Control
-                  type="text"
-                  placeholder="Add link to product."
-                  onChange={onChange}
-                />
-              )}
-            />
-          </Form.Group>
-        </>
+        <Form.Group className="mb-3">
+          <Form.Label>Link</Form.Label>
+          <Controller
+            control={control}
+            name="url"
+            render={({ field: { onChange }, fieldState: { error } }) => (
+              <Form.Control
+                type="text"
+                placeholder="Add link to product."
+                onChange={onChange}
+                isInvalid={!!error}
+              />
+            )}
+          />
+          {formState.errors.url && (
+            <Form.Text>Please enter a link to the product.</Form.Text>
+          )}
+        </Form.Group>
       )}
       <SubmitButton>
         <Button type="submit">{`Add to ${category} List`}</Button>
