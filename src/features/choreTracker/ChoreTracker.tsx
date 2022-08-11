@@ -9,13 +9,19 @@ import { fetchChoreData } from "./choreTrackerApi";
 import ChoreBar from "./ChoreBar/ChoreBar";
 import AddChoreModal from "./AddChoreModal/AddChoreModal";
 
+import { deriveTimeLeftToCompletePercentage } from "./ChoreBar/ChoreBar";
+
 type Props = {};
 
 const ChoreTracker = (props: Props) => {
   const { data } = useQuery("choreData", fetchChoreData);
   const [showAddChoreModal, setShowAddChoreModal] = React.useState(false);
 
-  const chores = data?.data;
+  const chores = data?.data.sort(
+    (a, b) =>
+      deriveTimeLeftToCompletePercentage(b) -
+      deriveTimeLeftToCompletePercentage(a)
+  );
 
   return (
     <ChoreTrackerWrapper>

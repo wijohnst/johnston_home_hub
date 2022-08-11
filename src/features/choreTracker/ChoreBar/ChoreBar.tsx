@@ -33,7 +33,7 @@ const getCompletionDate = (lastCompletedDate: Date, interval: number): Date => {
   });
 };
 
-const deriveTimeLeftToCompletePercentage = (chore: Chore): number => {
+export const deriveTimeLeftToCompletePercentage = (chore: Chore): number => {
   const completionDate = getCompletionDate(
     parseISO(chore.lastCompleted.toString()),
     chore.intervalDays
