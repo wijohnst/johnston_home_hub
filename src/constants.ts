@@ -18,3 +18,10 @@ export const DefaultURL =
   !process.env.NODE_ENV || process.env.NODE_ENV === "development"
     ? "http://localhost:3001"
     : "https://johnston-home-hub.herokuapp.com";
+
+export const Breakpoints: { [key: string]: string } = {
+  mobile: "(max-width: 480px)",
+  tablet: "(max-width: 768px)",
+  laptop: "(max-width: 1024px)",
+  desktop: "(min-width: 1025px)",
+};
