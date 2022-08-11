@@ -13,6 +13,7 @@ import {
   ItemData,
   Store,
   updateItem,
+  ShoppingListCategoriesEnum,
 } from "../shoppingListsApi";
 
 import Form from "react-bootstrap/Form";
@@ -69,10 +70,17 @@ const EditItemForm = ({ itemToEdit, handleCancel, aisles, stores }: Props) => {
 
   const formSchema = yup.object().shape({
     name: yup.string().required("Please enter an item name."),
-    aisle: yup.string().required("Please enter an aisle name."),
+    aisle:
+      itemToEdit.category === ShoppingListCategoriesEnum.GROCERY
+        ? yup.string().required("Please enter an aisle name.")
+        : yup.string().nullable(),
     store: yup.string().required("Please enter a store name."),
     ammount: yup.string().required("Quantity is required."),
     unit: yup.string().required("Please select a unit."),
+    url:
+      itemToEdit.category === ShoppingListCategoriesEnum.ONLINE
+        ? yup.string().required("Please enter a link to the product")
+        : yup.string().nullable(),
   });
 
   const [isCustomAisle, setIsCustomAisle] = React.useState(false);
@@ -125,7 +133,6 @@ const EditItemForm = ({ itemToEdit, handleCancel, aisles, stores }: Props) => {
   }, [unitValue]);
 
   const onSubmit = (data: FieldValues) => {
-    console.log("raw data:", data);
     const quantityString = `${data.ammount} ${data.unit}`;
 
     const store = getStoreDataFromForm(
@@ -236,12 +243,13 @@ const EditItemForm = ({ itemToEdit, handleCancel, aisles, stores }: Props) => {
           <Controller
             control={control}
             name="url"
-            render={({ field: { onChange, value } }) => (
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
               <Form.Control
                 type="text"
                 placeholder="Add link to produce"
                 onChange={onChange}
                 value={value}
+                isInvalid={!!error}
               />
             )}
           />
