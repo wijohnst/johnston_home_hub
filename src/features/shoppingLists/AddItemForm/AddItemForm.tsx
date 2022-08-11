@@ -148,12 +148,11 @@ const AddItemForm = ({
 
   const addShoppingListItemMutation = useMutation(
     "addShoppingListItem",
-    //@ts-ignorets-ignore
     (data: { _id: string; itemData: any }) => {
       return addItemToShoppingList(data._id, data.itemData);
     },
     {
-      onSuccess: () => {
+      onSuccess: async () => {
         queryClient.invalidateQueries("shoppingLists");
         isCustomStore && queryClient.invalidateQueries("stores");
         isCustomAisle && queryClient.invalidateQueries("aisles");
@@ -193,8 +192,6 @@ const AddItemForm = ({
       aisle: aisle,
       category: category,
     };
-
-    console.log(itemData);
 
     addShoppingListItemMutation.mutate({ _id: targetListId, itemData });
   };
