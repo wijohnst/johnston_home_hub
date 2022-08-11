@@ -18,6 +18,8 @@ import {
 } from "./App.style";
 import ShoppingLists from "./features/shoppingLists/ShoppingLists";
 import RevealButton from "./components/RevealButton/RevealButton";
+import useMediaQuery from "./hooks/useMediaQuery";
+import { Breakpoints } from "./constants";
 
 type Props = {};
 
@@ -30,6 +32,8 @@ const App = (props: Props) => {
   const handleRevealShoppingListClick = (): void => {
     setAreAllShopingListsShown(!areAllShoppingListsShown);
   };
+
+  const isMobile = useMediaQuery(Breakpoints.mobile);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -45,17 +49,21 @@ const App = (props: Props) => {
               <WidgetWrapper>
                 <PetFeeder />
               </WidgetWrapper>
-              <RevealableWidgetWrapper isRevealed={areAllShoppingListsShown}>
+              <RevealableWidgetWrapper
+                isRevealed={isMobile ? true : areAllShoppingListsShown}
+              >
                 <ShoppingLists />
               </RevealableWidgetWrapper>
-              <RevealButton
-                ctaText={{
-                  isRevealedText: "Hide lists",
-                  isNotRevealedText: "Show all lists",
-                }}
-                isRevealed={areAllShoppingListsShown}
-                handleClick={handleRevealShoppingListClick}
-              />
+              {!isMobile && (
+                <RevealButton
+                  ctaText={{
+                    isRevealedText: "Hide lists",
+                    isNotRevealedText: "Show all lists",
+                  }}
+                  isRevealed={areAllShoppingListsShown}
+                  handleClick={handleRevealShoppingListClick}
+                />
+              )}
             </Col>
           </Row>
         </Container>
