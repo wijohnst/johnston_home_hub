@@ -8,6 +8,10 @@ import Badge from "react-bootstrap/Badge";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import Dropdown from "react-bootstrap/Dropdown";
+
+import useMediaQuery from "../../../hooks/useMediaQuery";
+import { Breakpoints } from "../../../constants";
 
 import {
   Aisle,
@@ -23,7 +27,7 @@ import {
 import { getDataToShare } from "./getDataToShare";
 
 import {
-  StoreButtons,
+  StoreButtons as StoreButtonsWrapper,
   StoresHeading,
   SubmitButton,
   ShoppingListCardWrapper,
@@ -71,6 +75,8 @@ const ShoppingListCard = ({
   );
   const [isEdit, setIsEdit] = React.useState(false);
   const [idsToDelete, setIdsToDelete] = React.useState<string[]>([]);
+
+  const isMobile = useMediaQuery(Breakpoints.mobile);
 
   /*
 		This filters the shoppingList `Items` that are shown, filtering based on store name
@@ -137,39 +143,32 @@ const ShoppingListCard = ({
               </ShareIconWrapper>
             )}
           </CardHeader>
-          <StoreButtons>
+          <StoreButtonsWrapper>
             <StoresHeading>Stores:</StoresHeading>
-            <ButtonGroup>
-              {storeIds.map((storeId: string) => {
-                const [store] = stores.filter((store) => store._id === storeId);
-                return (
-                  <Button
-                    variant={
-                      targetStore === store?.name ? "primary" : "secondary"
-                    }
-                    onClick={() => setTargetStore(store?.name)}
-                    size="sm"
-                    key={`${store?.name}-button`}
-                  >
-                    {store?.name}
-                  </Button>
-                );
-              })}
-              <Button
-                variant={targetStore === "all" ? "primary" : "secondary"}
-                size="sm"
-                onClick={() => setTargetStore("all")}
-              >
-                All Stores
-              </Button>
-            </ButtonGroup>
+            {!isMobile && storeIds.length <= 4 && (
+              <StoreButtonsGroup
+                stores={stores}
+                storeIds={storeIds}
+                targetStore={targetStore}
+                handleStoreSelection={(storeId: string) =>
+                  setTargetStore(storeId)
+                }
+              />
+            )}
+            {(isMobile || storeIds.length > 4) && (
+              <StoreSelectDropdown
+                stores={stores}
+                storeIds={storeIds}
+                handleStoreSelection={(storeName) => setTargetStore(storeName)}
+              />
+            )}
             <EditListLink
               className="text-primary"
               onClick={() => setIsEdit(!isEdit)}
             >
               Edit List
             </EditListLink>
-          </StoreButtons>
+          </StoreButtonsWrapper>
           <ListGroup as="ol" numbered={!isEdit}>
             {targetItems.map(
               (item: Item | GroceryItem | OnlineItem, index: number) => (
@@ -259,6 +258,79 @@ const ShoppingListCard = ({
         </Card.Body>
       </Card>
     </ShoppingListCardWrapper>
+  );
+};
+
+/* SUB-COMPONENTS */
+
+type StoreButtonsGroupProps = {
+  stores: Store[];
+  storeIds: string[];
+  targetStore: string;
+  handleStoreSelection: (storeId: string) => void;
+};
+const StoreButtonsGroup = ({
+  stores,
+  storeIds,
+  targetStore,
+  handleStoreSelection,
+}: StoreButtonsGroupProps) => {
+  return (
+    <ButtonGroup>
+      {storeIds.map((storeId: string) => {
+        const [store] = stores.filter((store) => store._id === storeId);
+        return (
+          <Button
+            variant={targetStore === store?.name ? "primary" : "secondary"}
+            onClick={() => handleStoreSelection(store?.name ?? "")}
+            size="sm"
+            key={`${store?.name}-button`}
+          >
+            {store?.name}
+          </Button>
+        );
+      })}
+      <Button
+        variant={targetStore === "all" ? "primary" : "secondary"}
+        size="sm"
+        onClick={() => handleStoreSelection("all")}
+      >
+        All Stores
+      </Button>
+    </ButtonGroup>
+  );
+};
+
+type StoreSelectDropdownProps = {
+  stores: Store[];
+  storeIds: string[];
+  handleStoreSelection: (storeId: string) => void;
+};
+const StoreSelectDropdown = ({
+  stores,
+  storeIds,
+  handleStoreSelection,
+}: StoreSelectDropdownProps) => {
+  return (
+    <>
+      <Dropdown
+        onSelect={(storeId) =>
+          handleStoreSelection(
+            stores.find((store: Store) => store._id === storeId)?.name ?? "all"
+          )
+        }
+      >
+        <Dropdown.Toggle>Stores</Dropdown.Toggle>
+        <Dropdown.Menu>
+          {storeIds.map((storeId: string) => (
+            <Dropdown.Item eventKey={storeId}>
+              {stores.find((store: Store) => store._id === storeId)?.name ?? ""}
+            </Dropdown.Item>
+          ))}
+          <Dropdown.Item eventKey="all">All Stores</Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+    </>
   );
 };
 
