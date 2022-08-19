@@ -13,7 +13,6 @@ import PetIcon from "./PetIcon/PetIcon";
 
 import {
   FeederHeader,
-  FeederSubheader,
   PetName,
   IconNameWrapper,
   MealControls,

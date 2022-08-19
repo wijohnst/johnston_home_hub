@@ -1,6 +1,7 @@
 import React from "react";
 
 import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -20,6 +21,7 @@ import ShoppingLists from "./features/shoppingLists/ShoppingLists";
 import RevealButton from "./components/RevealButton/RevealButton";
 import useMediaQuery from "./hooks/useMediaQuery";
 import { Breakpoints } from "./constants";
+import Recipes from "./features/recipes/Recipes";
 
 type Props = {};
 
@@ -37,12 +39,16 @@ const App = (props: Props) => {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={false} />
       <AppWrapper>
         <Container>
           <Row>
             <Col md={3}>
               <WidgetWrapper>
                 <ChoreTracker />
+              </WidgetWrapper>
+              <WidgetWrapper>
+                <Recipes />
               </WidgetWrapper>
             </Col>
             <Col>
