@@ -108,6 +108,9 @@ const ShoppingListCard = ({
     }
   );
 
+  /**
+   * Event handler for ShareIcon click
+   */
   const handleShareClick = async (): Promise<void> => {
     const targetShoppingList: ShoppingList = {
       ...shoppingList,
@@ -119,6 +122,7 @@ const ShoppingListCard = ({
     );
 
     try {
+      // Checks that the user's browser supports the `shareApi`
       if (navigator && navigator.share) {
         console.log("Sharing data...");
         const result = await navigator.share(dataToShare);
