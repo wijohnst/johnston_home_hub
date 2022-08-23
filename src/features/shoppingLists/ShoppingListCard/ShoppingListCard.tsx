@@ -108,6 +108,9 @@ const ShoppingListCard = ({
     }
   );
 
+  /**
+   * Event handler for ShareIcon click
+   */
   const handleShareClick = async (): Promise<void> => {
     const targetShoppingList: ShoppingList = {
       ...shoppingList,
@@ -119,6 +122,7 @@ const ShoppingListCard = ({
     );
 
     try {
+      // Checks that the user's browser supports the `shareApi`
       if (navigator && navigator.share) {
         console.log("Sharing data...");
         const result = await navigator.share(dataToShare);
@@ -169,8 +173,28 @@ const ShoppingListCard = ({
             </EditListLink>
           </StoreButtonsWrapper>
           <ListGroup as="ol" numbered={!isEdit}>
-            {targetItems.map(
-              (item: Item | GroceryItem | OnlineItem, index: number) => (
+            {/*
+							The following `sort` function is some of the hackiest code in the code base. Trying to discriminate the entry type for `AllItemsUnion[]` proved difficult to figure out. This is a band-aid until something more long-term can be implemented. 
+						*/}
+            {targetItems
+              .sort((itemA, itemB) => {
+                if ("aisle" in itemA && "aisle" in itemB) {
+                  // @ts-ignore
+                  let aisleA = itemA.aisle.aisle.toLowerCase();
+                  // @ts-ignore
+                  let aisleB = itemB.aisle.aisle.toLowerCase();
+                  if (aisleA > aisleB) {
+                    return 1;
+                  }
+                  if (aisleA < aisleB) {
+                    return -1;
+                  }
+                  return 0;
+                } else {
+                  return 0;
+                }
+              })
+              .map((item: Item | GroceryItem | OnlineItem, index: number) => (
                 <ListGroup.Item
                   as="li"
                   className="d-flex justify-content-between align-items-start"
@@ -214,8 +238,7 @@ const ShoppingListCard = ({
                     </EditItemBadge>
                   )}
                 </ListGroup.Item>
-              )
-            )}
+              ))}
           </ListGroup>
           {showAddItemForm && (
             <AddItemForm
