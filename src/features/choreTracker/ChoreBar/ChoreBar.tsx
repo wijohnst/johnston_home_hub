@@ -48,7 +48,7 @@ export const deriveTimeLeftToCompletePercentage = (chore: Chore): number => {
     end: completionDate,
   });
 
-  const daysToComplete = () => {
+  const getDaysToComplete = () => {
     if (days > 0) {
       return days + months * 30;
     }
@@ -60,8 +60,16 @@ export const deriveTimeLeftToCompletePercentage = (chore: Chore): number => {
 
     return 0;
   };
+  const daysToComplete = getDaysToComplete();
 
-  return 100 - Math.round((daysToComplete() / chore.intervalDays) * 100);
+  const completionPecentage =
+    100 - Math.round((daysToComplete / chore.intervalDays) * 100);
+
+  // Short circuit on overdue tasks
+  if (completionPecentage < 0) {
+    return 100;
+  }
+  return completionPecentage;
 };
 
 enum ProgressBarVariants {
@@ -73,7 +81,11 @@ enum ProgressBarVariants {
 const getVariant = (
   timeLeftToCompletePercentage: number
 ): ProgressBarVariants => {
-  if (timeLeftToCompletePercentage <= 33) {
+  if (timeLeftToCompletePercentage < 0) {
+    return ProgressBarVariants.DANGER;
+  }
+
+  if (timeLeftToCompletePercentage >= 0 && timeLeftToCompletePercentage <= 33) {
     return ProgressBarVariants.SUCCESS;
   }
 
@@ -117,17 +129,17 @@ const ChoreBar = ({ chore }: Props) => {
     <ChoreBarWrapper>
       <NameCheckWrapper>
         <ChoreName>{chore.name}</ChoreName>
-        {timeLeftToCompletePercentage < 1 ? (
-          <GreenCheck />
-        ) : (
-          <GreyCheck onClick={handleCheckClick} />
-        )}
+        <GreenCheck onClick={handleCheckClick} />
       </NameCheckWrapper>
       <ProgressDatesWrapper>
         <ProgressBar
           striped
           variant={progressBarVariant}
-          now={timeLeftToCompletePercentage}
+          now={
+            timeLeftToCompletePercentage > 0
+              ? timeLeftToCompletePercentage
+              : 100
+          }
         />
         <Dates>
           <ChoreDates>
