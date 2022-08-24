@@ -7,6 +7,7 @@ import Col from "react-bootstrap/Col";
 import { useQueryClient } from "react-query";
 
 import Badge from "react-bootstrap/Badge";
+import Button from "react-bootstrap/Button";
 import NewRecipeModal from "./NewRecipeModal/NewRecipeModal";
 
 const Recipes = () => {
@@ -29,26 +30,17 @@ const Recipes = () => {
         <h1>Recipes</h1>
       </Row>
       <Row>
-        <Col>
-          <h2>
-            <Badge
-              bg="primary"
-              onClick={() => setShouldShowNewRecipeModal(true)}
-            >
-              Add
-            </Badge>
-          </h2>
-        </Col>
-        <Col>
-          <h2>
-            <Badge
-              bg="primary"
-              onClick={() => setShouldShowRecipesCollectionModal(true)}
-            >
-              All Recipes
-            </Badge>
-          </h2>
-        </Col>
+        <div className="d-grid gap-2">
+          <Button onClick={() => setShouldShowNewRecipeModal(true)} size="lg">
+            Add Recipe
+          </Button>
+          <Button
+            onClick={() => setShouldShowRecipesCollectionModal(true)}
+            size="lg"
+          >
+            View Recipes
+          </Button>
+        </div>
         <NewRecipeModal
           isShown={shouldShowNewRecipeModal}
           handleHide={() => handleCloseNewRecipeModal()}

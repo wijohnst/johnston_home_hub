@@ -10,7 +10,7 @@ import Spinner from "react-bootstrap/Spinner";
 
 import { NewRecipeModalWrapper } from "./NewRecipeModal.style";
 import { generateRecipe } from "../recipesApi";
-import EditGeneratedRecipeForm from "../EditGeneratedRecipeForm/EditGeneratedRecipeForm";
+import EditGeneratedRecipe from "../EditGeneratedRecipe/EditGeneratedRecipe";
 
 type Props = {
   isShown: boolean;
@@ -63,9 +63,10 @@ const NewRecipeModal = ({ isShown, handleHide }: Props) => {
               </>
             )}
             {data && (
-              <EditGeneratedRecipeForm
+              <EditGeneratedRecipe
                 ingredients={data.ingredients ?? []}
                 steps={data.steps ?? []}
+                handleCancelClick={handleHide}
               />
             )}
           </>
