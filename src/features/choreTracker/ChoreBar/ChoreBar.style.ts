@@ -8,6 +8,15 @@ export const ChoreBarWrapper = styled.div`
 export const NameCheckWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+export const CheckWrapper = styled.div`
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export const ProgressDatesWrapper = styled.div``;

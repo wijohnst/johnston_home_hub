@@ -8,6 +8,7 @@ import intervalToDuration from "date-fns/intervalToDuration";
 import format from "date-fns/format";
 
 import ProgressBar from "react-bootstrap/ProgressBar";
+import Spinner from "react-bootstrap/Spinner";
 
 import { Chore, updateExistingChoreCompletionDate } from "../choreTrackerApi";
 
@@ -18,6 +19,7 @@ import {
   Dates,
   ChoreDates,
   NameCheckWrapper,
+  CheckWrapper,
 } from "./ChoreBar.style";
 
 import { ReactComponent as GreyCheck } from "../../../assets/images/grey_check.svg";
@@ -109,7 +111,7 @@ const ChoreBar = ({ chore }: Props) => {
     [timeLeftToCompletePercentage]
   );
 
-  const updateExistingChoreCompletionDateMutation = useMutation(
+  const { mutate, isLoading } = useMutation(
     "choreCompletionDateUpdate",
     (choreId: string) => {
       return updateExistingChoreCompletionDate(choreId);
@@ -122,14 +124,20 @@ const ChoreBar = ({ chore }: Props) => {
   );
 
   const handleCheckClick = () => {
-    updateExistingChoreCompletionDateMutation.mutate(chore._id);
+    mutate(chore._id);
   };
 
   return (
     <ChoreBarWrapper>
       <NameCheckWrapper>
         <ChoreName>{chore.name}</ChoreName>
-        <GreenCheck onClick={handleCheckClick} />
+        {isLoading ? (
+          <Spinner animation="border" />
+        ) : (
+          <CheckWrapper>
+            <GreenCheck onClick={handleCheckClick} />
+          </CheckWrapper>
+        )}
       </NameCheckWrapper>
       <ProgressDatesWrapper>
         <ProgressBar
