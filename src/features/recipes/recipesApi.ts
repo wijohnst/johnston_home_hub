@@ -4,6 +4,7 @@ import { DefaultResponse } from "../../SharedTypes";
 import { DefaultURL } from "../../constants";
 
 type GeneratedRecipeData = {
+  name: string;
   ingredients: string[];
   steps: string[];
 };

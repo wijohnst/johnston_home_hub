@@ -64,6 +64,7 @@ const NewRecipeModal = ({ isShown, handleHide }: Props) => {
             )}
             {data && (
               <EditGeneratedRecipe
+                name={data.name ?? ""}
                 ingredients={data.ingredients ?? []}
                 steps={data.steps ?? []}
                 handleCancelClick={handleHide}
