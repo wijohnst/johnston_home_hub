@@ -1,5 +1,7 @@
 import React from "react";
 
+import { useForm, FormProvider } from "react-hook-form";
+
 import Button from "react-bootstrap/Button";
 
 import { ReactComponent as EditIcon } from "../../../assets/images/edit_icon.svg";
@@ -9,6 +11,10 @@ import {
   GeneratedRecipeHeader,
   Controls,
 } from "./EditGeneratedRecipe.style";
+
+import { Ingredient } from "../recipesApi";
+
+import EditRecipeForm from "./EditRecipeForm";
 import PreviewRecipe from "./PreviewRecipe";
 
 /*
@@ -24,22 +30,35 @@ import PreviewRecipe from "./PreviewRecipe";
 	`
  */
 type Props = {
+  name: string;
   ingredients: string[];
   steps: string[];
   handleCancelClick: () => void;
 };
+
+type EditGeneratedRecipeFormInputs = {
+  name: string;
+  ingredients: Ingredient[];
+  steps: string[];
+};
+
 const EditGeneratedRecipeForm = ({
+  name,
   ingredients,
   steps,
   handleCancelClick,
 }: Props) => {
   // Controls `readonly` state of component
   const [isEdit, setIsEdit] = React.useState(false);
+
+  const methods = useForm<EditGeneratedRecipeFormInputs>();
+
   return (
-    <>
+    <FormProvider {...methods}>
       {isEdit ? (
         <GeneratedRecipeHeader>
           <h1>Edit New Recipe</h1>
+          <EditRecipeForm />
         </GeneratedRecipeHeader>
       ) : (
         <>
@@ -50,7 +69,7 @@ const EditGeneratedRecipeForm = ({
             </EditIconWrapper>
           </GeneratedRecipeHeader>
           <PreviewRecipe
-            recipeName="Grilled Corn"
+            recipeName={name}
             ingredients={ingredients}
             steps={steps}
           />
@@ -62,7 +81,7 @@ const EditGeneratedRecipeForm = ({
           </Controls>
         </>
       )}
-    </>
+    </FormProvider>
   );
 };
 
