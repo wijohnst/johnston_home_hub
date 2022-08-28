@@ -8,14 +8,11 @@ import {
   useWatch,
 } from "react-hook-form";
 
-import {
-  IngredientFieldsWrapper,
-  LinkIconWrapper,
-} from "./EditRecipeForm.style";
+import { IngredientFieldsWrapper } from "./EditRecipeForm.style";
 
+import Stack from "react-bootstrap/Stack";
 import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import Alert from "react-bootstrap/Alert";
 
 import { ReactComponent as LinkIcon } from "../../../assets/images/link_icon.svg";
 type Props = {
@@ -25,6 +22,10 @@ type Props = {
 };
 
 const EditRecipeForm = ({ name, ingredientsData }: Props) => {
+  const [targetIngredientIndex, setTargetIngredientIndex] = React.useState<
+    number | null
+  >(null);
+
   const { control } = useFormContext();
 
   const { fields } = useFieldArray({
@@ -54,10 +55,10 @@ const EditRecipeForm = ({ name, ingredientsData }: Props) => {
       </Form.Group>
       <IngredientFieldsWrapper>
         <Form.Label style={{ fontWeight: 600 }}>Ingredients</Form.Label>
-        <Container fluid>
-          {fields.map((field, index) => (
-            <Row>
-              <Col className="name-column" xs={5}>
+        {fields.map((field, index) => (
+          <>
+            <Stack direction="horizontal" gap={2}>
+              <div className="ingredient-label center-label name-column">
                 <Form.Label className="ingredient-label">Name</Form.Label>
                 <Controller
                   control={control}
@@ -71,8 +72,8 @@ const EditRecipeForm = ({ name, ingredientsData }: Props) => {
                     />
                   )}
                 />
-              </Col>
-              <Col className="quantity-column" xs={1}>
+              </div>
+              <div className="ingredient-label center-label quantity-column">
                 <Form.Label className="ingredient-label center-label">
                   Quantity
                 </Form.Label>
@@ -87,8 +88,8 @@ const EditRecipeForm = ({ name, ingredientsData }: Props) => {
                     />
                   )}
                 />
-              </Col>
-              <Col className="unit-column" xs={7}>
+              </div>
+              <div className="ingredient-label center-label">
                 <Form.Label className="ingredient-label center-label">
                   Unit
                 </Form.Label>
@@ -104,17 +105,37 @@ const EditRecipeForm = ({ name, ingredientsData }: Props) => {
                     />
                   )}
                 />
-              </Col>
+              </div>
               {!ingredients[index].linkedItem && (
-                <Col xs={1}>
-                  <LinkIconWrapper>
+                <div
+                  className="link-column"
+                  onClick={() => setTargetIngredientIndex(index)}
+                >
+                  <Form.Label className="ingredient-label center-label"></Form.Label>
+                  <div>
                     <LinkIcon style={{ width: "24px" }} />
-                  </LinkIconWrapper>
-                </Col>
+                  </div>
+                </div>
               )}
-            </Row>
-          ))}
-        </Container>
+            </Stack>
+            {targetIngredientIndex === index && (
+              <div className="link-item-section">
+                <Stack gap={1}>
+                  <Alert>
+                    <h5>Link a Grocery Item to this Ingredient</h5>
+                    <p>
+                      This allows integration between your recipes and your
+                      shopping lists. Linked items will be added to your
+                      shopping list whenever a recipe is added to your meal
+                      schedule.
+                    </p>
+                  </Alert>
+                  <Form.Label>Grocery Item to Link</Form.Label>
+                </Stack>
+              </div>
+            )}
+          </>
+        ))}
       </IngredientFieldsWrapper>
     </>
   );

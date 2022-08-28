@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Form from "react-bootstrap/Form";
 
 export const IngredientFieldsWrapper = styled(Form.Group)`
-  background-color: lightgreen;
+  margin: 0 1rem 0 0;
 
   .ingredient-label {
     margin: 0.5rem 0 0 0;
@@ -12,33 +12,31 @@ export const IngredientFieldsWrapper = styled(Form.Group)`
   }
 
   .center-label {
-    display: flex;
-    justify-content: center;
+    text-align: center;
   }
 
   .name-column {
-    background-color: lightblue;
+    flex-grow: 1;
   }
 
   .quantity-column {
-    /* max-width: 15%; */
+    flex-shrink: 1;
+    max-width: 10%;
   }
 
   .unit-column {
-    /* max-width: 25%; */
+    flex-grow: 1;
   }
-`;
 
-export const LinkIconWrapper = styled.div`
-  height: 100%;
-  width: fit-content;
-  display: flex;
-  align-items: center;
-  padding: 1.75rem 0 0 0;
-  background-color: lightpink;
-  flex-shrink: 1;
+  .link-column {
+    flex-shrink: 1;
 
-  &:hover {
-    cursor: pointer;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  .link-item-section {
+    margin: 1rem 0.25rem 0 0;
   }
 `;
