@@ -30,7 +30,7 @@ const NewRecipeModal = ({ isShown, handleHide }: Props) => {
   };
 
   return (
-    <Modal show={isShown} onHide={() => [handleHide(), reset()]}>
+    <Modal show={isShown} onHide={() => [handleHide(), reset()]} size="lg">
       <NewRecipeModalWrapper onSubmit={handleSubmit(onSubmit)}>
         {isLoading && (
           <>

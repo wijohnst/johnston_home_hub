@@ -3,6 +3,7 @@ import React from "react";
 import { useForm, FormProvider } from "react-hook-form";
 
 import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
 
 import { ReactComponent as EditIcon } from "../../../assets/images/edit_icon.svg";
 
@@ -12,10 +13,10 @@ import {
   Controls,
 } from "./EditGeneratedRecipe.style";
 
-import { Ingredient } from "../recipesApi";
-
 import EditRecipeForm from "./EditRecipeForm";
 import PreviewRecipe from "./PreviewRecipe";
+import { getDefaultIngredients } from "./EditRecipeForm.utils";
+import { Ingredient } from "../recipesApi";
 
 /*
 	TWO COMPONENT STATES:
@@ -36,10 +37,10 @@ type Props = {
   handleCancelClick: () => void;
 };
 
-type EditGeneratedRecipeFormInputs = {
+type FormValues = {
   name: string;
-  ingredients: Ingredient[];
-  steps: string[];
+  // ingredients: Record<number, Omit<Ingredient, "_id">>;
+  ingredients: Omit<Ingredient, "_id">[] | [];
 };
 
 const EditGeneratedRecipeForm = ({
@@ -51,36 +52,48 @@ const EditGeneratedRecipeForm = ({
   // Controls `readonly` state of component
   const [isEdit, setIsEdit] = React.useState(false);
 
-  const methods = useForm<EditGeneratedRecipeFormInputs>();
+  const methods = useForm<FormValues>({
+    defaultValues: {
+      ingredients: getDefaultIngredients(ingredients),
+    },
+  });
+
+  const onSubmit = (formData: any) => {
+    console.log(formData);
+  };
 
   return (
     <FormProvider {...methods}>
-      {isEdit ? (
-        <GeneratedRecipeHeader>
-          <h1>Edit New Recipe</h1>
-          <EditRecipeForm />
-        </GeneratedRecipeHeader>
-      ) : (
-        <>
-          <GeneratedRecipeHeader>
-            <h1>Preview New Recipe</h1>
-            <EditIconWrapper onClick={() => setIsEdit(true)}>
-              <EditIcon />
-            </EditIconWrapper>
-          </GeneratedRecipeHeader>
-          <PreviewRecipe
-            recipeName={name}
-            ingredients={ingredients}
-            steps={steps}
-          />
-          <Controls>
-            <Button>Save Recipe</Button>
-            <Button variant="danger" onClick={() => handleCancelClick()}>
-              Cancel
-            </Button>
-          </Controls>
-        </>
-      )}
+      <Form onSubmit={methods.handleSubmit(onSubmit)}>
+        {isEdit ? (
+          <>
+            <GeneratedRecipeHeader>
+              <h1>Edit New Recipe</h1>
+            </GeneratedRecipeHeader>
+            <EditRecipeForm name={name} ingredientsData={ingredients} />
+          </>
+        ) : (
+          <>
+            <GeneratedRecipeHeader>
+              <h1>Preview New Recipe</h1>
+              <EditIconWrapper onClick={() => setIsEdit(true)} role="button">
+                <EditIcon />
+              </EditIconWrapper>
+            </GeneratedRecipeHeader>
+            <PreviewRecipe
+              recipeName={name}
+              ingredients={ingredients}
+              steps={steps}
+            />
+          </>
+        )}
+        <Controls>
+          <Button type="submit">Save Recipe</Button>
+          <Button variant="danger" onClick={() => handleCancelClick()}>
+            Cancel
+          </Button>
+        </Controls>
+      </Form>
     </FormProvider>
   );
 };
