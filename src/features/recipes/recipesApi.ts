@@ -54,3 +54,21 @@ export interface Recipe {
   steps: string[];
   url: string | null;
 }
+
+export type NewRecipeData = Omit<Recipe, "_id">;
+
+export const postNewRecipe = async (
+  recipeData: NewRecipeData
+): Promise<DefaultResponse> => {
+  try {
+    const { data: defaultResponse } = await axios.post<DefaultResponse>(
+      `${DefaultURL}/recipe/`,
+      {
+        recipeData,
+      }
+    );
+    return defaultResponse;
+  } catch (error) {
+    return { status: 400, message: "Recipe failed to add." };
+  }
+};
