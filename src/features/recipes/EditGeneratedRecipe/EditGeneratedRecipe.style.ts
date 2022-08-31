@@ -21,9 +21,9 @@ export const EditIconWrapper = styled.div`
 export const Controls = styled.div`
   display: flex;
   justify-content: felx-start;
-  margin: 0 0 0 1rem;
+  /* margin: 0 0 0 1rem; */
 
   button {
-    margin: 0 0.25rem 0 0;
+    margin: 1rem 0.25rem 0.25rem 0.25rem;
   }
 `;

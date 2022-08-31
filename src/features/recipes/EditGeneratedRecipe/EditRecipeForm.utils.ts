@@ -16,3 +16,14 @@ export const getDefaultIngredients = (
     linkedItem: null,
   }));
 };
+
+/**
+ *	Returns a stringified version with new line characters between each array *  entry
+ * @param {string[]} stepsArray
+ * @returns {string}
+ */
+export const getStepsString = (stepsArray: string[]): string => {
+  return stepsArray.reduce<string>((stepsString, currentString) => {
+    return stepsString + `- ${currentString}\n`;
+  }, "");
+};

@@ -15,7 +15,7 @@ import {
 
 import EditRecipeForm from "./EditRecipeForm";
 import PreviewRecipe from "./PreviewRecipe";
-import { getDefaultIngredients } from "./EditRecipeForm.utils";
+import { getDefaultIngredients, getStepsString } from "./EditRecipeForm.utils";
 import { Ingredient } from "../recipesApi";
 
 /*
@@ -34,19 +34,22 @@ type Props = {
   name: string;
   ingredients: string[];
   steps: string[];
+  url: string | null;
   handleCancelClick: () => void;
 };
 
 type FormValues = {
   name: string;
-  // ingredients: Record<number, Omit<Ingredient, "_id">>;
   ingredients: Omit<Ingredient, "_id">[] | [];
+  steps: string;
+  url: string | null;
 };
 
 const EditGeneratedRecipeForm = ({
   name,
   ingredients,
   steps,
+  url,
   handleCancelClick,
 }: Props) => {
   // Controls `readonly` state of component
@@ -54,12 +57,21 @@ const EditGeneratedRecipeForm = ({
 
   const methods = useForm<FormValues>({
     defaultValues: {
+      name: name,
       ingredients: getDefaultIngredients(ingredients),
+      steps: getStepsString(steps),
+      url: url,
     },
   });
 
   const onSubmit = (formData: any) => {
-    console.log(formData);
+    if (isEdit) {
+      console.log("EDIT", formData);
+    }
+
+    if (!isEdit) {
+      console.log("NOT EDIT", formData);
+    }
   };
 
   return (
