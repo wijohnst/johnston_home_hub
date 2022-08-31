@@ -53,7 +53,7 @@ const EditRecipeForm = ({ name, ingredientsData }: Props) => {
 
   const { control, setValue } = useFormContext();
 
-  const { fields } = useFieldArray({
+  const { fields, append } = useFieldArray({
     control,
     name: "ingredients",
   });
@@ -250,7 +250,7 @@ const EditRecipeForm = ({ name, ingredientsData }: Props) => {
                   )}
                 />
               </div>
-              {ingredients[index].linkedItem === null && (
+              {ingredients[index]?.linkedItem === null && (
                 <div
                   className="link-column"
                   onClick={() => setTargetIngredientIndex(index)}
@@ -267,7 +267,7 @@ const EditRecipeForm = ({ name, ingredientsData }: Props) => {
                 <Stack gap={1}>
                   {!isAddNewGroceryItem ? (
                     <Alert>
-                      {ingredients[index].linkedItem === null && (
+                      {ingredients[index]?.linkedItem === null && (
                         <>
                           <h5>Link a Grocery Item to this Ingredient</h5>
                           <p>
@@ -278,7 +278,7 @@ const EditRecipeForm = ({ name, ingredientsData }: Props) => {
                           </p>
                         </>
                       )}
-                      {ingredients[index].linkedItem !== null && (
+                      {ingredients[index]?.linkedItem !== null && (
                         <>
                           <h5>Ingredient successfully linked.</h5>
                         </>
@@ -329,7 +329,7 @@ const EditRecipeForm = ({ name, ingredientsData }: Props) => {
                           <Button
                             variant="danger"
                             onClick={() => {
-                              if (ingredients[index].linkedItem === null) {
+                              if (ingredients[index]?.linkedItem === null) {
                                 setTargetIngredientIndex(null);
                               } else {
                                 setValue(
@@ -339,7 +339,7 @@ const EditRecipeForm = ({ name, ingredientsData }: Props) => {
                               }
                             }}
                           >
-                            {ingredients[index].linkedItem === null
+                            {ingredients[index]?.linkedItem === null
                               ? "Cancel"
                               : "Unlink Item"}
                           </Button>
@@ -441,6 +441,14 @@ const EditRecipeForm = ({ name, ingredientsData }: Props) => {
             )}
           </>
         ))}
+        <span
+          className="link-span add-ingredient-link"
+          onClick={() =>
+            append({ name: "", quantity: null, unit: null, linkedItem: null })
+          }
+        >
+          Add Ingredient
+        </span>
       </IngredientFieldsWrapper>
       <StepsFieldsWrapper>
         <Form.Label style={{ fontWeight: 600 }}>Steps</Form.Label>

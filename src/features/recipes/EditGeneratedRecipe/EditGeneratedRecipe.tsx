@@ -1,6 +1,7 @@
 import React from "react";
 
 import { useForm, FormProvider } from "react-hook-form";
+import { useMutation } from "react-query";
 
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -16,7 +17,7 @@ import {
 import EditRecipeForm from "./EditRecipeForm";
 import PreviewRecipe from "./PreviewRecipe";
 import { getDefaultIngredients, getStepsString } from "./EditRecipeForm.utils";
-import { Ingredient } from "../recipesApi";
+import { Ingredient, NewRecipeData, postNewRecipe } from "../recipesApi";
 
 /*
 	TWO COMPONENT STATES:
@@ -36,6 +37,7 @@ type Props = {
   steps: string[];
   url: string | null;
   handleCancelClick: () => void;
+  handleNewRecipePostSuccess: () => void;
 };
 
 type FormValues = {
@@ -51,6 +53,7 @@ const EditGeneratedRecipeForm = ({
   steps,
   url,
   handleCancelClick,
+  handleNewRecipePostSuccess,
 }: Props) => {
   // Controls `readonly` state of component
   const [isEdit, setIsEdit] = React.useState(false);
@@ -64,6 +67,18 @@ const EditGeneratedRecipeForm = ({
     },
   });
 
+  const postNewRecipeMutation = useMutation(
+    "postNewRecipe",
+    (recipeData: NewRecipeData) => {
+      return postNewRecipe(recipeData);
+    },
+    {
+      onSuccess: () => {
+        handleNewRecipePostSuccess();
+      },
+    }
+  );
+
   const onSubmit = (formData: any) => {
     if (isEdit) {
       console.log("EDIT", formData);
@@ -72,6 +87,7 @@ const EditGeneratedRecipeForm = ({
     if (!isEdit) {
       console.log("NOT EDIT", formData);
     }
+    postNewRecipeMutation.mutate(formData);
   };
 
   return (

@@ -7,6 +7,8 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
+import Alert from "react-bootstrap/Alert";
+import Stack from "react-bootstrap/Stack";
 
 import { NewRecipeModalWrapper } from "./NewRecipeModal.style";
 import { generateRecipe } from "../recipesApi";
@@ -20,6 +22,8 @@ type Props = {
 const NewRecipeModal = ({ isShown, handleHide }: Props) => {
   const { handleSubmit, control } = useForm();
 
+  const [postStatus, setPostStatus] = React.useState<string | null>(null);
+
   const { mutateAsync, data, isLoading, reset } = useMutation(
     `generateRecipe`,
     generateRecipe
@@ -32,10 +36,19 @@ const NewRecipeModal = ({ isShown, handleHide }: Props) => {
   const url = useWatch({
     control,
     name: "url",
+    defaultValue: null,
   });
 
+  const handleNewRecipePostSuccess = (): void => {
+    setPostStatus("success");
+  };
+
   return (
-    <Modal show={isShown} onHide={() => [handleHide(), reset()]} size="lg">
+    <Modal
+      show={isShown}
+      onHide={() => [handleHide(), reset(), setPostStatus(null)]}
+      size="lg"
+    >
       <NewRecipeModalWrapper onSubmit={handleSubmit(onSubmit)}>
         {isLoading && (
           <>
@@ -45,7 +58,7 @@ const NewRecipeModal = ({ isShown, handleHide }: Props) => {
         )}
         {!isLoading && (
           <>
-            {!data && (
+            {!data && postStatus !== "success" && (
               <>
                 <h1>Add a new recipe</h1>
                 <Form>
@@ -67,14 +80,34 @@ const NewRecipeModal = ({ isShown, handleHide }: Props) => {
                 </Form>
               </>
             )}
-            {data && (
+            {data && postStatus !== "success" && (
               <EditGeneratedRecipe
                 name={data.name ?? ""}
                 ingredients={data.ingredients ?? []}
                 steps={data.steps ?? []}
                 url={url}
                 handleCancelClick={handleHide}
+                handleNewRecipePostSuccess={handleNewRecipePostSuccess}
               />
+            )}
+            {postStatus === "success" && (
+              <section className="post-success-wrapper">
+                <Alert>
+                  <h3>New Recipe posted successfully.</h3>
+                  <span>This window can be closed.</span>
+                  <Stack direction="vertical" className="button-wrapper">
+                    <Button
+                      onClick={() => [
+                        handleHide(),
+                        reset(),
+                        setPostStatus(null),
+                      ]}
+                    >
+                      Close
+                    </Button>
+                  </Stack>
+                </Alert>
+              </section>
             )}
           </>
         )}

@@ -67,6 +67,9 @@ export const IngredientFieldsWrapper = styled(Form.Group)`
     cursor: pointer;
   }
 
+  .add-ingredient-link {
+  }
+
   .link-sub-form {
     margin: 0 0 0 1rem;
 
