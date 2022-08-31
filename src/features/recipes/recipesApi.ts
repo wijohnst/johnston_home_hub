@@ -15,6 +15,7 @@ export interface GenerateRecipeResponse extends DefaultResponse {
 interface GenerateRecipeVariables {
   url: string;
 }
+
 export const generateRecipe = async ({
   url,
 }: GenerateRecipeVariables): Promise<GeneratedRecipeData | void> => {
@@ -37,3 +38,19 @@ export const generateRecipe = async ({
     }
   }
 };
+
+export interface Ingredient {
+  _id: string | null;
+  name: string;
+  quantity: number | null;
+  unit: string | null;
+  linkedItem: string | null;
+}
+
+export interface Recipe {
+  _id: string;
+  name: string;
+  ingredients: Ingredient[];
+  steps: string[];
+  url: string | null;
+}

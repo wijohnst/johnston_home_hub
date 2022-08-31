@@ -1,7 +1,7 @@
 import React from "react";
 
-import { useQuery, useMutation } from "react-query";
-import { Controller, FieldValues, useForm } from "react-hook-form";
+import { useMutation } from "react-query";
+import { Controller, FieldValues, useForm, useWatch } from "react-hook-form";
 
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
@@ -29,8 +29,13 @@ const NewRecipeModal = ({ isShown, handleHide }: Props) => {
     await mutateAsync({ url: formData.url });
   };
 
+  const url = useWatch({
+    control,
+    name: "url",
+  });
+
   return (
-    <Modal show={isShown} onHide={() => [handleHide(), reset()]}>
+    <Modal show={isShown} onHide={() => [handleHide(), reset()]} size="lg">
       <NewRecipeModalWrapper onSubmit={handleSubmit(onSubmit)}>
         {isLoading && (
           <>
@@ -67,6 +72,7 @@ const NewRecipeModal = ({ isShown, handleHide }: Props) => {
                 name={data.name ?? ""}
                 ingredients={data.ingredients ?? []}
                 steps={data.steps ?? []}
+                url={url}
                 handleCancelClick={handleHide}
               />
             )}
