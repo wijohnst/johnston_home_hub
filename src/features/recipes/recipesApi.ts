@@ -72,3 +72,18 @@ export const postNewRecipe = async (
     return { status: 400, message: "Recipe failed to add." };
   }
 };
+
+interface FetchAllRecipesResponse extends DefaultResponse {
+  recipes: Recipe[];
+}
+export const fetchAllRecipes = async (): Promise<Recipe[]> => {
+  try {
+    const {
+      data: { recipes },
+    } = await axios.get<FetchAllRecipesResponse>(`${DefaultURL}/recipe/`);
+    return recipes;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+};

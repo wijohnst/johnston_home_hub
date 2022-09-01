@@ -9,11 +9,12 @@ import { useQueryClient } from "react-query";
 import Badge from "react-bootstrap/Badge";
 import Button from "react-bootstrap/Button";
 import NewRecipeModal from "./NewRecipeModal/NewRecipeModal";
+import RecipesCollectionModal from "./RecipesCollectionModal/RecipesCollectionModal";
 
 const Recipes = () => {
   const QueryClient = useQueryClient();
   const [shouldShowNewRecipeModal, setShouldShowNewRecipeModal] =
-    React.useState(true);
+    React.useState(false);
   const [
     shouldShowRecipesCollectionModal,
     setShouldShowRecipesCollectionModal,
@@ -22,6 +23,10 @@ const Recipes = () => {
   const handleCloseNewRecipeModal = () => {
     QueryClient.invalidateQueries("generateRecipe");
     setShouldShowNewRecipeModal(false);
+  };
+
+  const handleCloseRecipesCollectionModal = () => {
+    setShouldShowRecipesCollectionModal(false);
   };
 
   return (
@@ -44,6 +49,10 @@ const Recipes = () => {
         <NewRecipeModal
           isShown={shouldShowNewRecipeModal}
           handleHide={() => handleCloseNewRecipeModal()}
+        />
+        <RecipesCollectionModal
+          isShown={shouldShowRecipesCollectionModal}
+          handleHide={handleCloseRecipesCollectionModal}
         />
       </Row>
     </Container>
