@@ -14,6 +14,8 @@ export const NameCheckWrapper = styled.div`
 `;
 
 export const CheckWrapper = styled.div`
+  margin: 0 0 0.25rem 0;
+
   &:hover {
     cursor: pointer;
   }
