@@ -22,7 +22,6 @@ import {
   CheckWrapper,
 } from "./ChoreBar.style";
 
-import { ReactComponent as GreyCheck } from "../../../assets/images/grey_check.svg";
 import { ReactComponent as GreenCheck } from "../../../assets/images/green_check.svg";
 
 type Props = {

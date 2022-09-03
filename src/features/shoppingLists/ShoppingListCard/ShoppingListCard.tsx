@@ -220,7 +220,9 @@ const ShoppingListCard = ({
                       <span>{item?.aisle.aisle ?? "No Aisle"}</span>
                     )}
                     {"url" in item && (
-                      <Card.Link href={`${item.url}`}>Link</Card.Link>
+                      <Card.Link href={`${item.url}`} target="_blank">
+                        Link
+                      </Card.Link>
                     )}
                   </div>
                   {!isEdit && (
