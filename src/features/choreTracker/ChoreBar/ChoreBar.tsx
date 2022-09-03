@@ -35,18 +35,35 @@ const getCompletionDate = (lastCompletedDate: Date, interval: number): Date => {
   });
 };
 
+/**
+ * Accepts a chore and returns an integer representing how much time is left to complete that chore from the current date, expressed as a percentage.
+ *
+ * Overdue tasks (completiong percentage is negative), will return 100
+ *
+ * @param {Chore} chore
+ * @returns {number}
+ */
 export const deriveTimeLeftToCompletePercentage = (chore: Chore): number => {
   const completionDate = getCompletionDate(
     parseISO(chore.lastCompleted.toString()),
     chore.intervalDays
   );
 
+  const startDate = new Date();
+
+  const isOverdue = startDate > completionDate;
+
+  // Short circuit on overdue tasks
+  if (isOverdue) {
+    return 100;
+  }
+
   const {
     days = 0,
     months = 0,
     hours = 0,
   } = intervalToDuration({
-    start: new Date(),
+    start: startDate,
     end: completionDate,
   });
 
@@ -67,10 +84,6 @@ export const deriveTimeLeftToCompletePercentage = (chore: Chore): number => {
   const completionPecentage =
     100 - Math.round((daysToComplete / chore.intervalDays) * 100);
 
-  // Short circuit on overdue tasks
-  if (completionPecentage < 0) {
-    return 100;
-  }
   return completionPecentage;
 };
 
@@ -149,20 +162,30 @@ const ChoreBar = ({ chore }: Props) => {
               : 100
           }
         />
-        <Dates>
-          <ChoreDates>
-            {format(parseISO(chore.lastCompleted.toString()), "EEE MM/dd")}
-          </ChoreDates>
-          <ChoreDates>
-            {format(
-              getCompletionDate(
-                parseISO(chore.lastCompleted.toString()),
-                chore.intervalDays
-              ),
-              "EEE MM/dd"
-            )}
-          </ChoreDates>
-        </Dates>
+        {timeLeftToCompletePercentage !== 100 && (
+          <Dates>
+            <ChoreDates>
+              {format(parseISO(chore.lastCompleted.toString()), "EEE MM/dd")}
+            </ChoreDates>
+            <ChoreDates>
+              {format(
+                getCompletionDate(
+                  parseISO(chore.lastCompleted.toString()),
+                  chore.intervalDays
+                ),
+                "EEE MM/dd"
+              )}
+            </ChoreDates>
+          </Dates>
+        )}
+        {timeLeftToCompletePercentage === 100 && (
+          <div className="overdue-wrapper">
+            <span>{`OVERDUE - LAST COMPLETED ${format(
+              parseISO(chore.lastCompleted.toString()),
+              "MM/dd"
+            )}`}</span>
+          </div>
+        )}
       </ProgressDatesWrapper>
     </ChoreBarWrapper>
   );
