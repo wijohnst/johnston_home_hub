@@ -83,13 +83,6 @@ const EditGeneratedRecipeForm = ({
   );
 
   const onSubmit = (formData: any) => {
-    if (isEdit) {
-      console.log("EDIT", formData);
-    }
-
-    if (!isEdit) {
-      console.log("NOT EDIT", formData);
-    }
     postNewRecipeMutation.mutate(formData);
   };
 

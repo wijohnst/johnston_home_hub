@@ -136,6 +136,7 @@ const EditRecipeForm = ({ name, ingredientsData }: Props) => {
         setIsAddNewGroceryItem(false);
         setIsNewStore(false);
         setIsNewAisle(false);
+        setValue("newGroceryItem.name", "");
       },
     }
   );
