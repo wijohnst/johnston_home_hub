@@ -1,7 +1,7 @@
 import React from "react";
 
 import { useForm, FormProvider } from "react-hook-form";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -58,6 +58,8 @@ const EditGeneratedRecipeForm = ({
   // Controls `readonly` state of component
   const [isEdit, setIsEdit] = React.useState(false);
 
+  const queryClient = useQueryClient();
+
   const methods = useForm<FormValues>({
     defaultValues: {
       name: name,
@@ -75,6 +77,7 @@ const EditGeneratedRecipeForm = ({
     {
       onSuccess: () => {
         handleNewRecipePostSuccess();
+        queryClient.invalidateQueries("recipes");
       },
     }
   );
