@@ -16,7 +16,10 @@ interface FilterActions {
  * @param {dataToFilter<T>} dataToFilter
  * @returns {[FilterState<T>, FilterActions]}
  */
-const useFilter = <T>(dataToFilter: T[]): [FilterState<T>, FilterActions] => {
+const useFilter = <T>(
+  dataToFilter: T[],
+  filterPropertyName?: keyof T
+): [FilterState<T>, FilterActions] => {
   const [filterValue, setFilterValue] = React.useState("");
   const [filteredData, setFilteredData] = React.useState<T[] | null>(null);
 
@@ -27,10 +30,33 @@ const useFilter = <T>(dataToFilter: T[]): [FilterState<T>, FilterActions] => {
           return value;
         }
       }
+
+      if (typeof value === "object" && filterPropertyName) {
+        if (typeof value[filterPropertyName] !== "string") {
+          throw Error(
+            "`fitlerPropertyName` does not reference an object property in `dataToFilter<T>[]`. dataToFilter[0].filterPropertyName should reference a string."
+          );
+        } else {
+          /*
+						`value[filterPropertyName]` must be aliased as `valueToMatch` to call any string methods against it. 
+
+						See this issue:
+						https://github.com/microsoft/TypeScript/issues/10530
+					*/
+          const valueToMatch = value[filterPropertyName];
+          if (
+            typeof valueToMatch === "string" &&
+            valueToMatch?.toLowerCase().search(filterValue?.toLowerCase()) !==
+              -1
+          ) {
+            return value;
+          }
+        }
+      }
       return null;
     });
     setFilteredData(filteredData);
-  }, [filterValue, dataToFilter]);
+  }, [filterValue, dataToFilter, filterPropertyName]);
 
   return [{ filteredData }, { setFilterValue }];
 };
