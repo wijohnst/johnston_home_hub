@@ -6,6 +6,7 @@ import { useForm, Controller } from "react-hook-form";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Stack from "react-bootstrap/Stack";
+import Button from "react-bootstrap/Button";
 
 import useFilter from "../../../hooks/useFilter";
 
@@ -15,6 +16,10 @@ import {
   RecipesModalWrapper,
   RecipesSearchFormWrapper,
 } from "./RecipesCollectionModal.style";
+import PreviewRecipe from "../EditGeneratedRecipe/PreviewRecipe";
+
+import { ReactComponent as EditIcon } from "../../../assets/images/edit_icon.svg";
+import EditGeneratedRecipe from "../EditGeneratedRecipe/EditGeneratedRecipe";
 
 type Props = {
   isShown: boolean;
@@ -22,6 +27,11 @@ type Props = {
 };
 
 const RecipesCollectionModal = ({ isShown, handleHide }: Props) => {
+  const [selectedRecipe, setSelectedRecipe] = React.useState<Recipe | null>(
+    null
+  );
+  const [isEdit, setIsEdit] = React.useState(false);
+
   const {
     data: recipes = [],
     isFetching,
@@ -30,9 +40,10 @@ const RecipesCollectionModal = ({ isShown, handleHide }: Props) => {
 
   const { control, watch } = useForm();
 
-  const recipeNames = recipes.map((recipe: Recipe) => recipe.name);
-
-  const [{ filteredData }, { setFilterValue }] = useFilter<string>(recipeNames);
+  const [{ filteredData }, { setFilterValue }] = useFilter<Recipe>(
+    recipes,
+    "name"
+  );
 
   const inputValue = watch("recipes-search-term");
 
@@ -43,9 +54,9 @@ const RecipesCollectionModal = ({ isShown, handleHide }: Props) => {
   return (
     <Modal show={isShown} onHide={() => handleHide()}>
       <RecipesModalWrapper>
-        <h1>Recipes</h1>
+        {!selectedRecipe && <h1>Recipes</h1>}
         {isFetching && <span>Please wait. Fetching recipes...</span>}
-        {isFetched && (
+        {isFetched && !selectedRecipe && (
           <RecipesSearchFormWrapper>
             <Form.Group>
               <Form.Label style={{ fontWeight: 600 }}>
@@ -60,11 +71,50 @@ const RecipesCollectionModal = ({ isShown, handleHide }: Props) => {
               />
             </Form.Group>
             <Stack className="links-wrapper">
-              {filteredData?.map((recipeName: string) => (
-                <LinkSpan>{recipeName}</LinkSpan>
+              {filteredData?.map((recipe: Recipe) => (
+                <LinkSpan onClick={() => setSelectedRecipe(recipe)}>
+                  {recipe.name}
+                </LinkSpan>
               ))}
             </Stack>
           </RecipesSearchFormWrapper>
+        )}
+        {selectedRecipe && !isEdit && (
+          <div>
+            <div className="header-wrapper">
+              <h1>View Recipe</h1>
+              <div className="edit-icon-wrapper">
+                <EditIcon role="button" onClick={() => setIsEdit(true)} />
+              </div>
+            </div>
+            <PreviewRecipe
+              recipeName={selectedRecipe.name}
+              ingredients={selectedRecipe.ingredients.map(
+                (ingredient) => ingredient.name
+              )}
+              steps={selectedRecipe.steps}
+            />
+            <div className="view-recipe-controls">
+              <Button onClick={() => setSelectedRecipe(null)}>
+                Back to Recipes
+              </Button>
+            </div>
+          </div>
+        )}
+        {selectedRecipe && isEdit && (
+          <div>
+            <h1>Edit Recipe</h1>
+            <EditGeneratedRecipe
+              name={selectedRecipe.name}
+              ingredients={selectedRecipe.ingredients.map(
+                (ingredient) => ingredient.name
+              )}
+              steps={selectedRecipe.steps}
+              url={selectedRecipe.url}
+              handleCancelClick={() => setIsEdit(false)}
+              handleNewRecipePostSuccess={() => setIsEdit(false)}
+            />
+          </div>
         )}
       </RecipesModalWrapper>
     </Modal>
