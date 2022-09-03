@@ -19,7 +19,19 @@ export const CheckWrapper = styled.div`
   }
 `;
 
-export const ProgressDatesWrapper = styled.div``;
+export const ProgressDatesWrapper = styled.div`
+  .overdue-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    span {
+      font-weight: 500;
+      font-size: 0.75rem;
+      margin: 0.25rem 0 0.25rem 0;
+    }
+  }
+`;
 
 export const Dates = styled.div`
   display: flex;
