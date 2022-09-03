@@ -25,3 +25,9 @@ export const Breakpoints: { [key: string]: string } = {
   laptop: "(max-width: 1024px)",
   desktop: "(min-width: 1025px)",
 };
+
+export const RegularExpressions = {
+  newLine: /\r?\n/,
+  hyphen: /[-]/,
+  specialCharacters: /[|&;$%@"<>()+,-]/g,
+};

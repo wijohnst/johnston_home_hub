@@ -254,3 +254,45 @@ export const updateItem = async (
     };
   }
 };
+
+export interface GroceryItemData {
+  _id: null;
+  name: string;
+  // Store<string> === DB store; Store<null> === new Store
+  store: Store<string> | Store<null>;
+  aisle: Aisle<string> | Aisle<null>;
+  quantity: string;
+}
+export const addNewGroceryItem = async ({
+  _id,
+  name,
+  store,
+  aisle,
+  quantity,
+}: GroceryItemData): Promise<DefaultResponse> => {
+  try {
+    const { data } = await axios.post<DefaultResponse>(
+      `${DefaultURL}/shoppingList/groceryItem`,
+      {
+        itemData: {
+          _id,
+          name,
+          store,
+          aisle,
+          quantity,
+        },
+      }
+    );
+    console.log("data:", data);
+    return {
+      status: 200,
+      message: "Grocery Item addeded successfully.",
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      status: 400,
+      message: "Adding Grocery Item failed.",
+    };
+  }
+};
