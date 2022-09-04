@@ -61,6 +61,12 @@ const NewRecipeModal = ({ isShown, handleHide }: Props) => {
             {!data && postStatus !== "success" && (
               <>
                 <h1>Add a new recipe</h1>
+                <Alert>
+                  <p>
+                    Please only use recipe links from AllRecipes.com. We will
+                    support other sites in the future.
+                  </p>
+                </Alert>
                 <Form>
                   <Form.Group className="mb-3">
                     <Form.Label>Copy a recipe from the web.</Form.Label>
