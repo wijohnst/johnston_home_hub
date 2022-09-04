@@ -55,7 +55,14 @@ export interface Recipe {
   url: string | null;
 }
 
-export type NewRecipeData = Omit<Recipe, "_id">;
+// export type NewRecipeData = Omit<Recipe, "_id">;
+
+export type NewRecipeData = {
+  name: string;
+  ingredients: Omit<Ingredient, "_id">[] | [];
+  steps: string[];
+  url: string | null;
+};
 
 export const postNewRecipe = async (
   recipeData: NewRecipeData

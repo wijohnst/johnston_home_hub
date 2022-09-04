@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment, SyntheticEvent } from "react";
 import Form from "react-bootstrap/Form";
 
 import {
@@ -23,6 +23,7 @@ import {
 } from "../../shoppingLists/shoppingListsApi";
 
 import {
+  FormWrapper,
   IngredientFieldsWrapper,
   StepsFieldsWrapper,
 } from "./EditRecipeForm.style";
@@ -46,14 +47,16 @@ const EditRecipeForm = ({ name, ingredientsData }: Props) => {
   const [targetIngredientIndex, setTargetIngredientIndex] = React.useState<
     number | null
   >(null);
-
   const [isAddNewGroceryItem, setIsAddNewGroceryItem] = React.useState(false);
   const [isNewStore, setIsNewStore] = React.useState(false);
   const [isNewAisle, setIsNewAisle] = React.useState(false);
+  const [selectedStepIndex, setSelectedStepIndex] = React.useState<
+    number | null
+  >(null);
 
   const { control, setValue } = useFormContext();
 
-  const { fields, append } = useFieldArray({
+  const { fields: ingredientsFields, append } = useFieldArray({
     control,
     name: "ingredients",
   });
@@ -61,6 +64,11 @@ const EditRecipeForm = ({ name, ingredientsData }: Props) => {
   const ingredients = useWatch({
     control,
     name: "ingredients",
+  });
+
+  const { fields: stepsFields, append: appendSteps } = useFieldArray({
+    control,
+    name: "steps",
   });
 
   const { isFetched: itemsAreFetched, data: allItems } = useQuery(
@@ -184,7 +192,7 @@ const EditRecipeForm = ({ name, ingredientsData }: Props) => {
   };
 
   return (
-    <>
+    <FormWrapper>
       <Form.Group className="mb-3">
         <Form.Label style={{ fontWeight: 600 }}>Recipe Name</Form.Label>
         <Container>
@@ -200,7 +208,7 @@ const EditRecipeForm = ({ name, ingredientsData }: Props) => {
       </Form.Group>
       <IngredientFieldsWrapper>
         <Form.Label style={{ fontWeight: 600 }}>Ingredients</Form.Label>
-        {fields.map((field, index) => (
+        {ingredientsFields.map((field, index) => (
           <>
             <Stack direction="horizontal" gap={2}>
               <div className="ingredient-label center-label name-column">
@@ -453,20 +461,38 @@ const EditRecipeForm = ({ name, ingredientsData }: Props) => {
       </IngredientFieldsWrapper>
       <StepsFieldsWrapper>
         <Form.Label style={{ fontWeight: 600 }}>Steps</Form.Label>
-        <Controller
-          control={control}
-          name={`steps`}
-          render={({ field: { onChange, value } }) => (
-            <Form.Control
-              as="textarea"
-              style={{ height: "100px" }}
-              value={value}
-              onChange={onChange}
-            />
-          )}
-        />
+        {stepsFields.map((field, index) => (
+          <Stack direction="horizontal" className="number-input-wrapper">
+            <span>{`${index + 1}.`}</span>
+            {selectedStepIndex === index ? (
+              <Controller
+                control={control}
+                name={`steps.${index}.text`}
+                render={({ field: { onChange, value } }) => (
+                  <Form.Control
+                    as="textarea"
+                    type="text"
+                    value={value}
+                    onChange={onChange}
+                  />
+                )}
+              />
+            ) : (
+              <span onClick={() => setSelectedStepIndex(index)}>
+                {/* @ts-ignore*/}
+                {field.text ?? "Click to edit new step"}
+              </span>
+            )}
+          </Stack>
+        ))}
+        <span
+          onClick={() => appendSteps({ text: "Click to edit new step." })}
+          className="link-span"
+        >
+          Add Step
+        </span>
       </StepsFieldsWrapper>
-    </>
+    </FormWrapper>
   );
 };
 
