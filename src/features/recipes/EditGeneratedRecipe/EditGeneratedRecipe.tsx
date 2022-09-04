@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 import { useMutation, useQueryClient } from "react-query";
 
 import Button from "react-bootstrap/Button";
@@ -43,7 +43,7 @@ type Props = {
 type FormValues = {
   name: string;
   ingredients: Omit<Ingredient, "_id">[] | [];
-  steps: string;
+  steps: { text: string }[];
   url: string | null;
 };
 
@@ -64,7 +64,9 @@ const EditGeneratedRecipeForm = ({
     defaultValues: {
       name: name,
       ingredients: getDefaultIngredients(ingredients),
-      steps: getStepsString(steps),
+      steps: steps.map((stepText) => ({
+        text: stepText,
+      })),
       url: url,
     },
   });
@@ -82,8 +84,13 @@ const EditGeneratedRecipeForm = ({
     }
   );
 
-  const onSubmit = (formData: any) => {
-    postNewRecipeMutation.mutate(formData);
+  const onSubmit: SubmitHandler<FormValues> = (formData) => {
+    const stepsArray = formData.steps.map((stepsObject) => stepsObject.text);
+    const postRequestData = {
+      ...formData,
+      steps: stepsArray,
+    };
+    postNewRecipeMutation.mutate(postRequestData);
   };
 
   return (

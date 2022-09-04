@@ -3,6 +3,18 @@ import styled from "styled-components";
 
 import Form from "react-bootstrap/Form";
 
+export const FormWrapper = styled.section`
+  .link-span {
+    margin: 1rem 0 0 0;
+    background: none;
+    border: none;
+    padding: 0;
+    color: #069;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+`;
+
 export const IngredientFieldsWrapper = styled(Form.Group)`
   margin: 0 1rem 0 0;
 
@@ -57,17 +69,8 @@ export const IngredientFieldsWrapper = styled(Form.Group)`
     }
   }
 
-  .link-span {
-    margin: 1rem 0 0 0;
-    background: none;
-    border: none;
-    padding: 0;
-    color: #069;
-    text-decoration: underline;
-    cursor: pointer;
-  }
-
   .add-ingredient-link {
+    margin: 1rem 0 0 0;
   }
 
   .link-sub-form {
@@ -83,4 +86,13 @@ export const IngredientFieldsWrapper = styled(Form.Group)`
 
 export const StepsFieldsWrapper = styled(Form.Group)`
   margin: 1rem 1rem 0 0;
+
+  input {
+    margin: 0.5rem 0 0.5rem 0;
+  }
+  .number-input-wrapper {
+    span {
+      margin: 0 0.5rem 0 0;
+    }
+  }
 `;
