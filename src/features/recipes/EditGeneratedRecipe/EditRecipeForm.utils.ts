@@ -4,11 +4,11 @@ import { Ingredient } from "../recipesApi";
  * Converts raw ingredient string to default `Ingredient` object and returns all as an array
  *
  * @param {string[]} ingredientsData
- * @returns {Omit<Ingredient, "_id">[]}
+ * @returns {Ingredient[]}
  */
 export const getDefaultIngredients = (
   ingredientsData: string[] | Ingredient[]
-): Omit<Ingredient, "_id">[] => {
+): Ingredient[] => {
   const defaultValues = ingredientsData.map(
     (ingredient: string | Ingredient) => {
       if (typeof ingredient === "string") {
