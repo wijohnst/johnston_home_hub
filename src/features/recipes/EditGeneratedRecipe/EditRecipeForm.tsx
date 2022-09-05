@@ -1,4 +1,4 @@
-import React, { Fragment, SyntheticEvent } from "react";
+import * as React from "react";
 import Form from "react-bootstrap/Form";
 
 import {
