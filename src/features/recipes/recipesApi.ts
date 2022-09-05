@@ -20,7 +20,6 @@ export const generateRecipe = async ({
   url,
 }: GenerateRecipeVariables): Promise<GeneratedRecipeData | void> => {
   if (!url) {
-    console.log("No url...");
     return;
   } else {
     try {

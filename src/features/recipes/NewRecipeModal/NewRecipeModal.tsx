@@ -9,6 +9,7 @@ import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Stack from "react-bootstrap/Stack";
+import CloseButton from "react-bootstrap/CloseButton";
 
 import { NewRecipeModalWrapper } from "./NewRecipeModal.style";
 import { generateRecipe } from "../recipesApi";
@@ -20,14 +21,17 @@ type Props = {
 };
 
 const NewRecipeModal = ({ isShown, handleHide }: Props) => {
-  const { handleSubmit, control } = useForm();
+  const { handleSubmit, control, reset: resetForm } = useForm();
 
   const [postStatus, setPostStatus] = React.useState<string | null>(null);
+  const [isManualEntry, setIsManualEntry] = React.useState<boolean>(false);
 
-  const { mutateAsync, data, isLoading, reset } = useMutation(
-    `generateRecipe`,
-    generateRecipe
-  );
+  const {
+    mutateAsync,
+    data,
+    isLoading,
+    reset: resetMutation,
+  } = useMutation(`generateRecipe`, generateRecipe);
 
   const onSubmit = async (formData: FieldValues) => {
     await mutateAsync({ url: formData.url });
@@ -39,26 +43,39 @@ const NewRecipeModal = ({ isShown, handleHide }: Props) => {
     defaultValue: null,
   });
 
+  React.useEffect(() => {
+    if (url !== null) {
+      setIsManualEntry(false);
+    }
+  }, [url]);
+
   const handleNewRecipePostSuccess = (): void => {
     setPostStatus("success");
   };
 
+  const handleModalClose = () => [
+    handleHide(),
+    resetMutation(),
+    setPostStatus(null),
+    setIsManualEntry(false),
+    resetForm(),
+  ];
+
   return (
-    <Modal
-      show={isShown}
-      onHide={() => [handleHide(), reset(), setPostStatus(null)]}
-      size="lg"
-    >
+    <Modal show={isShown} onHide={() => handleModalClose()} size="lg">
       <NewRecipeModalWrapper onSubmit={handleSubmit(onSubmit)}>
         {isLoading && (
-          <>
+          <section>
             <span>Generating Recipe...</span>
             <Spinner animation="border" />
-          </>
+          </section>
         )}
         {!isLoading && (
           <>
-            {!data && postStatus !== "success" && (
+            <div className="close-button-wrapper">
+              <CloseButton onClick={() => handleModalClose()} />
+            </div>
+            {!data && postStatus !== "success" && !isManualEntry && (
               <>
                 <h1>Add a new recipe</h1>
                 <Alert>
@@ -82,17 +99,42 @@ const NewRecipeModal = ({ isShown, handleHide }: Props) => {
                       )}
                     />
                   </Form.Group>
-                  <Button type="submit">Get Recipe</Button>
+                  <Stack
+                    className="new-recipe-modal-controls"
+                    direction="horizontal"
+                    gap={1}
+                  >
+                    <Button type="submit" disabled={!url}>
+                      Get Recipe
+                    </Button>
+                    <Button
+                      onClick={() => setIsManualEntry(true)}
+                      disabled={url}
+                    >
+                      Add Manually
+                    </Button>
+                  </Stack>
                 </Form>
               </>
             )}
-            {data && postStatus !== "success" && (
+            {data && postStatus !== "success" && !isManualEntry && (
               <EditGeneratedRecipe
                 name={data.name ?? ""}
                 ingredients={data.ingredients ?? []}
                 steps={data.steps ?? []}
                 url={url}
-                handleCancelClick={handleHide}
+                handleCancelClick={() => handleModalClose()}
+                handleNewRecipePostSuccess={handleNewRecipePostSuccess}
+              />
+            )}
+            {isManualEntry && (
+              <EditGeneratedRecipe
+                name={""}
+                ingredients={[]}
+                steps={[]}
+                url={null}
+                isManualEntry={isManualEntry}
+                handleCancelClick={() => setIsManualEntry(false)}
                 handleNewRecipePostSuccess={handleNewRecipePostSuccess}
               />
             )}
@@ -102,15 +144,7 @@ const NewRecipeModal = ({ isShown, handleHide }: Props) => {
                   <h3>New Recipe posted successfully.</h3>
                   <span>This window can be closed.</span>
                   <Stack direction="vertical" className="button-wrapper">
-                    <Button
-                      onClick={() => [
-                        handleHide(),
-                        reset(),
-                        setPostStatus(null),
-                      ]}
-                    >
-                      Close
-                    </Button>
+                    <Button onClick={() => handleModalClose()}>Close</Button>
                   </Stack>
                 </Alert>
               </section>

@@ -36,6 +36,7 @@ type Props = {
   ingredients: string[] | Ingredient[];
   steps: string[];
   url: string | null;
+  isManualEntry?: boolean;
   handleCancelClick: () => void;
   handleNewRecipePostSuccess: () => void;
 };
@@ -52,6 +53,7 @@ const EditGeneratedRecipeForm = ({
   ingredients,
   steps,
   url,
+  isManualEntry = false,
   handleCancelClick,
   handleNewRecipePostSuccess,
 }: Props) => {
@@ -96,7 +98,7 @@ const EditGeneratedRecipeForm = ({
   return (
     <FormProvider {...methods}>
       <Form onSubmit={methods.handleSubmit(onSubmit)}>
-        {isEdit ? (
+        {isEdit || isManualEntry ? (
           <>
             <GeneratedRecipeHeader>
               <h1>Edit New Recipe</h1>
