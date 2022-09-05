@@ -32,12 +32,21 @@ import { Ingredient, NewRecipeData, postNewRecipe } from "../recipesApi";
 	`
  */
 type Props = {
+  /** What is the recipe name? */
   name: string;
+  /** What are the known ingredients for the recipe? */
   ingredients: string[] | Ingredient[];
+  /** What are the known steps for the recipe? */
   steps: string[];
+  /** What is the URL used to generate the recipe? */
   url: string | null;
+  /** Is the recipe being entered manually, ie: not generated from a link? */
   isManualEntry?: boolean;
+  /** What is the recipe's UUID in the database? */
+  recipeId: string | null;
+  /** What should happen when the user clicks the `Cancel` button? */
   handleCancelClick: () => void;
+  /** What should happen when a new recipe is successfully poseted to the backend? */
   handleNewRecipePostSuccess: () => void;
 };
 
@@ -54,6 +63,7 @@ const EditGeneratedRecipeForm = ({
   steps,
   url,
   isManualEntry = false,
+  recipeId,
   handleCancelClick,
   handleNewRecipePostSuccess,
 }: Props) => {
@@ -133,7 +143,9 @@ const EditGeneratedRecipeForm = ({
           </>
         )}
         <Controls>
-          <Button type="submit">Save Recipe</Button>
+          <Button type="submit">
+            {!!recipeId ? "Update Recipe" : "Save Recipe"}
+          </Button>
           <Button variant="danger" onClick={() => handleCancelClick()}>
             Cancel
           </Button>

@@ -109,6 +109,7 @@ const RecipesCollectionModal = ({ isShown, handleHide }: Props) => {
               ingredients={selectedRecipe.ingredients}
               steps={selectedRecipe.steps}
               url={selectedRecipe.url}
+              recipeId={selectedRecipe._id}
               handleCancelClick={() => setIsEdit(false)}
               handleNewRecipePostSuccess={() => setIsEdit(false)}
             />

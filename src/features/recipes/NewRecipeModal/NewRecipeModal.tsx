@@ -123,6 +123,7 @@ const NewRecipeModal = ({ isShown, handleHide }: Props) => {
                 ingredients={data.ingredients ?? []}
                 steps={data.steps ?? []}
                 url={url}
+                recipeId={null}
                 handleCancelClick={() => handleModalClose()}
                 handleNewRecipePostSuccess={handleNewRecipePostSuccess}
               />
@@ -133,6 +134,7 @@ const NewRecipeModal = ({ isShown, handleHide }: Props) => {
                 ingredients={[]}
                 steps={[]}
                 url={null}
+                recipeId={null}
                 isManualEntry={isManualEntry}
                 handleCancelClick={() => setIsManualEntry(false)}
                 handleNewRecipePostSuccess={handleNewRecipePostSuccess}
