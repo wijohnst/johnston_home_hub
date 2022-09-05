@@ -39,7 +39,6 @@ export const generateRecipe = async ({
 };
 
 export interface Ingredient {
-  _id: string | null;
   name: string;
   quantity: number | null;
   unit: string | null;
@@ -54,11 +53,9 @@ export interface Recipe {
   url: string | null;
 }
 
-// export type NewRecipeData = Omit<Recipe, "_id">;
-
 export type NewRecipeData = {
   name: string;
-  ingredients: Omit<Ingredient, "_id">[] | [];
+  ingredients: Ingredient[] | [];
   steps: string[];
   url: string | null;
 };

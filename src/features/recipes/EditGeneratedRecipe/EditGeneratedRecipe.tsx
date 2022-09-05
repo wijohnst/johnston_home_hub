@@ -52,7 +52,7 @@ type Props = {
 
 type FormValues = {
   name: string;
-  ingredients: Omit<Ingredient, "_id">[] | [];
+  ingredients: Ingredient[] | [];
   steps: { text: string }[];
   url: string | null;
 };
@@ -126,7 +126,7 @@ const EditGeneratedRecipeForm = ({
             <PreviewRecipe
               recipeName={name}
               ingredients={ingredients.map(
-                (ingredient: string | Omit<Ingredient, "_id">) => {
+                (ingredient: string | Ingredient) => {
                   if (typeof ingredient === "string") {
                     return ingredient;
                   }
