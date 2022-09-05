@@ -16,7 +16,7 @@ import {
 
 import EditRecipeForm from "./EditRecipeForm";
 import PreviewRecipe from "./PreviewRecipe";
-import { getDefaultIngredients, getStepsString } from "./EditRecipeForm.utils";
+import { getDefaultIngredients } from "./EditRecipeForm.utils";
 import { Ingredient, NewRecipeData, postNewRecipe } from "../recipesApi";
 
 /*
@@ -33,7 +33,7 @@ import { Ingredient, NewRecipeData, postNewRecipe } from "../recipesApi";
  */
 type Props = {
   name: string;
-  ingredients: string[];
+  ingredients: string[] | Ingredient[];
   steps: string[];
   url: string | null;
   handleCancelClick: () => void;
@@ -101,7 +101,7 @@ const EditGeneratedRecipeForm = ({
             <GeneratedRecipeHeader>
               <h1>Edit New Recipe</h1>
             </GeneratedRecipeHeader>
-            <EditRecipeForm name={name} ingredientsData={ingredients} />
+            <EditRecipeForm name={name} />
           </>
         ) : (
           <>
@@ -113,7 +113,19 @@ const EditGeneratedRecipeForm = ({
             </GeneratedRecipeHeader>
             <PreviewRecipe
               recipeName={name}
-              ingredients={ingredients}
+              ingredients={ingredients.map(
+                (ingredient: string | Omit<Ingredient, "_id">) => {
+                  if (typeof ingredient === "string") {
+                    return ingredient;
+                  }
+
+                  if (typeof ingredient === "object" && "name" in ingredient) {
+                    return ingredient.name;
+                  }
+
+                  return "";
+                }
+              )}
               steps={steps}
             />
           </>

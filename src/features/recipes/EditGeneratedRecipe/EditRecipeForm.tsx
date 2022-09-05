@@ -37,11 +37,9 @@ import { ReactComponent as LinkIcon } from "../../../assets/images/link_icon.svg
 
 type Props = {
   name: string;
-  /** Basic string rerpresentation of an ingredient. Does not include details. IE: '6 ears corn' */
-  ingredientsData: string[];
 };
 
-const EditRecipeForm = ({ name, ingredientsData }: Props) => {
+const EditRecipeForm = ({ name }: Props) => {
   const queryClient = useQueryClient();
 
   const [targetIngredientIndex, setTargetIngredientIndex] = React.useState<
@@ -301,7 +299,7 @@ const EditRecipeForm = ({ name, ingredientsData }: Props) => {
                         and it will be automatically linked to this ingredient
                         from the recipe:
                         <span className="ingredient-alert-string">
-                          {ingredientsData[index]}
+                          {ingredients[index].name}
                         </span>
                       </p>
                     </Alert>

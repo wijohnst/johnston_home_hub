@@ -7,14 +7,43 @@ import { Ingredient } from "../recipesApi";
  * @returns {Omit<Ingredient, "_id">[]}
  */
 export const getDefaultIngredients = (
-  ingredientsData: string[]
+  ingredientsData: string[] | Ingredient[]
 ): Omit<Ingredient, "_id">[] => {
-  return ingredientsData.map((ingredientString: string) => ({
-    name: ingredientString,
-    quantity: null,
-    unit: null,
-    linkedItem: null,
-  }));
+  const defaultValues = ingredientsData.map(
+    (ingredient: string | Ingredient) => {
+      if (typeof ingredient === "string") {
+        return {
+          name: ingredient,
+          quantity: null,
+          unit: null,
+          linkedItem: null,
+        };
+      }
+
+      if (
+        typeof ingredient === "object" &&
+        "name" in ingredient &&
+        "quantity" in ingredient &&
+        "unit" in ingredient &&
+        "linkedItem" in ingredient
+      ) {
+        return {
+          name: ingredient.name,
+          quantity: ingredient.quantity,
+          unit: ingredient.unit,
+          linkedItem: ingredient.linkedItem,
+        };
+      }
+
+      return {
+        name: "",
+        quantity: null,
+        unit: "",
+        linkedItem: "",
+      };
+    }
+  );
+  return defaultValues;
 };
 
 /**
