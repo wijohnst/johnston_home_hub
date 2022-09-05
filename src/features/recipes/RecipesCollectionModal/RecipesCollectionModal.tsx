@@ -52,7 +52,7 @@ const RecipesCollectionModal = ({ isShown, handleHide }: Props) => {
   }, [inputValue, setFilterValue]);
 
   return (
-    <Modal show={isShown} onHide={() => handleHide()}>
+    <Modal show={isShown} onHide={() => handleHide()} size="lg">
       <RecipesModalWrapper>
         {!selectedRecipe && <h1>Recipes</h1>}
         {isFetching && <span>Please wait. Fetching recipes...</span>}
@@ -106,9 +106,7 @@ const RecipesCollectionModal = ({ isShown, handleHide }: Props) => {
             <h1>Edit Recipe</h1>
             <EditGeneratedRecipe
               name={selectedRecipe.name}
-              ingredients={selectedRecipe.ingredients.map(
-                (ingredient) => ingredient.name
-              )}
+              ingredients={selectedRecipe.ingredients}
               steps={selectedRecipe.steps}
               url={selectedRecipe.url}
               handleCancelClick={() => setIsEdit(false)}
