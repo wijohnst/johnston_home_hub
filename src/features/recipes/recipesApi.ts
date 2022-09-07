@@ -39,7 +39,6 @@ export const generateRecipe = async ({
 };
 
 export interface Ingredient {
-  _id: string | null;
   name: string;
   quantity: number | null;
   unit: string | null;
@@ -54,11 +53,15 @@ export interface Recipe {
   url: string | null;
 }
 
-// export type NewRecipeData = Omit<Recipe, "_id">;
+/*
+	This type represents Recipe form data before it has been persisted on the BE. 
+	As such, unlike a `Recipe` type, this does not have an `_id` string.
 
+	There is probably a more terse way of doing this that uses `Extend` but I don't know how...
+*/
 export type NewRecipeData = {
   name: string;
-  ingredients: Omit<Ingredient, "_id">[] | [];
+  ingredients: Ingredient[] | [];
   steps: string[];
   url: string | null;
 };
@@ -91,5 +94,25 @@ export const fetchAllRecipes = async (): Promise<Recipe[]> => {
   } catch (error) {
     console.log(error);
     return [];
+  }
+};
+
+interface UpdateRecipeResponse extends DefaultResponse {
+  updatedRecipe: Recipe;
+}
+
+export const updateRecipe = async (
+  recipeToUpdate: Recipe
+): Promise<UpdateRecipeResponse | DefaultResponse> => {
+  try {
+    const { data: updatedRecipeResponse } = await axios.patch<
+      UpdateRecipeResponse | DefaultResponse
+    >(`${DefaultURL}/recipe/`, { recipeToUpdate });
+    return updatedRecipeResponse;
+  } catch (error) {
+    return {
+      status: 400,
+      message: "Error updating recipe.",
+    };
   }
 };
