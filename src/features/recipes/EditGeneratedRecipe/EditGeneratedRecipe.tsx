@@ -17,7 +17,13 @@ import {
 import EditRecipeForm from "./EditRecipeForm";
 import PreviewRecipe from "./PreviewRecipe";
 import { getDefaultIngredients } from "./EditRecipeForm.utils";
-import { Ingredient, NewRecipeData, postNewRecipe } from "../recipesApi";
+import {
+  Recipe,
+  Ingredient,
+  NewRecipeData,
+  postNewRecipe,
+  updateRecipe,
+} from "../recipesApi";
 
 /*
 	TWO COMPONENT STATES:
@@ -47,7 +53,9 @@ type Props = {
   /** What should happen when the user clicks the `Cancel` button? */
   handleCancelClick: () => void;
   /** What should happen when a new recipe is successfully poseted to the backend? */
-  handleNewRecipePostSuccess: () => void;
+  handleNewRecipePostSuccess?: () => void;
+  /** What should happen when a recipe is successfully updated? */
+  handleRecipeUpdateSuccess?: (updatedRecipe: Recipe) => void;
 };
 
 type FormValues = {
@@ -65,12 +73,17 @@ const EditGeneratedRecipeForm = ({
   isManualEntry = false,
   recipeId,
   handleCancelClick,
-  handleNewRecipePostSuccess,
+  handleNewRecipePostSuccess = () => {},
+  handleRecipeUpdateSuccess = () => {},
 }: Props) => {
   // Controls `readonly` state of component
   const [isEdit, setIsEdit] = React.useState(false);
 
   const queryClient = useQueryClient();
+
+  const isUpdateRecipe = React.useMemo(() => {
+    return !!recipeId;
+  }, [recipeId]);
 
   const methods = useForm<FormValues>({
     defaultValues: {
@@ -96,13 +109,50 @@ const EditGeneratedRecipeForm = ({
     }
   );
 
+  const updateRecipeMutation = useMutation(
+    "updateRecioe",
+    (recipeToUpdate: Recipe) => {
+      return updateRecipe(recipeToUpdate);
+    },
+    {
+      onSuccess: (data) => {
+        if ("updatedRecipe" in data) {
+          const { updatedRecipe } = data;
+          console.log("EDITGENERATEDRECIPE", updatedRecipe);
+          handleRecipeUpdateSuccess(updatedRecipe);
+          queryClient.invalidateQueries("recipes");
+        }
+      },
+    }
+  );
+
+  /*
+		Dynamic submission handlers based on use case.
+
+		If not updating, POST new recipe. 
+
+		If updating, PATCH existing recipe. 
+	*/
   const onSubmit: SubmitHandler<FormValues> = (formData) => {
     const stepsArray = formData.steps.map((stepsObject) => stepsObject.text);
     const postRequestData = {
       ...formData,
       steps: stepsArray,
     };
-    postNewRecipeMutation.mutate(postRequestData);
+
+    !isUpdateRecipe && postNewRecipeMutation.mutate(postRequestData);
+
+    if (isUpdateRecipe) {
+      const recipeToUpdate: Recipe = {
+        _id: recipeId ?? "",
+        name: formData.name,
+        ingredients: formData.ingredients,
+        steps: stepsArray,
+        url: formData.url,
+      };
+
+      updateRecipeMutation.mutate(recipeToUpdate);
+    }
   };
 
   return (
@@ -144,7 +194,7 @@ const EditGeneratedRecipeForm = ({
         )}
         <Controls>
           <Button type="submit">
-            {!!recipeId ? "Update Recipe" : "Save Recipe"}
+            {isUpdateRecipe ? "Update Recipe" : "Save Recipe"}
           </Button>
           <Button variant="danger" onClick={() => handleCancelClick()}>
             Cancel
