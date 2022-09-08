@@ -34,6 +34,7 @@ import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
 
 import { ReactComponent as LinkIcon } from "../../../assets/images/link_icon.svg";
+import { ReactComponent as DeleteIcon } from "../../../assets/images/delete_icon.svg";
 
 type Props = {
   name: string;
@@ -54,7 +55,11 @@ const EditRecipeForm = ({ name }: Props) => {
 
   const { control, setValue } = useFormContext();
 
-  const { fields: ingredientsFields, append } = useFieldArray({
+  const {
+    fields: ingredientsFields,
+    append: appendIngredients,
+    remove: removeIngredient,
+  } = useFieldArray({
     control,
     name: "ingredients",
   });
@@ -64,7 +69,11 @@ const EditRecipeForm = ({ name }: Props) => {
     name: "ingredients",
   });
 
-  const { fields: stepsFields, append: appendSteps } = useFieldArray({
+  const {
+    fields: stepsFields,
+    append: appendSteps,
+    remove: removeStep,
+  } = useFieldArray({
     control,
     name: "steps",
   });
@@ -215,12 +224,21 @@ const EditRecipeForm = ({ name }: Props) => {
                   control={control}
                   name={`ingredients[${index}].name`}
                   render={({ field: { onChange, value } }) => (
-                    <Form.Control
-                      type="text"
-                      value={value}
-                      onChange={onChange}
-                      placeholder="Please enter an ingredient name."
-                    />
+                    <Stack direction="horizontal" gap={1}>
+                      {targetIngredientIndex === null && (
+                        <DeleteIcon
+                          className="delete-icon"
+                          role="button"
+                          onClick={() => removeIngredient(index)}
+                        />
+                      )}
+                      <Form.Control
+                        type="text"
+                        value={value}
+                        onChange={onChange}
+                        placeholder="Please enter an ingredient name."
+                      />
+                    </Stack>
                   )}
                 />
               </div>
@@ -451,7 +469,12 @@ const EditRecipeForm = ({ name }: Props) => {
         <span
           className="link-span add-ingredient-link"
           onClick={() =>
-            append({ name: "", quantity: null, unit: null, linkedItem: null })
+            appendIngredients({
+              name: "",
+              quantity: null,
+              unit: null,
+              linkedItem: null,
+            })
           }
         >
           Add Ingredient
@@ -459,8 +482,18 @@ const EditRecipeForm = ({ name }: Props) => {
       </IngredientFieldsWrapper>
       <StepsFieldsWrapper>
         <Form.Label style={{ fontWeight: 600 }}>Steps</Form.Label>
+        <Alert>Click a step to edit.</Alert>
         {stepsFields.map((field, index) => (
-          <Stack direction="horizontal" className="number-input-wrapper">
+          <Stack
+            direction="horizontal"
+            className="number-input-wrapper"
+            gap={1}
+          >
+            <DeleteIcon
+              className="delete-icon"
+              role="button"
+              onClick={() => removeStep(index)}
+            />
             <span>{`${index + 1}.`}</span>
             {selectedStepIndex === index ? (
               <Controller
@@ -472,6 +505,7 @@ const EditRecipeForm = ({ name }: Props) => {
                     type="text"
                     value={value}
                     onChange={onChange}
+                    className="step-input"
                   />
                 )}
               />

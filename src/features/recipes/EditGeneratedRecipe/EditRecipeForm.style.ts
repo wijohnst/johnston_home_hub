@@ -82,17 +82,22 @@ export const IngredientFieldsWrapper = styled(Form.Group)`
       }
     }
   }
+
+  .delete-icon {
+    cursor: pointer;
+  }
 `;
 
 export const StepsFieldsWrapper = styled(Form.Group)`
   margin: 1rem 1rem 0 0;
 
-  input {
-    margin: 0.5rem 0 0.5rem 0;
-  }
   .number-input-wrapper {
+    margin: 0 0 1rem 0;
+
     span {
       margin: 0 0.5rem 0 0;
+    }
+    .step-input {
     }
   }
 `;
