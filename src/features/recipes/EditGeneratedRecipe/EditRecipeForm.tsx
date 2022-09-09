@@ -35,6 +35,7 @@ import Button from "react-bootstrap/Button";
 
 import { ReactComponent as LinkIcon } from "../../../assets/images/link_icon.svg";
 import { ReactComponent as DeleteIcon } from "../../../assets/images/delete_icon.svg";
+import { appendFileSync } from "fs";
 
 type Props = {
   name: string;
@@ -53,7 +54,7 @@ const EditRecipeForm = ({ name }: Props) => {
     number | null
   >(null);
 
-  const { control, setValue } = useFormContext();
+  const { control, setValue, setFocus } = useFormContext();
 
   const {
     fields: ingredientsFields,
@@ -67,6 +68,11 @@ const EditRecipeForm = ({ name }: Props) => {
   const ingredients = useWatch({
     control,
     name: "ingredients",
+  });
+
+  const steps = useWatch({
+    control,
+    name: "steps",
   });
 
   const {
@@ -114,6 +120,13 @@ const EditRecipeForm = ({ name }: Props) => {
       setIsNewAisle(true);
     }
   }, [newItemValues]);
+
+  /**
+   * useEffect for focusing on newest step whenever a step is added
+   */
+  React.useEffect(() => {
+    setSelectedStepIndex(stepsFields.length - 1);
+  }, [appendSteps, stepsFields]);
 
   const ingredientGroceryItems: GroceryItem[] | undefined =
     React.useMemo(() => {
@@ -501,26 +514,24 @@ const EditRecipeForm = ({ name }: Props) => {
                 name={`steps.${index}.text`}
                 render={({ field: { onChange, value } }) => (
                   <Form.Control
-                    as="textarea"
                     type="text"
+                    as="textarea"
                     value={value}
                     onChange={onChange}
                     className="step-input"
+                    onBlur={() => setSelectedStepIndex(null)}
+                    placeholder="Add step."
                   />
                 )}
               />
             ) : (
               <span onClick={() => setSelectedStepIndex(index)}>
-                {/* @ts-ignore*/}
-                {field.text ?? "Click to edit new step"}
+                {steps[index].text ?? "Click to edit new step"}
               </span>
             )}
           </Stack>
         ))}
-        <span
-          onClick={() => appendSteps({ text: "Click to edit new step." })}
-          className="link-span"
-        >
+        <span onClick={() => appendSteps({ text: "" })} className="link-span">
           Add Step
         </span>
       </StepsFieldsWrapper>

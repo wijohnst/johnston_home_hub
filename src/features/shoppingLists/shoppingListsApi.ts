@@ -283,13 +283,12 @@ export const addNewGroceryItem = async ({
         },
       }
     );
-    console.log("data:", data);
     return {
       status: 200,
       message: "Grocery Item addeded successfully.",
     };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return {
       status: 400,
       message: "Adding Grocery Item failed.",

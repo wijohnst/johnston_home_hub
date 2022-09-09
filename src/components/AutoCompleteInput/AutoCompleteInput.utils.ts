@@ -21,7 +21,6 @@ export const getClosestMatch = (
   propertyValuesArrs: string[][]
 ): string[] | void => {
   const longestStringLength = getLongestStringLength(propertyValuesArrs);
-  // console.log(longestStringLength, inputValueArray, propertyValuesArrs);
 
   interface ClosestMatch {
     numberOfMatchingCharacters: number;

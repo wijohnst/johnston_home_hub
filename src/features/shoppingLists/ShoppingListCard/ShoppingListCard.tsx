@@ -124,9 +124,7 @@ const ShoppingListCard = ({
     try {
       // Checks that the user's browser supports the `shareApi`
       if (navigator && navigator.share) {
-        console.log("Sharing data...");
         const result = await navigator.share(dataToShare);
-        console.log(result);
       }
     } catch (error) {
       console.error(error);
