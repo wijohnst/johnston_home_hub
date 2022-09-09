@@ -526,7 +526,9 @@ const EditRecipeForm = ({ name }: Props) => {
               />
             ) : (
               <span onClick={() => setSelectedStepIndex(index)}>
-                {steps[index].text ?? "Click to edit new step"}
+                {steps[index]?.text
+                  ? steps[index]?.text
+                  : "No step added. Click to edit."}
               </span>
             )}
           </Stack>
