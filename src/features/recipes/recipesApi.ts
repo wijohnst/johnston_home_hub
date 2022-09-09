@@ -92,7 +92,7 @@ export const fetchAllRecipes = async (): Promise<Recipe[]> => {
     } = await axios.get<FetchAllRecipesResponse>(`${DefaultURL}/recipe/`);
     return recipes;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return [];
   }
 };

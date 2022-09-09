@@ -60,7 +60,6 @@ export const updateExistingChoreCompletionDate = async (
   choreId: string
 ): Promise<any> => {
   try {
-    console.log("Updating chore completion date...");
     const { data } = await axios.patch<{ status: number; message: string }>(
       `${DefaultURL}/chores/`,
       {

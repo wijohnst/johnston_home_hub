@@ -118,7 +118,6 @@ const EditGeneratedRecipeForm = ({
       onSuccess: (data) => {
         if ("updatedRecipe" in data) {
           const { updatedRecipe } = data;
-          console.log("EDITGENERATEDRECIPE", updatedRecipe);
           handleRecipeUpdateSuccess(updatedRecipe);
           queryClient.invalidateQueries("recipes");
         }

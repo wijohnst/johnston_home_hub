@@ -112,7 +112,6 @@ const RecipesCollectionModal = ({ isShown, handleHide }: Props) => {
               recipeId={selectedRecipe._id}
               handleCancelClick={() => setIsEdit(false)}
               handleRecipeUpdateSuccess={(updatedRecipe: Recipe) => [
-                console.log(updatedRecipe),
                 setIsEdit(false),
                 setSelectedRecipe(updatedRecipe),
               ]}
