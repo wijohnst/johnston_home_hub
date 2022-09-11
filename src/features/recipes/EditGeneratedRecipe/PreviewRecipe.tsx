@@ -1,11 +1,10 @@
 import React from "react";
 
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
 import Badge from "react-bootstrap/Badge";
-import Button from "react-bootstrap/Button";
+import Stack from "react-bootstrap/Stack";
+import Alert from "react-bootstrap/Alert";
 
-import { RecipeName } from "./PreviewRecipe.style";
+import { PreviewRecipeWrapper } from "./PreviewRecipe.style";
 type Props = {
   recipeName: string;
   ingredients: string[];
@@ -14,46 +13,33 @@ type Props = {
 
 const PreviewRecipe = ({ recipeName, ingredients, steps }: Props) => {
   return (
-    <Container fluid>
-      <Row>
-        <h2>
-          <Badge bg="success" pill>
-            Name
-          </Badge>
-        </h2>
-      </Row>
-      <Row style={{ marginLeft: "1rem" }}>
-        <RecipeName>{recipeName}</RecipeName>
-      </Row>
-      <Row>
-        <h2>
-          <Badge bg="success" pill>
-            Ingredients
-          </Badge>
-        </h2>
-      </Row>
-      <Row style={{ marginLeft: "1rem" }}>
-        <ul>
+    <PreviewRecipeWrapper>
+      <div className="">
+        <Alert>
+          <span className="recipe-name">{recipeName}</span>
+        </Alert>
+      </div>
+      <div className="header-content-wrapper">
+        <Badge bg="success" className="heading-badge">
+          <span className="heading-text">Ingredients</span>
+        </Badge>
+        <ul className="recipe-content">
           {ingredients.map((ingredient: string) => (
             <li>{ingredient}</li>
           ))}
         </ul>
-      </Row>
-      <Row>
-        <h2>
-          <Badge bg="success" pill>
-            Steps
-          </Badge>
-        </h2>
-      </Row>
-      <Row style={{ marginLeft: "1rem" }}>
-        <ol>
+      </div>
+      <div className="header-content-wrapper">
+        <Badge bg="success" className="heading-badge">
+          <span className="heading-text">Steps</span>
+        </Badge>
+        <ol className="recipe-content">
           {steps.map((step: string) => (
             <li>{step}</li>
           ))}
         </ol>
-      </Row>
-    </Container>
+      </div>
+    </PreviewRecipeWrapper>
   );
 };
 
