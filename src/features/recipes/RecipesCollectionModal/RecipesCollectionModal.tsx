@@ -20,6 +20,7 @@ import PreviewRecipe from "../EditGeneratedRecipe/PreviewRecipe";
 
 import { ReactComponent as EditIcon } from "../../../assets/images/edit_icon.svg";
 import EditGeneratedRecipe from "../EditGeneratedRecipe/EditGeneratedRecipe";
+import { getIngredientString } from "../EditGeneratedRecipe/PreviewRecipe.utils";
 
 type Props = {
   isShown: boolean;
@@ -93,8 +94,11 @@ const RecipesCollectionModal = ({ isShown, handleHide }: Props) => {
             </div>
             <PreviewRecipe
               recipeName={selectedRecipe.name}
-              ingredients={selectedRecipe.ingredients.map(
-                (ingredient) => ingredient.name
+              // ingredients={selectedRecipe.ingredients.map(
+              // (ingredient) => ingredient.name
+              // )}
+              ingredients={selectedRecipe.ingredients.map((ingredient) =>
+                getIngredientString(ingredient)
               )}
               steps={selectedRecipe.steps}
             />
