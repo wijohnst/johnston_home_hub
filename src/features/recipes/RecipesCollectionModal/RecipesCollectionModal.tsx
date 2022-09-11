@@ -52,7 +52,11 @@ const RecipesCollectionModal = ({ isShown, handleHide }: Props) => {
   }, [inputValue, setFilterValue]);
 
   return (
-    <Modal show={isShown} onHide={() => handleHide()} size="lg">
+    <Modal
+      show={isShown}
+      onHide={() => [handleHide(), setSelectedRecipe(null)]}
+      size="lg"
+    >
       <RecipesModalWrapper>
         {!selectedRecipe && <h1>Recipes</h1>}
         {isFetching && <span>Please wait. Fetching recipes...</span>}
