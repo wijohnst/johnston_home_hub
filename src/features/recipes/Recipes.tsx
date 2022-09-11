@@ -6,7 +6,6 @@ import Col from "react-bootstrap/Col";
 
 import { useQueryClient } from "react-query";
 
-import Badge from "react-bootstrap/Badge";
 import Button from "react-bootstrap/Button";
 import NewRecipeModal from "./NewRecipeModal/NewRecipeModal";
 import RecipesCollectionModal from "./RecipesCollectionModal/RecipesCollectionModal";
