@@ -107,7 +107,6 @@ const RecipesCollectionModal = ({ isShown, handleHide }: Props) => {
         )}
         {selectedRecipe && isEdit && (
           <div>
-            <h1>Edit Recipe</h1>
             <EditGeneratedRecipe
               name={selectedRecipe.name}
               ingredients={selectedRecipe.ingredients}
@@ -115,6 +114,7 @@ const RecipesCollectionModal = ({ isShown, handleHide }: Props) => {
               url={selectedRecipe.url}
               recipeId={selectedRecipe._id}
               handleCancelClick={() => setIsEdit(false)}
+              isManualEntry={true}
               handleRecipeUpdateSuccess={(updatedRecipe: Recipe) => [
                 setIsEdit(false),
                 setSelectedRecipe(updatedRecipe),
