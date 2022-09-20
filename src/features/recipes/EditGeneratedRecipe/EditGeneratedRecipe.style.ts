@@ -6,7 +6,7 @@ export const GeneratedRecipeHeader = styled.section`
   align-items: center;
 `;
 
-export const EditIconWrapper = styled.div`
+export const IconWrapper = styled.div`
   height: 24px;
   width: 24px;
   margin: 0 0 0 1rem;
@@ -25,5 +25,23 @@ export const Controls = styled.div`
 
   button {
     margin: 1rem 0.25rem 0.25rem 0.25rem;
+  }
+
+  .delete-recipe-section {
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 0.5rem 0 0 0;
+
+    .delete-recipe-alert {
+      text-align: center;
+    }
+
+    .alert-span {
+      font-size: 1.5rem;
+      font-weight: 600;
+      text-align: center;
+    }
   }
 `;

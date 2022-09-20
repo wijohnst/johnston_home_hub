@@ -5,11 +5,13 @@ import { useMutation, useQueryClient } from "react-query";
 
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import Alert from "react-bootstrap/Alert";
 
 import { ReactComponent as EditIcon } from "../../../assets/images/edit_icon.svg";
+import { ReactComponent as BackIcon } from "../../../assets/images/carret_icon.svg";
 
 import {
-  EditIconWrapper,
+  IconWrapper,
   GeneratedRecipeHeader,
   Controls,
 } from "./EditGeneratedRecipe.style";
@@ -23,6 +25,7 @@ import {
   NewRecipeData,
   postNewRecipe,
   updateRecipe,
+  deleteRecipe,
 } from "../recipesApi";
 
 /*
@@ -56,6 +59,8 @@ type Props = {
   handleNewRecipePostSuccess?: () => void;
   /** What should happen when a recipe is successfully updated? */
   handleRecipeUpdateSuccess?: (updatedRecipe: Recipe) => void;
+  /** What should happen when a recipe is sucessfully deleted? */
+  handleDeleteRecipeSuccess?: () => void;
 };
 
 type FormValues = {
@@ -75,9 +80,11 @@ const EditGeneratedRecipeForm = ({
   handleCancelClick,
   handleNewRecipePostSuccess = () => {},
   handleRecipeUpdateSuccess = () => {},
+  handleDeleteRecipeSuccess = () => {},
 }: Props) => {
   // Controls `readonly` state of component
   const [isEdit, setIsEdit] = React.useState(false);
+  const [isDelete, setIsDelete] = React.useState(false);
 
   const queryClient = useQueryClient();
 
@@ -125,6 +132,19 @@ const EditGeneratedRecipeForm = ({
     }
   );
 
+  const deleteRecipeMutation = useMutation(
+    "deleteNewRecipe",
+    () => {
+      return deleteRecipe(recipeId ?? "");
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("recipes");
+        handleDeleteRecipeSuccess();
+      },
+    }
+  );
+
   /*
 		Dynamic submission handlers based on use case.
 
@@ -154,12 +174,19 @@ const EditGeneratedRecipeForm = ({
     }
   };
 
+  const handleDelete = () => {
+    deleteRecipeMutation.mutate();
+  };
+
   return (
     <FormProvider {...methods}>
       <Form onSubmit={methods.handleSubmit(onSubmit)}>
         {isEdit || isManualEntry ? (
           <>
             <GeneratedRecipeHeader>
+              <IconWrapper className="back-icon-wrapper">
+                <BackIcon onClick={() => handleCancelClick()} />
+              </IconWrapper>
               <h1>Edit New Recipe</h1>
             </GeneratedRecipeHeader>
             <EditRecipeForm name={name} />
@@ -168,9 +195,9 @@ const EditGeneratedRecipeForm = ({
           <>
             <GeneratedRecipeHeader>
               <h1>Preview New Recipe</h1>
-              <EditIconWrapper onClick={() => setIsEdit(true)} role="button">
+              <IconWrapper onClick={() => setIsEdit(true)} role="button">
                 <EditIcon />
-              </EditIconWrapper>
+              </IconWrapper>
             </GeneratedRecipeHeader>
             <PreviewRecipe
               recipeName={name}
@@ -192,12 +219,33 @@ const EditGeneratedRecipeForm = ({
           </>
         )}
         <Controls>
-          <Button type="submit">
-            {isUpdateRecipe ? "Update Recipe" : "Save Recipe"}
-          </Button>
-          <Button variant="danger" onClick={() => handleCancelClick()}>
-            Cancel
-          </Button>
+          {((isEdit && !isDelete) || (!isDelete && isManualEntry)) && (
+            <>
+              <Button type="submit">
+                {isUpdateRecipe ? "Update Recipe" : "Save Recipe"}
+              </Button>
+              {recipeId && (
+                <Button variant="danger" onClick={() => setIsDelete(true)}>
+                  Delete Recipe
+                </Button>
+              )}
+            </>
+          )}
+          {isDelete && (
+            <section className="delete-recipe-section">
+              <Alert variant="danger" className="delete-recipe-alert">
+                <span className="alert-span">
+                  Are you sure you want to delete this recipe?
+                </span>
+              </Alert>
+              <div>
+                <Button variant="danger" onClick={() => handleDelete()}>
+                  Delete Recipe
+                </Button>
+                <Button onClick={() => setIsDelete(false)}>Cancel</Button>
+              </div>
+            </section>
+          )}
         </Controls>
       </Form>
     </FormProvider>
