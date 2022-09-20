@@ -45,7 +45,7 @@ const ShoppingLists = (props: Props) => {
     <>
       <Container>
         <ShoppingListsHeader>Shopping Lists</ShoppingListsHeader>
-        {isFetching && !isRefetching && <Spinner animation="border" />}
+        {isFetching && !isRefetching && <span>Fetching shopping lists...</span>}
         {isFetched && (
           <Row>
             {shoppingLists?.map((shoppingList: ShoppingList) => (

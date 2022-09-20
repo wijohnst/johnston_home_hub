@@ -91,7 +91,8 @@ const PetFeeder = (): React.ReactElement => {
     <>
       {isFetching && !isRefetching && (
         <Container>
-          <Spinner animation="border" />
+          <FeederHeader>Pet Feeder</FeederHeader>
+          <p>Fetching feeder data.</p>
         </Container>
       )}
       {isFetched && (
