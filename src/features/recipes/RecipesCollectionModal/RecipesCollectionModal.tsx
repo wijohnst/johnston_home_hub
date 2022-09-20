@@ -94,9 +94,6 @@ const RecipesCollectionModal = ({ isShown, handleHide }: Props) => {
             </div>
             <PreviewRecipe
               recipeName={selectedRecipe.name}
-              // ingredients={selectedRecipe.ingredients.map(
-              // (ingredient) => ingredient.name
-              // )}
               ingredients={selectedRecipe.ingredients.map((ingredient) =>
                 getIngredientString(ingredient)
               )}
@@ -123,6 +120,7 @@ const RecipesCollectionModal = ({ isShown, handleHide }: Props) => {
                 setIsEdit(false),
                 setSelectedRecipe(updatedRecipe),
               ]}
+              handleDeleteRecipeSuccess={() => setSelectedRecipe(null)}
             />
           </div>
         )}

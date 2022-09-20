@@ -116,3 +116,20 @@ export const updateRecipe = async (
     };
   }
 };
+
+export const deleteRecipe = async (
+  recipeIdToDelete: string
+): Promise<DefaultResponse> => {
+  try {
+    const { data: deletedRecipeResponse } = await axios.delete<DefaultResponse>(
+      `${DefaultURL}/recipe/`,
+      { data: { recipeIdToDelete } }
+    );
+    return deletedRecipeResponse;
+  } catch (error) {
+    return {
+      status: 400,
+      message: "Error deleting recipe.",
+    };
+  }
+};

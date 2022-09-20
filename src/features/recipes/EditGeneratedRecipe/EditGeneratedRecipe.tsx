@@ -25,6 +25,7 @@ import {
   NewRecipeData,
   postNewRecipe,
   updateRecipe,
+  deleteRecipe,
 } from "../recipesApi";
 
 /*
@@ -58,6 +59,8 @@ type Props = {
   handleNewRecipePostSuccess?: () => void;
   /** What should happen when a recipe is successfully updated? */
   handleRecipeUpdateSuccess?: (updatedRecipe: Recipe) => void;
+  /** What should happen when a recipe is sucessfully deleted? */
+  handleDeleteRecipeSuccess?: () => void;
 };
 
 type FormValues = {
@@ -77,6 +80,7 @@ const EditGeneratedRecipeForm = ({
   handleCancelClick,
   handleNewRecipePostSuccess = () => {},
   handleRecipeUpdateSuccess = () => {},
+  handleDeleteRecipeSuccess = () => {},
 }: Props) => {
   // Controls `readonly` state of component
   const [isEdit, setIsEdit] = React.useState(false);
@@ -128,6 +132,19 @@ const EditGeneratedRecipeForm = ({
     }
   );
 
+  const deleteRecipeMutation = useMutation(
+    "deleteNewRecipe",
+    () => {
+      return deleteRecipe(recipeId ?? "");
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("recipes");
+        handleDeleteRecipeSuccess();
+      },
+    }
+  );
+
   /*
 		Dynamic submission handlers based on use case.
 
@@ -155,6 +172,10 @@ const EditGeneratedRecipeForm = ({
 
       updateRecipeMutation.mutate(recipeToUpdate);
     }
+  };
+
+  const handleDelete = () => {
+    deleteRecipeMutation.mutate();
   };
 
   return (
@@ -203,9 +224,11 @@ const EditGeneratedRecipeForm = ({
               <Button type="submit">
                 {isUpdateRecipe ? "Update Recipe" : "Save Recipe"}
               </Button>
-              <Button variant="danger" onClick={() => setIsDelete(true)}>
-                Delete Recipe
-              </Button>
+              {recipeId && (
+                <Button variant="danger" onClick={() => setIsDelete(true)}>
+                  Delete Recipe
+                </Button>
+              )}
             </>
           )}
           {isDelete && (
@@ -216,7 +239,9 @@ const EditGeneratedRecipeForm = ({
                 </span>
               </Alert>
               <div>
-                <Button variant="danger">Delete Recipe</Button>
+                <Button variant="danger" onClick={() => handleDelete()}>
+                  Delete Recipe
+                </Button>
                 <Button onClick={() => setIsDelete(false)}>Cancel</Button>
               </div>
             </section>
