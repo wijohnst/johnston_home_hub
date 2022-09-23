@@ -31,3 +31,9 @@ export const RegularExpressions = {
   hyphen: /[-]/,
   specialCharacters: /[|&;$%@"<>()+,-]/g,
 };
+
+export enum LinkTypes {
+  PRIMARY,
+  DANGER,
+  SUCCESS,
+}
