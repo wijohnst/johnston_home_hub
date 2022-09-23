@@ -21,6 +21,7 @@ import PreviewRecipe from "../EditGeneratedRecipe/PreviewRecipe";
 import { ReactComponent as EditIcon } from "../../../assets/images/edit_icon.svg";
 import EditGeneratedRecipe from "../EditGeneratedRecipe/EditGeneratedRecipe";
 import { getIngredientString } from "../EditGeneratedRecipe/PreviewRecipe.utils";
+import { LinkTypes } from "../../../constants";
 
 type Props = {
   isShown: boolean;
@@ -28,9 +29,8 @@ type Props = {
 };
 
 const RecipesCollectionModal = ({ isShown, handleHide }: Props) => {
-  const [selectedRecipe, setSelectedRecipe] = React.useState<Recipe | null>(
-    null
-  );
+  const [selectedRecipe, setSelectedRecipe] =
+    React.useState<Recipe | null>(null);
   const [isEdit, setIsEdit] = React.useState(false);
 
   const {
