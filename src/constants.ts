@@ -33,7 +33,7 @@ export const RegularExpressions = {
 };
 
 export enum LinkTypes {
-  PRIMARY,
-  DANGER,
-  SUCCESS,
+  PRIMARY = "primary",
+  DANGER = "danger",
+  SUCCESS = "success",
 }
