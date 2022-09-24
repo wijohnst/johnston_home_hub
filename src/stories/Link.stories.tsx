@@ -14,6 +14,7 @@ const Template: ComponentStory<typeof Link> = (args) => <Link {...args} />;
 export const Primary = Template.bind({});
 Primary.args = {
   linkType: LinkTypes.PRIMARY,
+  linkText: "Link",
   handleClick: () => console.log("Click..."),
 };
 
