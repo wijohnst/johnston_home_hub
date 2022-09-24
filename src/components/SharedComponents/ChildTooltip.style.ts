@@ -23,4 +23,6 @@ export const Tooltip = styled.div<{
   color: ${(props) => getSecondaryColorByVariant(props.variant)};
   border-radius: 10px;
   padding: 0.5rem;
+  border: solid 2px;
+  border-color: ${(props) => getSecondaryColorByVariant(props.variant)};
 `;

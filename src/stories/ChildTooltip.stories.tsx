@@ -20,6 +20,12 @@ const Template: ComponentStory<typeof ChildTooltip> = (args) => (
 export const Default = Template.bind({});
 Default.args = {};
 
+export const CustomText = Template.bind({});
+CustomText.args = {
+  ...Default.args,
+  toolTipText: "I'm a custom tooltip.",
+};
+
 export const Danger = Template.bind({});
 Danger.args = {
   ...Default.args,
