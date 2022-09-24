@@ -9,7 +9,7 @@ export const getPrimaryColorByVariant = (
     case "danger":
       return "#F8D7DA";
     case "success":
-      return "#198753";
+      return "#D1E6DD";
     default:
       return "#069";
   }
@@ -22,9 +22,9 @@ export const getSecondaryColorByVariant = (
     case "primary":
       return "#084298";
     case "danger":
-      return "842029";
+      return "#842029";
     case "success":
-      return "#FFFFFF";
+      return "#0E5132";
     default:
       return "084298";
   }

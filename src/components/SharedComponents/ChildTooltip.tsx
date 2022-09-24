@@ -13,16 +13,18 @@ type Props = {
   children?: React.ReactNode;
   placement?: BootstrapPlacement;
   variant?: BootstrapVariant;
+  toolTipText?: string;
 };
 
 const ChildTooltip = ({
   children = "Hover to see a tooltip",
   placement = "right",
   variant = "primary",
+  toolTipText = "Tooltip",
 }: Props) => {
   const renderChild = (props: any) => (
     <Tooltip variant={variant} {...props}>
-      Tooltip
+      {toolTipText}
     </Tooltip>
   );
 
