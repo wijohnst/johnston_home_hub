@@ -2,16 +2,16 @@ import React from "react";
 
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
-import AlertHeading from "../components/SharedComponents/AlertHeading";
+import IconAlert from "../components/SharedComponents/IconAlert";
 import { ReactComponent as PlusIcon } from "../assets/images/plus_icon.svg";
 import { getSecondaryColorByVariant } from "../components/SharedComponents/SharedComponents.utils";
 export default {
-  title: "Shared Components/AlertHeading",
-  component: AlertHeading,
-} as ComponentMeta<typeof AlertHeading>;
+  title: "Shared Components/IconAlert",
+  component: IconAlert,
+} as ComponentMeta<typeof IconAlert>;
 
-const Template: ComponentStory<typeof AlertHeading> = (args) => (
-  <AlertHeading {...args} />
+const Template: ComponentStory<typeof IconAlert> = (args) => (
+  <IconAlert {...args} />
 );
 
 export const Default = Template.bind({});

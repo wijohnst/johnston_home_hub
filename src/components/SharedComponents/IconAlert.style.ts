@@ -1,7 +1,7 @@
 // Global Imports
 import styled from "styled-components";
 
-export const AlertHeadingWrapper = styled.div`
+export const IconAlertWrapper = styled.div`
   .heading-icon-wrapper {
     display: flex;
     align-item: center;

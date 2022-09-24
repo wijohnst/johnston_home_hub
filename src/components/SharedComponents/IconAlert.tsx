@@ -1,10 +1,10 @@
 import React from "react";
 
-import { AlertHeadingWrapper } from "./AlertHeading.style";
+import { IconAlertWrapper } from "./IconAlert.style";
 
 import Alert from "react-bootstrap/Alert";
 import { BootstrapVariant } from "../../SharedTypes";
-import ChildTooltip from "../SharedComponents/ChildTooltip";
+import ChildTooltip from "./ChildTooltip";
 
 type Props = {
   headingText: string;
@@ -13,14 +13,14 @@ type Props = {
   variant?: BootstrapVariant;
   tooltipText: string;
 };
-const AlertHeading = ({
+const IconAlert = ({
   headingText,
   icon,
   handleIconClick,
   variant = "primary",
 }: Props) => {
   return (
-    <AlertHeadingWrapper>
+    <IconAlertWrapper>
       <Alert variant={variant}>
         <div className="heading-icon-wrapper">
           <div className="icon-wrapper" onClick={handleIconClick}>
@@ -29,8 +29,8 @@ const AlertHeading = ({
           <h2>{headingText}</h2>
         </div>
       </Alert>
-    </AlertHeadingWrapper>
+    </IconAlertWrapper>
   );
 };
 
-export default AlertHeading;
+export default IconAlert;
