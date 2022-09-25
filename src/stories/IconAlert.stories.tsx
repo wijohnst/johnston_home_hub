@@ -5,6 +5,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import IconAlert from "../components/SharedComponents/IconAlert";
 import { ReactComponent as PlusIcon } from "../assets/images/plus_icon.svg";
 import { getSecondaryColorByVariant } from "../components/SharedComponents/SharedComponents.utils";
+
 export default {
   title: "Shared Components/IconAlert",
   component: IconAlert,

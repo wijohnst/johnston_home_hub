@@ -13,23 +13,23 @@ type Props = {
   children?: React.ReactNode;
   placement?: BootstrapPlacement;
   variant?: BootstrapVariant;
-  toolTipText?: string;
+  tooltipText?: string;
 };
 
 const ChildTooltip = ({
   children = "Hover to see a tooltip",
   placement = "right",
   variant = "primary",
-  toolTipText = "Tooltip",
+  tooltipText = "Tooltip",
 }: Props) => {
   const renderChild = (props: any) => (
     <Tooltip variant={variant} {...props}>
-      {toolTipText}
+      {tooltipText}
     </Tooltip>
   );
 
   return (
-    <ChildTooltipWrapper onClick={() => console.log("Click...")}>
+    <ChildTooltipWrapper>
       <OverlayTrigger
         overlay={renderChild}
         delay={{ show: 250, hide: 400 }}

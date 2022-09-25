@@ -2,7 +2,7 @@
 import styled from "styled-components";
 
 import { BootstrapVariant } from "../../SharedTypes";
-import { getPrimaryColorByVariant } from "./SharedComponents.utils";
+import { getSecondaryColorByVariant } from "./SharedComponents.utils";
 
 export const LinkSpan = styled.span<{
   linkType?: BootstrapVariant;
@@ -11,7 +11,7 @@ export const LinkSpan = styled.span<{
   background: none;
   border: none;
   padding: 0;
-  color: ${(props) => getPrimaryColorByVariant(props.linkType)};
+  color: ${(props) => getSecondaryColorByVariant(props.linkType)};
   text-decoration: underline;
   cursor: pointer;
 `;
