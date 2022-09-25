@@ -28,11 +28,14 @@ const ConfirmationModal = ({
   cancelProps,
 }: Props) => {
   return (
-    <Modal show={isModalShown} onHide={cancelProps.handleCancel}>
+    <Modal show={isModalShown} onHide={cancelProps.handleCancel} size="lg">
       <ModalContentWrapper>
         <Stack>
           {children}
-          <div className="modal-controls">
+          <Stack
+            className="modal-controls justify-content-center"
+            direction="horizontal"
+          >
             <Button
               variant="danger"
               onClick={() => confirmationProps.handleConfirmation()}
@@ -45,7 +48,7 @@ const ConfirmationModal = ({
             >
               {cancelProps.cancelButtonText}
             </Button>
-          </div>
+          </Stack>
         </Stack>
       </ModalContentWrapper>
     </Modal>
