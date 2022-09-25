@@ -5,7 +5,7 @@ import ListGroup from "react-bootstrap/ListGroup";
 
 type ListGroupItemValue = string | number | symbol;
 
-interface ListGroupItem {
+export interface ListGroupItem {
   text: string;
   value: ListGroupItemValue;
 }
