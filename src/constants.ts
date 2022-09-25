@@ -43,3 +43,13 @@ export enum BootstrapVariantsEnum {
   DANGER = "danger",
   SUCCESS = "success",
 }
+
+export enum DaysOfTheWeek {
+  SUNDAY = "Sun.",
+  MONDAY = "Mon.",
+  TUESDAY = "Tue.",
+  WEDNESDAY = "Wed.",
+  THURSDAY = "Thur.",
+  FRIDAY = "Fri.",
+  SATURDAY = "Sat.",
+}
