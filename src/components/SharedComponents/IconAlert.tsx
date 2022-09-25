@@ -18,13 +18,16 @@ const IconAlert = ({
   icon,
   handleIconClick,
   variant = "primary",
+  tooltipText,
 }: Props) => {
   return (
     <IconAlertWrapper>
       <Alert variant={variant}>
         <div className="heading-icon-wrapper">
           <div className="icon-wrapper" onClick={handleIconClick}>
-            <ChildTooltip variant={variant}>{icon}</ChildTooltip>
+            <ChildTooltip variant={variant} tooltipText={tooltipText}>
+              {icon}
+            </ChildTooltip>
           </div>
           <h2>{headingText}</h2>
         </div>

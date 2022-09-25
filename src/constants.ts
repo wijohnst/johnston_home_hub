@@ -37,3 +37,9 @@ export enum LinkTypes {
   DANGER = "danger",
   SUCCESS = "success",
 }
+
+export enum BootstrapVariantsEnum {
+  PRIMARY = "primary",
+  DANGER = "danger",
+  SUCCESS = "success",
+}
