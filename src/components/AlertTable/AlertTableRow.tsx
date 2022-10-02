@@ -12,6 +12,8 @@ type Props = {
   headingText: string;
   variant?: BootstrapVariant;
   children: React.ReactNode;
+  toolTipText?: string;
+  handleIconClick?: () => void;
 };
 
 const AlertTableRow = ({
@@ -19,14 +21,16 @@ const AlertTableRow = ({
   headingText,
   variant = "primary",
   children,
+  toolTipText = "Tooltip Text",
+  handleIconClick = () => console.log("Click..."),
 }: Props) => {
   return (
     <AlertTableRowWrapper>
       <IconAlert
         icon={icon}
         headingText={headingText}
-        handleIconClick={() => console.log("Click...")}
-        tooltipText="Tooltip Text"
+        handleIconClick={handleIconClick}
+        tooltipText={toolTipText}
         variant={variant}
       />
       <Stack className="align-items-center">{children}</Stack>

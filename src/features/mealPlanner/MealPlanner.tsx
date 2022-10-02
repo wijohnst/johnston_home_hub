@@ -1,5 +1,4 @@
 import React from "react";
-import ButtonBar from "../../components/SharedComponents/ButtonBar";
 
 import { MealPlannerWrapper } from "./MealPlanner.style";
 
