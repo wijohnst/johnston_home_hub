@@ -3,14 +3,14 @@ import React from "react";
 import { ButtonBarWrapper } from "./ButtonBar.style";
 import ListGroup from "react-bootstrap/ListGroup";
 
-type ListGroupItemValue = string | number | symbol;
+export type ListGroupItemValue = string | number | symbol;
 
 export interface ListGroupItem {
   text: string;
   value: ListGroupItemValue;
 }
 
-type ListGroupContent = ListGroupItem[];
+export type ListGroupContent = ListGroupItem[];
 
 type Props = {
   isHorizontal?: boolean;
@@ -34,6 +34,7 @@ const ButtonBar = ({
             action
             onClick={() => handleSelection(listGroupItem.value)}
             href={`#${String(listGroupItem.value)}`}
+            key={`${listGroupItem.text}-${String(listGroupItem.value)}`}
           >
             {listGroupItem.text}
           </ListGroup.Item>

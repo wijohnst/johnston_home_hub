@@ -22,6 +22,7 @@ import RevealButton from "./components/RevealButton/RevealButton";
 import useMediaQuery from "./hooks/useMediaQuery";
 import { Breakpoints } from "./constants";
 import Recipes from "./features/recipes/Recipes";
+import MealPlanner from "./features/mealPlanner/MealPlanner";
 
 type Props = {};
 
@@ -54,6 +55,9 @@ const App = (props: Props) => {
             <Col>
               <WidgetWrapper>
                 <PetFeeder />
+              </WidgetWrapper>
+              <WidgetWrapper>
+                <MealPlanner />
               </WidgetWrapper>
               <RevealableWidgetWrapper
                 isRevealed={isMobile ? true : areAllShoppingListsShown}
