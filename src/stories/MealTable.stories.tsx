@@ -18,5 +18,6 @@ const Template: ComponentStory<typeof MealTable> = (args) => (
 export const Default = Template.bind({});
 Default.args = {
 	targetMealPlan: Object.entries(mockMealPlans)[0],
-	handleAddClick: () => console.log('Plus Icon clicked...')
+	handleAddClick: () => console.log('Plus Icon clicked...'),
+	handleRecipeSelect: (recipeId: string) => console.log(recipeId),
 };

@@ -10,4 +10,8 @@ export const MealTableRows = styled(Stack)`
 	.row-child-wrapper {
 		margin: 0 0 1rem 0;
 	}
+
+	.row-recipe-wrapper {
+		text-align: center;
+	}
 `;

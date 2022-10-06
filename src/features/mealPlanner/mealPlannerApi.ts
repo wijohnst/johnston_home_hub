@@ -30,7 +30,6 @@ export interface MealPlanDoc {
 export type TargetMealPlan = [string, MealPlanDoc[]];
 
 export type MealPlans = { [key: string]: MealPlanDoc[] };
-
 export interface GetMealPlansResponse extends DefaultResponse {
 	mealPlans: MealPlans;
 }
