@@ -64,7 +64,7 @@ const MealPlanner = () => {
           {}
           <MealTable
             targetMealPlan={Object.entries(data.mealPlans)[selectedDayValue]}
-            handleAddClick={() => console.log("Add clicked...")}
+            handleAddClick={() => setIsRecipesCollectionModalShown(true)}
             handleRecipeSelect={(recipeId) => setSelectedRecipeId(recipeId)}
           />
         </MealPlannerContent>
