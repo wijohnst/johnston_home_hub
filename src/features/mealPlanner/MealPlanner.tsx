@@ -19,11 +19,10 @@ import { AddRecipeToScheduleModal } from "./AddRecipeToScheduleModal/AddRecipeTo
 
 const MealPlanner = () => {
   const [selectedDayValue, setSelectedDayValue] = React.useState(0);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedRecipeId, setSelectedRecipeId] =
     React.useState<string | null>(null);
-  const [targetMealPlanDoc, setTargetMealPlanDoc] =
-    React.useState<MealPlanDoc | null>(null);
+  const [targetMealPlanDoc, setTargetMealPlanDoc] = 
+  React.useState<MealPlanDoc | null>(null);
 
   const queryClient = useQueryClient();
 
