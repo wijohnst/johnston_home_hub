@@ -76,7 +76,10 @@ const RecipesCollectionModal = ({ isShown, handleHide }: Props) => {
             </Form.Group>
             <Stack className="links-wrapper">
               {filteredData?.map((recipe: Recipe) => (
-                <LinkSpan onClick={() => setSelectedRecipe(recipe)} key={`recipe-link-${recipe._id}`}>
+                <LinkSpan
+                  onClick={() => setSelectedRecipe(recipe)}
+                  key={`recipe-link-${recipe._id}`}
+                >
                   {recipe.name}
                 </LinkSpan>
               ))}

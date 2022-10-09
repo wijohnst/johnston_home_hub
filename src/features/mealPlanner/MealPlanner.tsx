@@ -1,30 +1,54 @@
 import React from "react";
 
-import { useQuery } from "react-query";
-import { getMealPlans, MealPlans } from "./mealPlannerApi"
+import { useQuery, useMutation, useQueryClient } from "react-query";
+import {
+  getMealPlans,
+  MealPlanMeals,
+  MealPlans,
+  updateMealPlan,
+  MealPlanDoc,
+  UpdatedMeal,
+  RecipeDoc,
+} from "./mealPlannerApi";
 import { MealPlannerContent, MealPlannerWrapper } from "./MealPlanner.style";
 import MealTable from "./MealTable";
 import { format } from "date-fns";
 import DayOfWeekButtonBar from "./DayOfWeekButtonBar";
 import { ListGroupContent } from "../../components/SharedComponents/ButtonBar";
-import RecipesCollectionModal from "../recipes/RecipesCollectionModal/RecipesCollectionModal";
+import { AddRecipeToScheduleModal } from "./AddRecipeToScheduleModal/AddRecipeToScheduleModal";
 
 const MealPlanner = () => {
+  const [selectedDayValue, setSelectedDayValue] = React.useState(0);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [selectedRecipeId, setSelectedRecipeId] =
+    React.useState<string | null>(null);
+  const [targetMealPlanDoc, setTargetMealPlanDoc] =
+    React.useState<MealPlanDoc | null>(null);
+
+  const queryClient = useQueryClient();
+
   const {
     data,
     isFetching,
     isFetched: areMealPlansFetched,
   } = useQuery("mealPlans", getMealPlans);
 
-  const [selectedDayValue, setSelectedDayValue] = React.useState(0);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_selectedRecipeId, setSelectedRecipeId] =
-    React.useState<string | null>(null);
-	const [isRecipesCollectionModalShown, setIsRecipesCollectionModalShown] = React.useState(false);
+  const updateMealPlanMutation = useMutation(
+    "updateMealPlanMutation",
+    (updatedMeal: UpdatedMeal) => {
+      return updateMealPlan(updatedMeal);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("mealPlans");
+        setTargetMealPlanDoc(null);
+      },
+    }
+  );
 
   /**
-   * Accepts a `MealPlans` object  and returns a `ListGroup` for rendering a `DayOfWeekButtonBar` with the inital selection being the current day 
-	 * 
+   * Accepts a `MealPlans` object  and returns a `ListGroup` for rendering a `DayOfWeekButtonBar` with the inital selection being the current day
+   *
    * @param {MealPlans} mealPlans
    * @returns { ListGroupContent}
    */
@@ -37,13 +61,20 @@ const MealPlanner = () => {
           ...listGroupArr,
           {
             text: format(new Date(simplifiedDate), "EEE"),
-						value: index,
+            value: index,
           },
         ];
       },
       []
     );
   };
+
+  const parseMealPlanDoc = (mealPlanDoc: MealPlanDoc): UpdatedMeal => ({
+    _id: mealPlanDoc._id,
+    date: mealPlanDoc.date,
+    mealType: mealPlanDoc.mealType,
+    recipes: mealPlanDoc.recipes.map((recipeDoc: RecipeDoc) => recipeDoc._id),
+  });
 
   return (
     <MealPlannerWrapper>
@@ -64,12 +95,27 @@ const MealPlanner = () => {
           {}
           <MealTable
             targetMealPlan={Object.entries(data.mealPlans)[selectedDayValue]}
-            handleAddClick={() => setIsRecipesCollectionModalShown(true)}
+            handleAddClick={(targetMealPlan) =>
+              setTargetMealPlanDoc(targetMealPlan)
+            }
             handleRecipeSelect={(recipeId) => setSelectedRecipeId(recipeId)}
           />
         </MealPlannerContent>
       )}
-			<RecipesCollectionModal isShown={isRecipesCollectionModalShown} handleHide={() => setIsRecipesCollectionModalShown(false) } />
+      <AddRecipeToScheduleModal
+        isShown={!!targetMealPlanDoc}
+        handleHide={() => setTargetMealPlanDoc(null)}
+        mealType={MealPlanMeals.BREAKFAST}
+        handleRecipeClick={(recipeId) => {
+          if (targetMealPlanDoc) {
+            const parsedTargetMealPlan = parseMealPlanDoc(targetMealPlanDoc);
+            updateMealPlanMutation.mutate({
+              ...parsedTargetMealPlan,
+              recipes: [...parsedTargetMealPlan.recipes, recipeId],
+            });
+          }
+        }}
+      />
     </MealPlannerWrapper>
   );
 };
