@@ -21,7 +21,6 @@ import PreviewRecipe from "../EditGeneratedRecipe/PreviewRecipe";
 import { ReactComponent as EditIcon } from "../../../assets/images/edit_icon.svg";
 import EditGeneratedRecipe from "../EditGeneratedRecipe/EditGeneratedRecipe";
 import { getIngredientString } from "../EditGeneratedRecipe/PreviewRecipe.utils";
-import { LinkTypes } from "../../../constants";
 
 type Props = {
   isShown: boolean;
@@ -77,7 +76,10 @@ const RecipesCollectionModal = ({ isShown, handleHide }: Props) => {
             </Form.Group>
             <Stack className="links-wrapper">
               {filteredData?.map((recipe: Recipe) => (
-                <LinkSpan onClick={() => setSelectedRecipe(recipe)}>
+                <LinkSpan
+                  onClick={() => setSelectedRecipe(recipe)}
+                  key={`recipe-link-${recipe._id}`}
+                >
                   {recipe.name}
                 </LinkSpan>
               ))}

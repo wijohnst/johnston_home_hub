@@ -24,7 +24,7 @@ export const PreviewRecipeWrapper = styled(Stack)`
   }
 
   .heading-badge {
-    width: 50%;
+    width: 100%;
     /* text-align: left; */
     padding: 1rem;
   }

@@ -43,6 +43,5 @@ export const getDayOfWeekButtonBarContentByCurrentDay = (
       };
     }
   });
-  console.log(listGroupContent);
   return listGroupContent.filter((value) => value);
 };
