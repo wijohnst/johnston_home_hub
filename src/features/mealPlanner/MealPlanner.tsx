@@ -9,6 +9,7 @@ import {
   MealPlanDoc,
   UpdatedMeal,
   RecipeDoc,
+  fetchLockedRecipes,
 } from "./mealPlannerApi";
 import { MealPlannerContent, MealPlannerWrapper } from "./MealPlanner.style";
 import MealTable from "./MealTable";
@@ -34,11 +35,13 @@ const MealPlanner = () => {
     isFetched: areMealPlansFetched,
   } = useQuery("mealPlans", getMealPlans);
 
+  const { data: recipes = [] } = useQuery("recpies", fetchAllRecipes);
+
   const {
-    data: recipes = [],
-    isFetching: isFetchingRecipes,
-    isFetched: areRecipesFetched,
-  } = useQuery("recpies", fetchAllRecipes);
+    data: lockedRecipesData,
+    // isFetching: isFetchingLockedRecipes,
+    // isFetched: areLockedRecipesFetched,
+  } = useQuery("lockedRecipes", fetchLockedRecipes);
 
   const updateMealPlanMutation = useMutation(
     "updateMealPlanMutation",
