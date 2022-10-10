@@ -16,13 +16,15 @@ import { format } from "date-fns";
 import DayOfWeekButtonBar from "./DayOfWeekButtonBar";
 import { ListGroupContent } from "../../components/SharedComponents/ButtonBar";
 import { AddRecipeToScheduleModal } from "./AddRecipeToScheduleModal/AddRecipeToScheduleModal";
+import { fetchAllRecipes, Recipe } from "../recipes/recipesApi";
 
 const MealPlanner = () => {
   const [selectedDayValue, setSelectedDayValue] = React.useState(0);
   const [selectedRecipeId, setSelectedRecipeId] =
     React.useState<string | null>(null);
-  const [targetMealPlanDoc, setTargetMealPlanDoc] = 
-  React.useState<MealPlanDoc | null>(null);
+  const [targetMealPlanDoc, setTargetMealPlanDoc] =
+    React.useState<MealPlanDoc | null>(null);
+  const [targetRecipe, setTargetRecipe] = React.useState<Recipe | null>(null);
 
   const queryClient = useQueryClient();
 
@@ -31,6 +33,12 @@ const MealPlanner = () => {
     isFetching,
     isFetched: areMealPlansFetched,
   } = useQuery("mealPlans", getMealPlans);
+
+  const {
+    data: recipes = [],
+    isFetching: isFetchingRecipes,
+    isFetched: areRecipesFetched,
+  } = useQuery("recpies", fetchAllRecipes);
 
   const updateMealPlanMutation = useMutation(
     "updateMealPlanMutation",
@@ -75,6 +83,15 @@ const MealPlanner = () => {
     recipes: mealPlanDoc.recipes.map((recipeDoc: RecipeDoc) => recipeDoc._id),
   });
 
+  React.useEffect(() => {
+    if (selectedRecipeId && recipes.length !== 0) {
+      const [selectedRecipe] = recipes.filter(
+        (recipe: Recipe) => recipe._id === selectedRecipeId
+      );
+      setTargetRecipe(selectedRecipe);
+    }
+  }, [selectedRecipeId, recipes]);
+
   return (
     <MealPlannerWrapper>
       <h1>Meal Planner</h1>
@@ -91,13 +108,17 @@ const MealPlanner = () => {
               }
             }}
           />
-          {}
           <MealTable
             targetMealPlan={Object.entries(data.mealPlans)[selectedDayValue]}
             handleAddClick={(targetMealPlan) =>
               setTargetMealPlanDoc(targetMealPlan)
             }
             handleRecipeSelect={(recipeId) => setSelectedRecipeId(recipeId)}
+            selectedRecipe={targetRecipe}
+            handleRecipeClose={() => [
+              setTargetRecipe(null),
+              setSelectedRecipeId(null),
+            ]}
           />
         </MealPlannerContent>
       )}

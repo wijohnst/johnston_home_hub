@@ -14,11 +14,9 @@ type Props = {
 const PreviewRecipe = ({ recipeName, ingredients, steps }: Props) => {
   return (
     <PreviewRecipeWrapper>
-      <div className="">
-        <Alert>
-          <span className="recipe-name">{recipeName}</span>
-        </Alert>
-      </div>
+      <Alert>
+        <span className="recipe-name">{recipeName}</span>
+      </Alert>
       <div className="header-content-wrapper">
         <Badge bg="success" className="heading-badge">
           <span className="heading-text">Ingredients</span>

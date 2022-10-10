@@ -1,3 +1,4 @@
+import { Recipe } from "../recipes/recipesApi";
 import { MealPlans } from "./mealPlannerApi";
 
 export const mockMealPlans: MealPlans = {
@@ -220,4 +221,19 @@ export const mockMealPlans: MealPlans = {
       __v: 0,
     },
   ],
+};
+
+export const selectedRecipe: Recipe = {
+  _id: "6318b7a0a50b8b0b8cfdb5be",
+  name: "Sample Recipe",
+  ingredients: [
+    {
+      name: "Ingredient 1",
+      quantity: 1,
+      unit: "ea.",
+      linkedItem: null,
+    },
+  ],
+  steps: ["Do something"],
+  url: null,
 };

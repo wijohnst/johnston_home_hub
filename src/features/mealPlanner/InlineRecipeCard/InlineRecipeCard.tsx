@@ -2,6 +2,7 @@ import React from "react";
 import { Recipe } from "../../recipes/recipesApi";
 
 import Button from "react-bootstrap/Button";
+// import CloseButton from "react-bootstrap/CloseButton";
 
 import PreviewRecipe from "../../recipes/EditGeneratedRecipe/PreviewRecipe";
 
@@ -41,6 +42,9 @@ const InlineRecipeCard = ({
 
   return (
     <InlineRecipeCardWrapper>
+      {/* <div className="close-button-wrapper">
+        <CloseButton variant="white" />
+      </div> */}
       <PreviewRecipe
         recipeName={selectedRecipe.name}
         ingredients={selectedRecipe.ingredients.map((ingredient) =>

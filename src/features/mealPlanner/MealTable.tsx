@@ -7,17 +7,23 @@ import { ReactComponent as PlusIcon } from "../../assets/images/plus_icon.svg";
 import { getSecondaryColorByVariant } from "../../components/SharedComponents/SharedComponents.utils";
 import { MealPlanDoc, TargetMealPlan, RecipeDoc } from "./mealPlannerApi";
 import Link from "../../components/SharedComponents/Link";
+import { Recipe } from "../recipes/recipesApi";
+import InlineRecipeCard from "./InlineRecipeCard/InlineRecipeCard";
 
 type Props = {
   targetMealPlan: TargetMealPlan;
   handleAddClick: (mealPlan: MealPlanDoc) => void;
   handleRecipeSelect: (recipeId: string) => void;
+  selectedRecipe: Recipe | null;
+  handleRecipeClose: () => void;
 };
 
 const MealTable = ({
   targetMealPlan,
   handleAddClick,
   handleRecipeSelect,
+  selectedRecipe = null,
+  handleRecipeClose,
 }: Props) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_targetDate, mealPlans] = targetMealPlan;
@@ -32,11 +38,31 @@ const MealTable = ({
     return (
       <div className="row-recipe-wrapper">
         {recipes.map((recipe: RecipeDoc) => (
-          <Link
-            key={`recipe-${recipe._id}`}
-            linkText={recipe.name}
-            handleClick={() => handleRecipeSelect(recipe._id)}
-          />
+          <>
+            <div className="link-wrapper">
+              <Link
+                key={`recipe-${recipe._id}`}
+                linkText={recipe.name}
+                handleClick={() =>
+                  selectedRecipe
+                    ? handleRecipeClose()
+                    : handleRecipeSelect(recipe._id)
+                }
+              />
+            </div>
+            <div className="inline-card-wrapper">
+              {selectedRecipe && selectedRecipe._id === recipe._id && (
+                <InlineRecipeCard
+                  selectedRecipe={selectedRecipe}
+                  handleLockedRecipeClick={() =>
+                    console.log("Locked recipe clicked...")
+                  }
+                  handleRecipeClick={() => console.log("Recipe clicked...")}
+                  isRecipeLocked={false}
+                />
+              )}
+            </div>
+          </>
         ))}
       </div>
     );
