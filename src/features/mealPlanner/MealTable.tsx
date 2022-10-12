@@ -49,7 +49,8 @@ const MealTable = ({
     // short-circuit logic
     if (lockedRecipeIds.includes(recipeId)) {
       const targetLockedRecipeDoc = lockedRecipes.find(
-        (lockedRecipeDoc: LockedRecipeDoc) => lockedRecipeDoc._id === recipeId
+        (lockedRecipeDoc: LockedRecipeDoc) =>
+          lockedRecipeDoc.recipeId === recipeId
       );
 
       const [targetMealPlanDateString] = targetMealPlan;
@@ -75,9 +76,14 @@ const MealTable = ({
     return (
       <div className="row-recipe-wrapper">
         {recipes.map((recipe: RecipeDoc) => (
-          <>
+          <React.Fragment key={`recipe-${recipe._id}`}>
             <div className="link-wrapper">
-              <ChildTooltip placement="left" tooltipText="Lock recipe">
+              <ChildTooltip
+                placement="left"
+                tooltipText={
+                  isRecipeLocked(recipe._id) ? "Unlock Recipe" : "Lock Recipe"
+                }
+              >
                 <div className="tooltip-link-wrapper">
                   <div className="icon-wrapper">
                     {isRecipeLocked(recipe._id) ? (
@@ -116,7 +122,7 @@ const MealTable = ({
                 />
               )}
             </div>
-          </>
+          </React.Fragment>
         ))}
       </div>
     );
