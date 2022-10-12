@@ -13,10 +13,25 @@ export const MealTableRows = styled(Stack)`
 
   .row-recipe-wrapper {
     width: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+
+    .tooltip-link-wrapper {
+      display: flex;
+      margin: 0.5rem 0 0.5rem;
+    }
+
+    .icon-wrapper {
+      height: 24px;
+      width: 24px;
+      margin: 0 0.25rem 0 0;
+    }
 
     .link-wrapper {
-      text-align: center;
+      width: clamp(25%, 25%, 100%);
     }
+
     .inline-card-wrapper {
       width: 100%;
     }

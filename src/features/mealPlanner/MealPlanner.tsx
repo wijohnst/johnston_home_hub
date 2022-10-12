@@ -10,6 +10,7 @@ import {
   UpdatedMeal,
   RecipeDoc,
   fetchLockedRecipes,
+  LockedRecipeDoc,
 } from "./mealPlannerApi";
 import { MealPlannerContent, MealPlannerWrapper } from "./MealPlanner.style";
 import MealTable from "./MealTable";
@@ -30,18 +31,15 @@ const MealPlanner = () => {
   const queryClient = useQueryClient();
 
   const {
-    data,
-    isFetching,
+    data: mealPlansData,
+    isFetching: areMealPlansFetching,
     isFetched: areMealPlansFetched,
   } = useQuery("mealPlans", getMealPlans);
 
   const { data: recipes = [] } = useQuery("recpies", fetchAllRecipes);
 
-  const {
-    data: lockedRecipesData,
-    // isFetching: isFetchingLockedRecipes,
-    // isFetched: areLockedRecipesFetched,
-  } = useQuery("lockedRecipes", fetchLockedRecipes);
+  const { data: lockedRecipesData, isFetched: areLockedRecipesFetched } =
+    useQuery("lockedRecipes", fetchLockedRecipes);
 
   const updateMealPlanMutation = useMutation(
     "updateMealPlanMutation",
@@ -98,33 +96,41 @@ const MealPlanner = () => {
   return (
     <MealPlannerWrapper>
       <h1>Meal Planner</h1>
-      {isFetching && !areMealPlansFetched && (
+      {areMealPlansFetching && !areMealPlansFetched && (
         <span>Fetching Meal Plans...</span>
       )}
-      {areMealPlansFetched && data?.mealPlans && (
-        <MealPlannerContent gap={3}>
-          <DayOfWeekButtonBar
-            listGroupContent={getListGroupContentFromMealPlans(data.mealPlans)}
-            handleSelection={(value) => {
-              if (typeof value === "number") {
-                setSelectedDayValue(value);
+      {areMealPlansFetched &&
+        mealPlansData?.mealPlans &&
+        areLockedRecipesFetched &&
+        lockedRecipesData?.lockedRecipes && (
+          <MealPlannerContent gap={3}>
+            <DayOfWeekButtonBar
+              listGroupContent={getListGroupContentFromMealPlans(
+                mealPlansData.mealPlans
+              )}
+              handleSelection={(value) => {
+                if (typeof value === "number") {
+                  setSelectedDayValue(value);
+                }
+              }}
+            />
+            <MealTable
+              targetMealPlan={
+                Object.entries(mealPlansData.mealPlans)[selectedDayValue]
               }
-            }}
-          />
-          <MealTable
-            targetMealPlan={Object.entries(data.mealPlans)[selectedDayValue]}
-            handleAddClick={(targetMealPlan) =>
-              setTargetMealPlanDoc(targetMealPlan)
-            }
-            handleRecipeSelect={(recipeId) => setSelectedRecipeId(recipeId)}
-            selectedRecipe={targetRecipe}
-            handleRecipeClose={() => [
-              setTargetRecipe(null),
-              setSelectedRecipeId(null),
-            ]}
-          />
-        </MealPlannerContent>
-      )}
+              handleAddClick={(targetMealPlan) =>
+                setTargetMealPlanDoc(targetMealPlan)
+              }
+              handleRecipeSelect={(recipeId) => setSelectedRecipeId(recipeId)}
+              selectedRecipe={targetRecipe}
+              handleRecipeClose={() => [
+                setTargetRecipe(null),
+                setSelectedRecipeId(null),
+              ]}
+              lockedRecipes={lockedRecipesData?.lockedRecipes}
+            />
+          </MealPlannerContent>
+        )}
       <AddRecipeToScheduleModal
         isShown={!!targetMealPlanDoc}
         handleHide={() => setTargetMealPlanDoc(null)}
