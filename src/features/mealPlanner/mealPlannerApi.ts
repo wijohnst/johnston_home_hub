@@ -119,7 +119,7 @@ export const updateMealPlan = async (
 ): Promise<DefaultResponse | void> => {
   try {
     const { data: defaultResponse } = await axios.patch<DefaultResponse>(
-      "http://localhost:3001/meal_plan/meal",
+      `${MealPlannerURL}/meal`,
       { updatedMeal }
     );
     return defaultResponse;
