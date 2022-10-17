@@ -10,7 +10,6 @@ import {
   UpdatedMeal,
   RecipeDoc,
   fetchLockedRecipes,
-  LockedRecipeDoc,
 } from "./mealPlannerApi";
 import { MealPlannerContent, MealPlannerWrapper } from "./MealPlanner.style";
 import MealTable from "./MealTable";
@@ -18,7 +17,8 @@ import { format } from "date-fns";
 import DayOfWeekButtonBar from "./DayOfWeekButtonBar";
 import { ListGroupContent } from "../../components/SharedComponents/ButtonBar";
 import { AddRecipeToScheduleModal } from "./AddRecipeToScheduleModal/AddRecipeToScheduleModal";
-import { fetchAllRecipes, Recipe } from "../recipes/recipesApi";
+import { fetchAllRecipes, Recipe, getRecipesById } from "../recipes/recipesApi";
+import { LockedRecipe } from "./InlineRecipeCard/InlineRecipeCard.stories";
 
 const MealPlanner = () => {
   const [selectedDayValue, setSelectedDayValue] = React.useState(0);
@@ -39,7 +39,17 @@ const MealPlanner = () => {
   const { data: recipes = [] } = useQuery("recpies", fetchAllRecipes);
 
   const { data: lockedRecipesData, isFetched: areLockedRecipesFetched } =
-    useQuery("lockedRecipes", fetchLockedRecipes);
+    useQuery("lockedRecipesData", fetchLockedRecipes);
+
+  const { data: lockedRecipes } = useQuery("lockedRecipes", () => {
+    const lockedRecipeDocIds = new Set(
+      lockedRecipesData?.lockedRecipes.map(
+        (lockedRecipeDoc) => lockedRecipeDoc.recipeId
+      )
+    );
+
+    return getRecipesById(Array.from(lockedRecipeDocIds));
+  });
 
   const updateMealPlanMutation = useMutation(
     "updateMealPlanMutation",

@@ -133,3 +133,42 @@ export const deleteRecipe = async (
     };
   }
 };
+
+interface GetRecipeByIdsResponse extends DefaultResponse {
+  recipes: Recipe[];
+}
+
+/**
+ * Accepts an array of Recipe _id strings and returns the associated Recipes
+ *
+ * @param {string[]} recipeIds
+ * @returns {Recipe[] | DefaultResponse}
+ */
+export const getRecipesById = async (
+  recipeIds: string[] | undefined
+): Promise<Recipe[] | DefaultResponse> => {
+  try {
+    if (recipeIds) {
+      const {
+        data: { recipes },
+      } = await axios.get<GetRecipeByIdsResponse>(
+        `${DefaultURL}/recipe/recipes`,
+        {
+          params: {
+            ...recipeIds,
+          },
+          headers: {
+            Accept: "application/json",
+          },
+        }
+      );
+      return recipes;
+    }
+    return [];
+  } catch (error) {
+    return {
+      status: 400,
+      message: "Error fetching recipes.",
+    };
+  }
+};
