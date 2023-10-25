@@ -35,3 +35,9 @@ Weekdays.args = {
     { text: "Sat.", value: 6 },
   ],
 };
+
+export const Vertical = Template.bind({});
+Vertical.args = {
+  ...Default.args,
+  isHorizontal: false,
+};
