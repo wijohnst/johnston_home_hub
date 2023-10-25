@@ -35,6 +35,7 @@ const ButtonBar = ({
             onClick={() => handleSelection(listGroupItem.value)}
             href={`#${String(listGroupItem.value)}`}
             key={`${listGroupItem.text}-${String(listGroupItem.value)}`}
+            style={{ textAlign: isHorizontal ? "center" : "start" }}
           >
             {listGroupItem.text}
           </ListGroup.Item>
