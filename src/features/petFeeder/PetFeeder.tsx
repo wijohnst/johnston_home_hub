@@ -101,7 +101,12 @@ const PetFeeder = (): React.ReactElement => {
             <Col>
               <FeederHeader>Pet Feeder</FeederHeader>
             </Col>
-            <Col>
+            <Col
+              style={{
+                display: "flex",
+                justifyContent: "end",
+              }}
+            >
               <h3>
                 <Badge pill bg="success">
                   {`${targetMeal
