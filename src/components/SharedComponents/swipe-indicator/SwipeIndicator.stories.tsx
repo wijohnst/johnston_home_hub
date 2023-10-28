@@ -3,7 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { SwipeIndicator } from "./SwipeIndicator";
 
 export default {
-  title: "Shared Components/SwipeIndicator",
+  title: "Shared Components/SwipeNav/SwipeIndicator",
   component: SwipeIndicator,
 } as ComponentMeta<typeof SwipeIndicator>;
 
