@@ -10,7 +10,6 @@ import {
   UpdatedMeal,
   RecipeDoc,
   fetchLockedRecipes,
-  LockedRecipeDoc,
 } from "./mealPlannerApi";
 import { MealPlannerContent, MealPlannerWrapper } from "./MealPlanner.style";
 import MealTable from "./MealTable";
@@ -19,6 +18,8 @@ import DayOfWeekButtonBar from "./DayOfWeekButtonBar";
 import { ListGroupContent } from "../../components/SharedComponents/ButtonBar";
 import { AddRecipeToScheduleModal } from "./AddRecipeToScheduleModal/AddRecipeToScheduleModal";
 import { fetchAllRecipes, Recipe } from "../recipes/recipesApi";
+import useMediaQuery from "../../hooks/useMediaQuery";
+import { Breakpoints } from "../../constants";
 
 const MealPlanner = () => {
   const [selectedDayValue, setSelectedDayValue] = React.useState(0);
@@ -36,7 +37,7 @@ const MealPlanner = () => {
     isFetched: areMealPlansFetched,
   } = useQuery("mealPlans", getMealPlans);
 
-  const { data: recipes = [] } = useQuery("recpies", fetchAllRecipes);
+  const { data: recipes = [] } = useQuery("recipes", fetchAllRecipes);
 
   const { data: lockedRecipesData, isFetched: areLockedRecipesFetched } =
     useQuery("lockedRecipes", fetchLockedRecipes);
@@ -55,20 +56,23 @@ const MealPlanner = () => {
   );
 
   /**
-   * Accepts a `MealPlans` object  and returns a `ListGroup` for rendering a `DayOfWeekButtonBar` with the inital selection being the current day
+   * Accepts a `MealPlans` object  and returns a `ListGroup` for rendering a `DayOfWeekButtonBar` with the initial selection being the current day
    *
    * @param {MealPlans} mealPlans
    * @returns { ListGroupContent}
    */
   const getListGroupContentFromMealPlans = (
-    mealPlans: MealPlans
+    mealPlans: MealPlans,
+    isMobile: boolean = false
   ): ListGroupContent => {
     return Object.keys(mealPlans).reduce<ListGroupContent | []>(
       (listGroupArr, simplifiedDate, index) => {
         return [
           ...listGroupArr,
           {
-            text: format(new Date(simplifiedDate), "EEE"),
+            text: isMobile
+              ? format(new Date(simplifiedDate), "EEEEE")
+              : format(new Date(simplifiedDate), "EEE"),
             value: index,
           },
         ];
@@ -93,6 +97,8 @@ const MealPlanner = () => {
     }
   }, [selectedRecipeId, recipes]);
 
+  const isMobile = useMediaQuery(Breakpoints.mobile);
+
   return (
     <MealPlannerWrapper>
       <h1>Meal Planner</h1>
@@ -106,7 +112,8 @@ const MealPlanner = () => {
           <MealPlannerContent gap={3}>
             <DayOfWeekButtonBar
               listGroupContent={getListGroupContentFromMealPlans(
-                mealPlansData.mealPlans
+                mealPlansData.mealPlans,
+                isMobile
               )}
               handleSelection={(value) => {
                 if (typeof value === "number") {
