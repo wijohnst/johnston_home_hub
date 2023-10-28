@@ -29,11 +29,11 @@ type Props = {};
 const queryClient = new QueryClient();
 
 const App = (props: Props) => {
-  const [areAllShoppingListsShown, setAreAllShopingListsShown] =
+  const [areAllShoppingListsShown, setAreAllShoppingListsShown] =
     React.useState(false);
 
   const handleRevealShoppingListClick = (): void => {
-    setAreAllShopingListsShown(!areAllShoppingListsShown);
+    setAreAllShoppingListsShown(!areAllShoppingListsShown);
   };
 
   const isMobile = useMediaQuery(Breakpoints.mobile);

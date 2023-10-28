@@ -3,8 +3,6 @@ import styled from "styled-components";
 export const AppWrapper = styled.section`
   padding: 0;
   margin: 0;
-  height: 100%;
-  width: 100%;
 `;
 
 export const WidgetWrapper = styled.section`
