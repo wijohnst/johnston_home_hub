@@ -11,6 +11,7 @@ import {
 import { ItemData } from "../../shoppingListsApi";
 
 import { SemanticWrapper } from "./StoreTable.style";
+import { AisleHeading } from "../aisle-heading/AisleHeading";
 
 type Props = {};
 
@@ -70,7 +71,7 @@ const columnHelper = createColumnHelper<ItemData>();
 const columns = [
   columnHelper.accessor("name", {
     cell: (info) => info.getValue(),
-    header: "All Aisles",
+    header: "Produce",
     footer: (info) => "",
   }),
   columnHelper.accessor("quantity", {
@@ -100,33 +101,14 @@ export const StoreTable = ({}: Props): React.ReactElement => {
     getSortedRowModel: getSortedRowModel(),
   });
   return (
-    <SemanticWrapper>
-      <tfoot>
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th key={header.id} colSpan={header.colSpan}>
-                  {header.isPlaceholder ? null : (
-                    <div
-                      {...{
-                        className: header.column.getCanSort()
-                          ? "cursor-pointer select-none"
-                          : "",
-                        onClick: header.column.getToggleSortingHandler(),
-                      }}
-                    >
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                    </div>
-                  )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
+    <>
+      <AisleHeading
+        aisleName="Produce"
+        iconCount={table.getRowModel().rows.length}
+        isOpen={true}
+        handleCaretClick={() => console.log("Caret clicked...")}
+      ></AisleHeading>
+      <SemanticWrapper>
         <tbody>
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id}>
@@ -138,57 +120,23 @@ export const StoreTable = ({}: Props): React.ReactElement => {
             </tr>
           ))}
         </tbody>
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th key={header.id} colSpan={header.colSpan}>
-                  {header.isPlaceholder ? null : (
-                    <div
-                      {...{
-                        className: header.column.getCanSort()
-                          ? "cursor-pointer select-none"
-                          : "",
-                        onClick: header.column.getToggleSortingHandler(),
-                      }}
-                    >
-                      {flexRender(
-                        header.column.columnDef.header,
+        <tfoot>
+          {table.getFooterGroups().map((footerGroup) => (
+            <tr key={footerGroup.id}>
+              {footerGroup.headers.map((header) => (
+                <th key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.footer,
                         header.getContext()
                       )}
-                    </div>
-                  )}
                 </th>
               ))}
             </tr>
           ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-        {table.getFooterGroups().map((footerGroup) => (
-          <tr key={footerGroup.id}>
-            {footerGroup.headers.map((header) => (
-              <th key={header.id}>
-                {header.isPlaceholder
-                  ? null
-                  : flexRender(
-                      header.column.columnDef.footer,
-                      header.getContext()
-                    )}
-              </th>
-            ))}
-          </tr>
-        ))}
-      </tfoot>
-    </SemanticWrapper>
+        </tfoot>
+      </SemanticWrapper>
+    </>
   );
 };

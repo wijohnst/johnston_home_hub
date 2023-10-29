@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const SemanticWrapper = styled.table`
+  width: 100%;
   th {
     background-color: var(--primary-blue);
     color: var(--white);
