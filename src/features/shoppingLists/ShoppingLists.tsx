@@ -3,7 +3,6 @@ import React from "react";
 import { useQuery } from "react-query";
 
 import Container from "react-bootstrap/Container";
-import Spinner from "react-bootstrap/Spinner";
 import Row from "react-bootstrap/Row";
 
 import {
