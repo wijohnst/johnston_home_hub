@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import { Button } from "react-bootstrap";
 import {
   createColumnHelper,
   flexRender,
@@ -7,15 +8,32 @@ import {
   useReactTable,
   getSortedRowModel,
   SortingState,
+  Row,
 } from "@tanstack/react-table";
 import { ItemData } from "../../shoppingListsApi";
 
-import { SemanticWrapper } from "./StoreTable.style";
+import {
+  SemanticWrapper,
+  ItemName,
+  ItemActions,
+  ItemQuantity,
+} from "./StoreTable.style";
 import { AisleHeading } from "../aisle-heading/AisleHeading";
+import { AisleItem } from "../aisle-item/AisleItem";
 
-type Props = {};
+import { ReactComponent as CheckIcon } from "../../../../assets/images/green_check.svg";
+import { ReactComponent as DeleteIcon } from "../../../../assets/images/delete_icon.svg";
 
-const defaultData: ItemData[] = [
+type Props = {
+  aisleName: string;
+  initialOpenState: boolean;
+};
+
+type AisleItem = ItemData & {
+  isVisible: boolean;
+};
+
+let defaultData: AisleItem[] = [
   {
     _id: "1",
     name: "Apples",
@@ -31,6 +49,7 @@ const defaultData: ItemData[] = [
     },
     url: undefined,
     category: "Grocery",
+    isVisible: true,
   },
   {
     _id: "2",
@@ -47,6 +66,7 @@ const defaultData: ItemData[] = [
     },
     url: undefined,
     category: "Grocery",
+    isVisible: true,
   },
   {
     _id: "3",
@@ -63,32 +83,65 @@ const defaultData: ItemData[] = [
     },
     url: undefined,
     category: "Grocery",
+    isVisible: true,
   },
 ];
 
-const columnHelper = createColumnHelper<ItemData>();
+export const StoreTable = ({
+  aisleName = "Aisle Name",
+  initialOpenState = false,
+}: Props): React.ReactElement => {
+  const columnHelper = createColumnHelper<AisleItem>();
 
-const columns = [
-  columnHelper.accessor("name", {
-    cell: (info) => info.getValue(),
-    header: "Produce",
-    footer: (info) => "",
-  }),
-  columnHelper.accessor("quantity", {
-    cell: (info) => info.getValue(),
-    header: "",
-    footer: (info) => "",
-  }),
-  columnHelper.accessor("aisle", {
-    cell: (info) => info.getValue().aisle,
-    header: "",
-    footer: (info) => "",
-  }),
-];
+  const columns = [
+    columnHelper.accessor("name", {
+      cell: (info) => (
+        <ItemName>
+          <span>{info.getValue()}</span>
+        </ItemName>
+      ),
+      header: aisleName,
+      footer: (info) => "",
+    }),
+    columnHelper.accessor("quantity", {
+      cell: (info) => (
+        <ItemQuantity>
+          <span>{info.getValue()}</span>
+        </ItemQuantity>
+      ),
+      header: "",
+      footer: (info) => "",
+    }),
+    columnHelper.display({
+      id: "aisle actions",
+      cell: (cellContext) => {
+        const targetItem = cellContext.row.index;
+        const handleClick = (type: "check" | "delete"): void => {
+          if (type === "check") {
+            const updatedData = {
+              ...defaultData[targetItem],
+              isVisible: false,
+            };
+            defaultData[targetItem] = { ...updatedData };
+            setData([...defaultData]);
+          } else {
+            console.log("delete");
+          }
+        };
 
-export const StoreTable = ({}: Props): React.ReactElement => {
+        return (
+          <ItemActions>
+            <CheckIcon onClick={() => handleClick("check")} role="button" />
+            <DeleteIcon role="button" onClick={() => handleClick("delete")} />
+          </ItemActions>
+        );
+      },
+    }),
+  ];
+
   const [data, setData] = React.useState(() => [...defaultData]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [isOpen, setIsOpen] = React.useState(initialOpenState);
 
   const table = useReactTable({
     data,
@@ -100,25 +153,52 @@ export const StoreTable = ({}: Props): React.ReactElement => {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
+
+  /**
+   * Accepts a rows array and returns the number of visible rows
+   *
+   * @param rows Row<AisleItem>[]
+   * @returns number
+   */
+  const getIconCount = (rows: Row<AisleItem>[]): number => {
+    return rows.reduce((iconCount: number, currentRow: Row<AisleItem>) => {
+      if (currentRow.original.isVisible) {
+        iconCount++;
+      }
+      return iconCount;
+    }, 0);
+  };
+
   return (
     <>
       <AisleHeading
-        aisleName="Produce"
-        iconCount={table.getRowModel().rows.length}
-        isOpen={true}
-        handleCaretClick={() => console.log("Caret clicked...")}
+        aisleName={aisleName}
+        iconCount={getIconCount(table.getRowModel().rows)}
+        isOpen={isOpen}
+        handleCaretClick={() => setIsOpen(!isOpen)}
       ></AisleHeading>
       <SemanticWrapper>
         <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
+          {isOpen && (
+            <>
+              {table.getRowModel().rows.map((row) => (
+                <tr key={row.id}>
+                  {row.getVisibleCells().map((cell) => {
+                    if (cell.row.original.isVisible) {
+                      return (
+                        <AisleItem key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </AisleItem>
+                      );
+                    }
+                  })}
+                </tr>
               ))}
-            </tr>
-          ))}
+            </>
+          )}
         </tbody>
         <tfoot>
           {table.getFooterGroups().map((footerGroup) => (
