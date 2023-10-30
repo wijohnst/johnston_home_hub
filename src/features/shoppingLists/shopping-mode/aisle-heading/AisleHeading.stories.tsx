@@ -3,7 +3,7 @@ import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { AisleHeading } from "./AisleHeading";
 
 export default {
-  title: "Shopping List/Shopping Mode/Aisle Heading",
+  title: "Shopping List/Shopping Mode/AisleHeading",
   component: AisleHeading,
 } as ComponentMeta<typeof AisleHeading>;
 
