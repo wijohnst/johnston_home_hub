@@ -17,7 +17,7 @@ import {
   ItemName,
   ItemActions,
   ItemQuantity,
-} from "./StoreTable.style";
+} from "./AisleTable.style";
 import { AisleHeading } from "../aisle-heading/AisleHeading";
 import { AisleItem } from "../aisle-item/AisleItem";
 
@@ -87,7 +87,7 @@ let defaultData: AisleItem[] = [
   },
 ];
 
-export const StoreTable = ({
+export const AisleTable = ({
   aisleName = "Aisle Name",
   initialOpenState = false,
 }: Props): React.ReactElement => {
