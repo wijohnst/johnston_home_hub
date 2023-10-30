@@ -3,6 +3,7 @@ import * as React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import { AisleTable } from "./AisleTable";
+import { ShoppingMode } from "../shoppingMode";
 
 export default {
   title: "Shopping List/Shopping Mode/AisleTable",
@@ -16,4 +17,17 @@ const Template: ComponentStory<typeof AisleTable> = (args) => (
 );
 
 export const Default = Template.bind({});
-Default.args = {};
+Default.args = {
+  aisleName: "Aisle Name",
+  initialOpenState: false,
+  storeItemData: [
+    ShoppingMode.MOCK_SHOPPING_MODE_DATA.MOCK_ITEM_DATA_ENTRY,
+    ShoppingMode.MOCK_SHOPPING_MODE_DATA.MOCK_ITEM_DATA_ENTRY,
+  ],
+};
+
+export const Open = Template.bind({});
+Open.args = {
+  ...Default.args,
+  initialOpenState: true,
+};

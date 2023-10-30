@@ -1,6 +1,5 @@
 import * as React from "react";
 
-import { Button } from "react-bootstrap";
 import {
   createColumnHelper,
   flexRender,
@@ -27,74 +26,27 @@ import { ReactComponent as CheckIcon } from "../../../../assets/images/green_che
 import { ReactComponent as DeleteIcon } from "../../../../assets/images/delete_icon.svg";
 import { ReactComponent as NotVisibleIcon } from "../../../../assets/images/not_visible_icon.svg";
 
+import { ShoppingMode } from "../shoppingMode";
 type Props = {
   aisleName: string;
   initialOpenState: boolean;
+  storeItemData: ItemData[];
 };
-
-type AisleItem = ItemData & {
-  isVisible: boolean;
-};
-
-let defaultData: AisleItem[] = [
-  {
-    _id: "1",
-    name: "Apples",
-    quantity: "2 EA.",
-    store: {
-      _id: "1",
-      name: "Walmart",
-      category: "Grocery",
-    },
-    aisle: {
-      _id: "1",
-      aisle: "Produce",
-    },
-    url: undefined,
-    category: "Grocery",
-    isVisible: true,
-  },
-  {
-    _id: "2",
-    name: "Bananas",
-    quantity: "6 EA.",
-    store: {
-      _id: "1",
-      name: "Walmart",
-      category: "Grocery",
-    },
-    aisle: {
-      _id: "1",
-      aisle: "Produce",
-    },
-    url: undefined,
-    category: "Grocery",
-    isVisible: true,
-  },
-  {
-    _id: "3",
-    name: "Bread",
-    quantity: "1 loaf",
-    store: {
-      _id: "1",
-      name: "Walmart",
-      category: "Grocery",
-    },
-    aisle: {
-      _id: "2",
-      aisle: "Bakery",
-    },
-    url: undefined,
-    category: "Grocery",
-    isVisible: true,
-  },
-];
 
 export const AisleTable = ({
   aisleName = "Aisle Name",
   initialOpenState = false,
+  storeItemData,
 }: Props): React.ReactElement => {
-  const columnHelper = createColumnHelper<AisleItem>();
+  const defaultData = React.useMemo((): ShoppingMode.AisleItem[] => {
+    return storeItemData.map((itemData: ItemData) => {
+      return {
+        ...itemData,
+        isVisible: true,
+      };
+    });
+  }, [storeItemData]);
+  const columnHelper = createColumnHelper<ShoppingMode.AisleItem>();
 
   const columns = [
     columnHelper.accessor("name", {
@@ -187,19 +139,24 @@ export const AisleTable = ({
   /**
    * Accepts a rows array and returns the number of visible rows
    *
-   * @param rows Row<AisleItem>[]
+   * @param rows Row<ShoppingMode.AisleItem>[]
    * @returns number
    */
-  const getIconCount = (rows: Row<AisleItem>[]): number => {
-    return rows.reduce((iconCount: number, currentRow: Row<AisleItem>) => {
-      if (currentRow.original.isVisible) {
-        iconCount++;
-      }
-      return iconCount;
-    }, 0);
+  const getIconCount = (rows: Row<ShoppingMode.AisleItem>[]): number => {
+    return rows.reduce(
+      (iconCount: number, currentRow: Row<ShoppingMode.AisleItem>) => {
+        if (currentRow.original.isVisible) {
+          iconCount++;
+        }
+        return iconCount;
+      },
+      0
+    );
   };
 
-  const getHiddenRows = (rows: Row<AisleItem>[]): Row<AisleItem>[] => {
+  const getHiddenRows = (
+    rows: Row<ShoppingMode.AisleItem>[]
+  ): Row<ShoppingMode.AisleItem>[] => {
     return rows.filter((row) => !row.original.isVisible);
   };
 

@@ -18,15 +18,11 @@ export const AisleHeading = ({
   handleCaretClick,
 }: Props) => {
   return (
-    <SemanticWrapper isOpen={isOpen}>
+    <SemanticWrapper isOpen={isOpen} onClick={handleCaretClick}>
       <div className="header-content">
         <h2>{aisleName}</h2>
         <div className="header-content__icons">
-          <div
-            className="header-content__icons__caret"
-            onClick={handleCaretClick}
-            role="button"
-          >
+          <div className="header-content__icons__caret" role="button">
             <CaretIcon />
           </div>
           <div className="header-content__icons__count">
