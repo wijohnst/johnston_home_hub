@@ -6,6 +6,7 @@ export const SemanticWrapper = styled.div<{
   width: 100%;
   background-color: var(--primary-blue);
   color: white;
+  cursor: pointer;
 
   h2 {
     margin: 0 0 0 0.25rem;
