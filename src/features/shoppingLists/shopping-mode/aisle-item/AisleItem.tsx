@@ -1,11 +1,15 @@
 import * as React from "react";
 
-type Props = {
-  children: React.ReactNode;
-};
-
 import { SemanticWrapper } from "./AisleItem.style";
 
-export const AisleItem = ({ children }: Props): React.ReactElement => {
-  return <SemanticWrapper>{children}</SemanticWrapper>;
+type Props = {
+  children: React.ReactNode;
+  isHidden: boolean;
+};
+
+export const AisleItem = ({
+  children,
+  isHidden = false,
+}: Props): React.ReactElement => {
+  return <SemanticWrapper isHidden={isHidden}>{children}</SemanticWrapper>;
 };
