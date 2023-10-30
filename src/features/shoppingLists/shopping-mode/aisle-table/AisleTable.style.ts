@@ -14,6 +14,14 @@ export const SemanticWrapper = styled.table`
     border-bottom: solid thin black;
   }
 
+  tfoot {
+    text-align: right;
+
+    span {
+      color: var(--white);
+    }
+  }
+
   .cursor-pointer {
     cursor: pointer;
   }

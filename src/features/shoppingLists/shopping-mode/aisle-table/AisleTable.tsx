@@ -11,6 +11,7 @@ import {
   Row,
 } from "@tanstack/react-table";
 import { ItemData } from "../../shoppingListsApi";
+import { LinkSpan } from "../../../../components/SharedComponents/SharedComponents";
 
 import {
   SemanticWrapper,
@@ -20,9 +21,11 @@ import {
 } from "./AisleTable.style";
 import { AisleHeading } from "../aisle-heading/AisleHeading";
 import { AisleItem } from "../aisle-item/AisleItem";
+import { AisleFooter } from "../aisle-footer/AisleFooter";
 
 import { ReactComponent as CheckIcon } from "../../../../assets/images/green_check.svg";
 import { ReactComponent as DeleteIcon } from "../../../../assets/images/delete_icon.svg";
+import { ReactComponent as NotVisibleIcon } from "../../../../assets/images/not_visible_icon.svg";
 
 type Props = {
   aisleName: string;
@@ -101,7 +104,6 @@ export const AisleTable = ({
         </ItemName>
       ),
       header: aisleName,
-      footer: (info) => "",
     }),
     columnHelper.accessor("quantity", {
       cell: (info) => (
@@ -110,13 +112,14 @@ export const AisleTable = ({
         </ItemQuantity>
       ),
       header: "",
-      footer: (info) => "",
     }),
     columnHelper.display({
       id: "aisle actions",
       cell: (cellContext) => {
         const targetItem = cellContext.row.index;
-        const handleClick = (type: "check" | "delete"): void => {
+        const isHidden = !cellContext.row.original.isVisible;
+
+        const handleClick = (type: "check" | "delete" | "unhide"): void => {
           if (type === "check") {
             const updatedData = {
               ...defaultData[targetItem],
@@ -124,15 +127,41 @@ export const AisleTable = ({
             };
             defaultData[targetItem] = { ...updatedData };
             setData([...defaultData]);
-          } else {
+          }
+
+          if (type === "delete") {
             console.log("delete");
+          }
+
+          if (type === "unhide") {
+            const updatedData = {
+              ...defaultData[targetItem],
+              isVisible: true,
+            };
+            defaultData[targetItem] = { ...updatedData };
+            setData([...defaultData]);
           }
         };
 
         return (
           <ItemActions>
-            <CheckIcon onClick={() => handleClick("check")} role="button" />
-            <DeleteIcon role="button" onClick={() => handleClick("delete")} />
+            {!isHidden && (
+              <>
+                <CheckIcon onClick={() => handleClick("check")} role="button" />
+                <DeleteIcon
+                  role="button"
+                  onClick={() => handleClick("delete")}
+                />
+              </>
+            )}
+            {isHidden && (
+              <>
+                <NotVisibleIcon
+                  role="button"
+                  onClick={() => handleClick("unhide")}
+                />
+              </>
+            )}
           </ItemActions>
         );
       },
@@ -142,6 +171,7 @@ export const AisleTable = ({
   const [data, setData] = React.useState(() => [...defaultData]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [isOpen, setIsOpen] = React.useState(initialOpenState);
+  const [hiddenRowsAreShown, setHiddenRowsAreShown] = React.useState(false);
 
   const table = useReactTable({
     data,
@@ -169,6 +199,34 @@ export const AisleTable = ({
     }, 0);
   };
 
+  const getHiddenRows = (rows: Row<AisleItem>[]): Row<AisleItem>[] => {
+    return rows.filter((row) => !row.original.isVisible);
+  };
+
+  const hasHiddenRows = (): boolean => {
+    return getHiddenRows(table.getRowModel().rows).length > 0;
+  };
+
+  const getLinkSpan = (): React.ReactElement | null => {
+    if (hasHiddenRows() && !hiddenRowsAreShown) {
+      return (
+        <LinkSpan role="button" onClick={() => setHiddenRowsAreShown(true)}>
+          Show Hidden Rows
+        </LinkSpan>
+      );
+    }
+
+    if (hiddenRowsAreShown === true) {
+      return (
+        <LinkSpan role="button" onClick={() => setHiddenRowsAreShown(false)}>
+          Hide Hidden Rows
+        </LinkSpan>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <>
       <AisleHeading
@@ -186,7 +244,17 @@ export const AisleTable = ({
                   {row.getVisibleCells().map((cell) => {
                     if (cell.row.original.isVisible) {
                       return (
-                        <AisleItem key={cell.id}>
+                        <AisleItem key={cell.id} isHidden={false}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </AisleItem>
+                      );
+                    }
+                    if (!cell.row.original.isVisible && hiddenRowsAreShown) {
+                      return (
+                        <AisleItem key={cell.id} isHidden={true}>
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
@@ -200,22 +268,11 @@ export const AisleTable = ({
             </>
           )}
         </tbody>
-        <tfoot>
-          {table.getFooterGroups().map((footerGroup) => (
-            <tr key={footerGroup.id}>
-              {footerGroup.headers.map((header) => (
-                <th key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.footer,
-                        header.getContext()
-                      )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </tfoot>
+        <AisleFooter>
+          <tr>
+            <th colSpan={table.getAllColumns().length}>{getLinkSpan()}</th>
+          </tr>
+        </AisleFooter>
       </SemanticWrapper>
     </>
   );
