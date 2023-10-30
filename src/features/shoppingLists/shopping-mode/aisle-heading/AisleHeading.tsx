@@ -25,6 +25,7 @@ export const AisleHeading = ({
           <div
             className="header-content__icons__caret"
             onClick={handleCaretClick}
+            role="button"
           >
             <CaretIcon />
           </div>

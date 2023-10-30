@@ -10,9 +10,10 @@ export default {
 } as ComponentMeta<typeof StoreTable>;
 
 const Template: ComponentStory<typeof StoreTable> = (args) => (
-  <div style={{ width: "600px" }}>
+  <div style={{ width: "400px" }}>
     <StoreTable {...args} />
   </div>
 );
 
 export const Default = Template.bind({});
+Default.args = {};
