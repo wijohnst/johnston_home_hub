@@ -1,11 +1,15 @@
-:root{
+:root, html{
         /* Colors */
         --primary-blue: #061EF2;
+        --primary-green: #198753;
         --bg-light-gray: #D9D9D9;
+        --bg-light-blue: #CFE2FF;
         --white: #FFFFFF;
 
         /* Clip-Paths */
         --clip-path-circle: circle(50% at 50% 50%);
+
+        box-sizing: border-box;
 }
 body {
   margin: 0;
