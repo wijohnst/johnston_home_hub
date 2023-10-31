@@ -10,11 +10,12 @@ export default {
   component: ShoppingModeModal,
 } as ComponentMeta<typeof ShoppingModeModal>;
 
+const MOCK_GROCERY_ITEM =
+  ShoppingMode.MOCK_SHOPPING_MODE_DATA.MOCK_GROCERY_ITEM;
+
 const Template: ComponentStory<typeof ShoppingModeModal> = (args) => (
   <ShoppingModeModal {...args} />
 );
-const MOCK_GROCERY_ITEM =
-  ShoppingMode.MOCK_SHOPPING_MODE_DATA.MOCK_GROCERY_ITEM;
 
 export const Default = Template.bind({});
 Default.args = {
