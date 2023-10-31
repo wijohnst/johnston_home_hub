@@ -92,7 +92,6 @@ const ShoppingLists = (props: Props) => {
       <ShoppingModeModal
         isShown={shouldShowShoppingModeModal}
         storeName={shoppingModeStoreName}
-        storeItemData={shoppingModeStoreItemData}
         groceryList={
           shoppingLists
             ?.filter(

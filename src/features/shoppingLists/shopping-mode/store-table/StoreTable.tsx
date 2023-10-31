@@ -34,11 +34,11 @@ export const StoreTable = ({
   return (
     <SemanticWrapper>
       <h1>{storeName}</h1>
-      {Object.entries(itemByAisleMap).map(([aisleName, itemData]) => (
+      {Object.entries(itemByAisleMap).map(([aisleName, itemData], index) => (
         <div className="table-wrapper">
           <AisleTable
             aisleName={aisleName}
-            initialOpenState={true}
+            initialOpenState={index === 0 ? true : false}
             storeItemData={itemData}
           />
         </div>

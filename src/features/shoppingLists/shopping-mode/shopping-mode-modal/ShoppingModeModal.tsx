@@ -7,7 +7,6 @@ import { Button } from "react-bootstrap";
 
 type Props = {
   isShown: boolean;
-  storeItemData: ItemData[];
   groceryList: GroceryItem[];
   storeName: string;
   handleDoneShoppingClick: () => void;
@@ -15,7 +14,6 @@ type Props = {
 
 export const ShoppingModeModal = ({
   isShown,
-  storeItemData,
   groceryList,
   storeName,
   handleDoneShoppingClick,
