@@ -13,18 +13,18 @@ export default {
 const Template: ComponentStory<typeof ShoppingModeModal> = (args) => (
   <ShoppingModeModal {...args} />
 );
-const MOCK_ITEM_DATA_ENTRY =
-  ShoppingMode.MOCK_SHOPPING_MODE_DATA.MOCK_ITEM_DATA_ENTRY;
+const MOCK_GROCERY_ITEM =
+  ShoppingMode.MOCK_SHOPPING_MODE_DATA.MOCK_GROCERY_ITEM;
 
 export const Default = Template.bind({});
 Default.args = {
   isShown: true,
   storeName: "Store Name",
-  storeItemData: [
-    getMockValueWithUpdatedFields(MOCK_ITEM_DATA_ENTRY, {
+  groceryList: [
+    getMockValueWithUpdatedFields(MOCK_GROCERY_ITEM, {
       aisle: { _id: "1", aisle: "Aisle 1" },
     }),
-    getMockValueWithUpdatedFields(MOCK_ITEM_DATA_ENTRY, {
+    getMockValueWithUpdatedFields(MOCK_GROCERY_ITEM, {
       aisle: { _id: "2", aisle: "Aisle 2" },
     }),
   ],

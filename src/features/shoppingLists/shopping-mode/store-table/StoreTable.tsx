@@ -1,20 +1,20 @@
 import * as React from "react";
 
 import { SemanticWrapper } from "./StoreTable.style";
-import { ItemData } from "../../shoppingListsApi";
+import { GroceryItem } from "../../shoppingListsApi";
 import { ShoppingMode } from "../shoppingMode";
 import { AisleTable } from "../aisle-table/AisleTable";
 
 type Props = {
-  itemData: ItemData[];
+  groceryList: GroceryItem[];
   storeName: string;
 };
 
 const getItemsByAisleMap = (
-  itemData: ItemData[]
+  itemData: GroceryItem[]
 ): ShoppingMode.ItemsByAisleMap => {
   return itemData.reduce(
-    (itemsByAisleMap: ShoppingMode.ItemsByAisleMap, itemData: ItemData) => {
+    (itemsByAisleMap: ShoppingMode.ItemsByAisleMap, itemData: GroceryItem) => {
       const { aisle } = itemData;
       if (!itemsByAisleMap[aisle.aisle]) {
         itemsByAisleMap[aisle.aisle] = [];
@@ -26,10 +26,10 @@ const getItemsByAisleMap = (
   );
 };
 export const StoreTable = ({
-  itemData,
+  groceryList,
   storeName,
 }: Props): React.ReactElement => {
-  const itemByAisleMap = getItemsByAisleMap(itemData);
+  const itemByAisleMap = getItemsByAisleMap(groceryList);
 
   return (
     <SemanticWrapper>

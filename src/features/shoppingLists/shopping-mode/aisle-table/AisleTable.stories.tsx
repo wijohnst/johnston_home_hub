@@ -21,8 +21,8 @@ Default.args = {
   aisleName: "Aisle Name",
   initialOpenState: false,
   storeItemData: [
-    ShoppingMode.MOCK_SHOPPING_MODE_DATA.MOCK_ITEM_DATA_ENTRY,
-    ShoppingMode.MOCK_SHOPPING_MODE_DATA.MOCK_ITEM_DATA_ENTRY,
+    ShoppingMode.MOCK_SHOPPING_MODE_DATA.MOCK_GROCERY_ITEM,
+    ShoppingMode.MOCK_SHOPPING_MODE_DATA.MOCK_GROCERY_ITEM,
   ],
 };
 
