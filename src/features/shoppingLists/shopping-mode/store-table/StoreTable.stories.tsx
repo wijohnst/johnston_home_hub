@@ -2,6 +2,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import { StoreTable } from "./StoreTable";
 import { ShoppingMode } from "../shoppingMode";
+import { getMockValueWithUpdatedFields } from "../../../../mocks/mock-utils";
 
 export default {
   title: "Shopping List/ Shopping Mode/StoreTable",
@@ -12,26 +13,19 @@ const Template: ComponentStory<typeof StoreTable> = (args) => (
   <StoreTable {...args} />
 );
 
-const MOCK_ITEM_DATA_ENTRY =
-  ShoppingMode.MOCK_SHOPPING_MODE_DATA.MOCK_ITEM_DATA_ENTRY;
+const MOCK_GROCERY_ITEM =
+  ShoppingMode.MOCK_SHOPPING_MODE_DATA.MOCK_GROCERY_ITEM;
+
 export const Default = Template.bind({});
 Default.args = {
-  itemData: [
-    {
-      ...MOCK_ITEM_DATA_ENTRY,
-      name: "Bananas",
-      aisle: { _id: "1", aisle: "Produce" },
-    },
-    {
-      ...MOCK_ITEM_DATA_ENTRY,
-      name: "Bread",
-      aisle: { _id: "2", aisle: "Bakery" },
-    },
-    {
-      ...MOCK_ITEM_DATA_ENTRY,
-      name: "Apples",
-      aisle: { _id: "1", aisle: "Produce" },
-    },
+  groceryList: [
+    getMockValueWithUpdatedFields(MOCK_GROCERY_ITEM, {
+      aisle: { _id: "1", aisle: "Aisle 1" },
+    }),
+    getMockValueWithUpdatedFields(MOCK_GROCERY_ITEM, {
+      name: "Some Other Mock Item",
+      aisle: { _id: "2", aisle: "Aisle 2" },
+    }),
   ],
   storeName: "Store Name",
 };

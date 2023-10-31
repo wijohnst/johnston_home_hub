@@ -9,7 +9,7 @@ import {
   SortingState,
   Row,
 } from "@tanstack/react-table";
-import { ItemData } from "../../shoppingListsApi";
+import { GroceryItem, ItemData } from "../../shoppingListsApi";
 import { LinkSpan } from "../../../../components/SharedComponents/SharedComponents";
 
 import {
@@ -30,7 +30,7 @@ import { ShoppingMode } from "../shoppingMode";
 type Props = {
   aisleName: string;
   initialOpenState: boolean;
-  storeItemData: ItemData[];
+  storeItemData: GroceryItem[];
 };
 
 export const AisleTable = ({
@@ -39,7 +39,7 @@ export const AisleTable = ({
   storeItemData,
 }: Props): React.ReactElement => {
   const defaultData = React.useMemo((): ShoppingMode.AisleItem[] => {
-    return storeItemData.map((itemData: ItemData) => {
+    return storeItemData.map((itemData: GroceryItem) => {
       return {
         ...itemData,
         isVisible: true,

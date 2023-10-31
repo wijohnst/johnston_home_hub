@@ -1,14 +1,18 @@
-import { ItemData } from "../shoppingListsApi";
+import {
+  GroceryItem,
+  ItemData,
+  ShoppingListCategoriesEnum,
+} from "../shoppingListsApi";
 
 export namespace ShoppingMode {
-  export type AisleItem = ItemData & {
+  export type AisleItem = GroceryItem & {
     isVisible: boolean;
   };
 
-  export type ItemsByAisleMap = Record<string, ItemData[]>;
+  export type ItemsByAisleMap = Record<string, GroceryItem[]>;
 
   export namespace MOCK_SHOPPING_MODE_DATA {
-    export const MOCK_ITEM_DATA_ENTRY: ItemData = {
+    export const MOCK_GROCERY_ITEM: GroceryItem = {
       _id: "MOCK_ITEM_ID",
       name: "Mock Item Name",
       quantity: "1 EA.",
@@ -17,12 +21,11 @@ export namespace ShoppingMode {
         name: "MOCK_STORE_NAME",
         category: "MOCK_STORE_CATEGORY",
       },
-      url: undefined,
       aisle: {
         _id: "MOCK_AISLE_ID",
         aisle: "MOCK_AISLE_NAME",
       },
-      category: "MOCK_ITEM_CATEGORY",
+      category: ShoppingListCategoriesEnum.GROCERY,
     };
   }
 }

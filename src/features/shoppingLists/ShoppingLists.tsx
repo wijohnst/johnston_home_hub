@@ -13,6 +13,8 @@ import {
   getAllAisles,
   ItemData,
   Item,
+  ShoppingListCategoriesEnum,
+  GroceryItem,
 } from "./shoppingListsApi";
 import { ShoppingListsHeader } from "./ShoppingList.style";
 import ShoppingListCard from "./ShoppingListCard/ShoppingListCard";
@@ -91,6 +93,19 @@ const ShoppingLists = (props: Props) => {
         isShown={shouldShowShoppingModeModal}
         storeName={shoppingModeStoreName}
         storeItemData={shoppingModeStoreItemData}
+        groceryList={
+          shoppingLists
+            ?.filter(
+              (shoppingList) =>
+                shoppingList.category === ShoppingListCategoriesEnum.GROCERY
+            )
+            .map((shoppingList) =>
+              shoppingList.items.filter(
+                (item: Item) => item.store.name === shoppingModeStoreName
+              )
+            )
+            .flat() as GroceryItem[]
+        }
         handleDoneShoppingClick={() => setShouldShowShoppingModeModal(false)}
       />
     </>
