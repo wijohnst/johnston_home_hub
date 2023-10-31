@@ -21,6 +21,7 @@ import {
   OnlineItem,
   removeItemFromShoppingList,
   ShoppingList,
+  ShoppingListCategoriesEnum,
   Store,
 } from "../shoppingListsApi";
 
@@ -47,6 +48,7 @@ type Props = {
   storesList: Store[];
   items: AllItemsUnion[];
   aisles: Aisle[];
+  handleShopClick: (storeName: string, targetItems: Item[]) => void;
 };
 
 const ShoppingListCard = ({
@@ -54,6 +56,7 @@ const ShoppingListCard = ({
   storesList,
   items,
   aisles,
+  handleShopClick,
 }: Props) => {
   const QueryClient = useQueryClient();
 
@@ -70,17 +73,14 @@ const ShoppingListCard = ({
 
   const [targetStore, setTargetStore] = React.useState("all");
   const [showAddItemForm, setShowAddItemForm] = React.useState(false);
-  const [itemToEdit, setItemToEdit] = React.useState<AllItemsUnion | undefined>(
-    undefined
-  );
+  const [itemToEdit, setItemToEdit] =
+    React.useState<AllItemsUnion | undefined>(undefined);
   const [isEdit, setIsEdit] = React.useState(false);
   const [idsToDelete, setIdsToDelete] = React.useState<string[]>([]);
 
   const isMobile = useMediaQuery(Breakpoints.mobile);
 
-  /*
-		This filters the shoppingList `Items` that are shown, filtering based on store name
-	*/
+  // This filters the shoppingList `Items` that are shown, filtering based on store name
   const targetItems = React.useMemo(() => {
     if (targetStore === "all") {
       return shoppingList.items;
@@ -277,6 +277,12 @@ const ShoppingListCard = ({
               >{`Remove ${idsToDelete.length} items`}</Button>
             </SubmitButton>
           )}
+          {targetStore !== "all" &&
+            shoppingList.category === ShoppingListCategoriesEnum.GROCERY && (
+              <Button onClick={() => handleShopClick(targetStore, targetItems)}>
+                Shop at {targetStore}
+              </Button>
+            )}
         </Card.Body>
       </Card>
     </ShoppingListCardWrapper>
