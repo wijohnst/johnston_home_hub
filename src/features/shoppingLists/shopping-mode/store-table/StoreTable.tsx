@@ -35,7 +35,7 @@ export const StoreTable = ({
     <SemanticWrapper>
       <h1>{storeName}</h1>
       {Object.entries(itemByAisleMap).map(([aisleName, itemData], index) => (
-        <div className="table-wrapper">
+        <div className="table-wrapper" key={`AisleTable-${index}`}>
           <AisleTable
             aisleName={aisleName}
             initialOpenState={index === 0 ? true : false}
