@@ -29,6 +29,7 @@ import {
 
 import { QuantityUnitsEnum } from "../../../constants";
 import AutoCompleteInput from "../../../components/AutoCompleteInput/AutoCompleteInput";
+import { getSortedUniqueValues } from "../../../SharedUtils";
 
 type Props = {
   category: ShoppingListCategoriesEnum;
@@ -47,6 +48,9 @@ const AddItemForm = ({
   items,
   aisles,
 }: Props) => {
+  const sortedUniqueAisles = getSortedUniqueValues(aisles, "aisle");
+  const sortedUniqueStores = getSortedUniqueValues(stores, "name");
+
   const formSchema = yup.object().shape({
     name: yup.string().required("Please enter an item name."),
     aisle:
@@ -242,7 +246,7 @@ const AddItemForm = ({
                   return (
                     <Form.Select onChange={onChange} isInvalid={!!error}>
                       <option>Please select an aisle.</option>
-                      {aisles?.map((aisle: Aisle) => (
+                      {sortedUniqueAisles?.map((aisle: Aisle) => (
                         <option key={`option-${aisle.aisle}`} value={aisle._id}>
                           {aisle.aisle}
                         </option>
@@ -300,7 +304,7 @@ const AddItemForm = ({
                 return (
                   <Form.Select onChange={onChange} isInvalid={!!error}>
                     <option>Please select a store.</option>
-                    {stores.map((store: Store) => (
+                    {sortedUniqueStores.map((store: Store) => (
                       <option key={`option-${store.name}`} value={store._id}>
                         {store.name}
                       </option>

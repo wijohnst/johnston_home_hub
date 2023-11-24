@@ -24,6 +24,7 @@ import {
   getAisleDataFromForm,
   getStoreDataFromForm,
 } from "../AddItemForm/AddItemForm.utils";
+import { getSortedUniqueValues } from "../../../SharedUtils";
 
 type Props = {
   itemToEdit: AllItemsUnion;
@@ -42,6 +43,9 @@ type FormInputs = {
 };
 
 const EditItemForm = ({ itemToEdit, handleCancel, aisles, stores }: Props) => {
+  const sortedUniqueAisles = getSortedUniqueValues(aisles, "aisle");
+  const sortedUniqueStores = getSortedUniqueValues(stores, "name");
+
   const isGroceryItem = "aisle" in itemToEdit;
   const isOnlineItem = "url" in itemToEdit;
 
@@ -186,7 +190,7 @@ const EditItemForm = ({ itemToEdit, handleCancel, aisles, stores }: Props) => {
                 return (
                   <Form.Select onChange={onChange}>
                     <option>Please select an aisle.</option>
-                    {aisles.map((aisle: Aisle) => (
+                    {sortedUniqueAisles.map((aisle: Aisle) => (
                       <option key={`option-${aisle._id}`} value={aisle._id}>
                         {aisle.aisle}
                       </option>
@@ -217,7 +221,7 @@ const EditItemForm = ({ itemToEdit, handleCancel, aisles, stores }: Props) => {
               return (
                 <Form.Select onChange={onChange}>
                   <option>Please select a store.</option>
-                  {stores.map((store: Store) => (
+                  {sortedUniqueStores.map((store: Store) => (
                     <option key={`option-${store._id}`} value={store._id}>
                       {store.name}
                     </option>
