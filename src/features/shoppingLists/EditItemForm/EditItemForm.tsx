@@ -37,7 +37,7 @@ type FormInputs = {
   aisle: string;
   store: string;
   url: string;
-  ammount: number;
+  amount: number;
   unit: string;
 };
 
@@ -75,7 +75,7 @@ const EditItemForm = ({ itemToEdit, handleCancel, aisles, stores }: Props) => {
         ? yup.string().required("Please enter an aisle name.")
         : yup.string().nullable(),
     store: yup.string().required("Please enter a store name."),
-    ammount: yup.string().required("Quantity is required."),
+    amount: yup.string().required("Quantity is required."),
     unit: yup.string().required("Please select a unit."),
     url:
       itemToEdit.category === ShoppingListCategoriesEnum.ONLINE
@@ -94,7 +94,7 @@ const EditItemForm = ({ itemToEdit, handleCancel, aisles, stores }: Props) => {
       store: itemToEdit.store._id,
       url: isOnlineItem ? itemToEdit.url : "",
       unit: "ea.",
-      ammount: 1,
+      amount: 1,
     },
     resolver: yupResolver(formSchema),
   });
@@ -133,7 +133,7 @@ const EditItemForm = ({ itemToEdit, handleCancel, aisles, stores }: Props) => {
   }, [unitValue]);
 
   const onSubmit = (data: FieldValues) => {
-    const quantityString = `${data.ammount} ${data.unit}`;
+    const quantityString = `${data.amount} ${data.unit}`;
 
     const store = getStoreDataFromForm(
       isCustomStore,
@@ -260,7 +260,7 @@ const EditItemForm = ({ itemToEdit, handleCancel, aisles, stores }: Props) => {
         <Quantity>
           <Controller
             control={control}
-            name="ammount"
+            name="amount"
             render={({ field: { onChange } }) => (
               <Form.Control
                 type="number"

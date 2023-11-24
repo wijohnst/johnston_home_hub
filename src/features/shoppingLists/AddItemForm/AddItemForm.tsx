@@ -54,7 +54,7 @@ const AddItemForm = ({
         ? yup.string().required("Please enter an aisle name.")
         : yup.string().nullable(),
     store: yup.string().required("Please enter a store name."),
-    ammount: yup.string().required("Quantity is required."),
+    amount: yup.string().required("Quantity is required."),
     unit: yup.string().required("Please select a unit."),
     url:
       category === ShoppingListCategoriesEnum.ONLINE
@@ -90,9 +90,8 @@ const AddItemForm = ({
   const [isCustomUnit, setIsCustomUnit] = React.useState(false);
   const [isCustomStore, setIsCustomStore] = React.useState(false);
   const [isCustomAisle, setIsCustomAisle] = React.useState(false);
-  const [suggestedItem, setSuggestedItem] = React.useState<any | undefined>(
-    undefined
-  );
+  const [suggestedItem, setSuggestedItem] =
+    React.useState<any | undefined>(undefined);
 
   React.useEffect(() => {
     if (unitValue === "custom") {
@@ -162,7 +161,7 @@ const AddItemForm = ({
   );
 
   const onSubmit = (data: FieldValues) => {
-    const quantityString = `${data.ammount} ${data.unit}`;
+    const quantityString = `${data.amount} ${data.unit}`;
 
     const store = isCustomStore
       ? {
@@ -352,7 +351,7 @@ const AddItemForm = ({
         <Quantity>
           <Controller
             control={control}
-            name="ammount"
+            name="amount"
             render={({ field: { onChange }, fieldState: { error } }) => (
               <Form.Control
                 type="number"
