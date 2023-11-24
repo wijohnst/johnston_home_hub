@@ -1,8 +1,4 @@
-import {
-  GroceryItem,
-  ItemData,
-  ShoppingListCategoriesEnum,
-} from "../shoppingListsApi";
+import { GroceryItem, ShoppingListCategoriesEnum } from "../shoppingListsApi";
 
 export namespace ShoppingMode {
   export type AisleItem = GroceryItem & {
