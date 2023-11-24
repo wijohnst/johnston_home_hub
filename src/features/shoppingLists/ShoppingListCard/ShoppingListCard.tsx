@@ -42,6 +42,7 @@ import AddItemForm from "../AddItemForm/AddItemForm";
 import EditItemForm from "../EditItemForm/EditItemForm";
 
 import { ReactComponent as ShareIcon } from "../../../assets/images/share_icon.svg";
+import { getSortedUniqueValues } from "../../../SharedUtils";
 
 type Props = {
   shoppingList: ShoppingList;
@@ -158,7 +159,7 @@ const ShoppingListCard = ({
             )}
             {(isMobile || storeIds.length > 4) && (
               <StoreSelectDropdown
-                stores={stores}
+                stores={getSortedUniqueValues(stores, "name")}
                 storeIds={storeIds}
                 handleStoreSelection={(storeName) => setTargetStore(storeName)}
               />
@@ -351,7 +352,7 @@ const StoreSelectDropdown = ({
         <Dropdown.Toggle>Stores</Dropdown.Toggle>
         <Dropdown.Menu>
           {storeIds.map((storeId: string) => (
-            <Dropdown.Item eventKey={storeId}>
+            <Dropdown.Item eventKey={storeId} key={storeId}>
               {stores.find((store: Store) => store._id === storeId)?.name ?? ""}
             </Dropdown.Item>
           ))}
