@@ -18,7 +18,6 @@ export const ShoppingModeModal = ({
   storeName,
   handleDoneShoppingClick,
 }: Props): React.ReactElement => {
-  console.log(groceryList);
   return (
     <SemanticWrapper show={isShown}>
       <div className="modal-content">

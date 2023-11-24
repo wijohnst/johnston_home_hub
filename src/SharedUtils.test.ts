@@ -1,4 +1,7 @@
-import { getDayOfTheWeekValueFromDate } from "./SharedUtils";
+import {
+  getDayOfTheWeekValueFromDate,
+  getSortedUniqueValues,
+} from "./SharedUtils";
 
 describe("Shared Utils unit tests", () => {
   describe("getDayOfTheWeekValueFromDate unit tests", () => {
@@ -49,6 +52,50 @@ describe("Shared Utils unit tests", () => {
       it(`Should return ${test.expected} for the date ${test.testDate}`, () => {
         expect(getDayOfTheWeekValueFromDate(test.testDate)).toBe(test.expected);
       });
+    });
+  });
+
+  describe("getSortedUniqueValues unit tests", () => {
+    it("✅ should be defined", () => {
+      expect(getSortedUniqueValues).toBeDefined();
+    });
+
+    it("✅ should return the correctly sorted array of unique values", () => {
+      const stub = [{ id: 1 }, { id: 1 }, { id: 2 }];
+
+      expect(getSortedUniqueValues(stub, "id")).toEqual([{ id: 1 }, { id: 2 }]);
+    });
+
+    it("✅ should return the correctly sorted array of unique values", () => {
+      const stub = [{ id: "A" }, { id: "C" }, { id: "B" }];
+
+      expect(getSortedUniqueValues(stub, "id")).toEqual([
+        { id: "A" },
+        { id: "B" },
+        { id: "C" },
+      ]);
+    });
+
+    it("✅ should return the correctly sorted array of unique values", () => {
+      const stub = [{ id: "A" }, { id: "A" }, { id: "B" }];
+
+      expect(getSortedUniqueValues(stub, "id")).toEqual([
+        { id: "A" },
+        { id: "B" },
+      ]);
+    });
+
+    it("✅ should return the correctly sorted array of unique values", () => {
+      const stub = [
+        { id: "A", name: "A" },
+        { id: "A", name: "B" },
+        { id: "B", name: "C" },
+      ];
+
+      expect(getSortedUniqueValues(stub, "id")).toEqual([
+        { id: "A", name: "A" },
+        { id: "B", name: "C" },
+      ]);
     });
   });
 });

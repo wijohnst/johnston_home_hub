@@ -29,6 +29,7 @@ import {
 
 import { QuantityUnitsEnum } from "../../../constants";
 import AutoCompleteInput from "../../../components/AutoCompleteInput/AutoCompleteInput";
+import { getSortedUniqueValues } from "../../../SharedUtils";
 
 type Props = {
   category: ShoppingListCategoriesEnum;
@@ -47,6 +48,9 @@ const AddItemForm = ({
   items,
   aisles,
 }: Props) => {
+  const sortedUniqueAisles = getSortedUniqueValues(aisles, "aisle");
+  const sortedUniqueStores = getSortedUniqueValues(stores, "name");
+
   const formSchema = yup.object().shape({
     name: yup.string().required("Please enter an item name."),
     aisle:
@@ -54,7 +58,7 @@ const AddItemForm = ({
         ? yup.string().required("Please enter an aisle name.")
         : yup.string().nullable(),
     store: yup.string().required("Please enter a store name."),
-    ammount: yup.string().required("Quantity is required."),
+    amount: yup.string().required("Quantity is required."),
     unit: yup.string().required("Please select a unit."),
     url:
       category === ShoppingListCategoriesEnum.ONLINE
@@ -90,9 +94,8 @@ const AddItemForm = ({
   const [isCustomUnit, setIsCustomUnit] = React.useState(false);
   const [isCustomStore, setIsCustomStore] = React.useState(false);
   const [isCustomAisle, setIsCustomAisle] = React.useState(false);
-  const [suggestedItem, setSuggestedItem] = React.useState<any | undefined>(
-    undefined
-  );
+  const [suggestedItem, setSuggestedItem] =
+    React.useState<any | undefined>(undefined);
 
   React.useEffect(() => {
     if (unitValue === "custom") {
@@ -162,7 +165,7 @@ const AddItemForm = ({
   );
 
   const onSubmit = (data: FieldValues) => {
-    const quantityString = `${data.ammount} ${data.unit}`;
+    const quantityString = `${data.amount} ${data.unit}`;
 
     const store = isCustomStore
       ? {
@@ -243,7 +246,7 @@ const AddItemForm = ({
                   return (
                     <Form.Select onChange={onChange} isInvalid={!!error}>
                       <option>Please select an aisle.</option>
-                      {aisles?.map((aisle: Aisle) => (
+                      {sortedUniqueAisles?.map((aisle: Aisle) => (
                         <option key={`option-${aisle.aisle}`} value={aisle._id}>
                           {aisle.aisle}
                         </option>
@@ -301,7 +304,7 @@ const AddItemForm = ({
                 return (
                   <Form.Select onChange={onChange} isInvalid={!!error}>
                     <option>Please select a store.</option>
-                    {stores.map((store: Store) => (
+                    {sortedUniqueStores.map((store: Store) => (
                       <option key={`option-${store.name}`} value={store._id}>
                         {store.name}
                       </option>
@@ -352,7 +355,7 @@ const AddItemForm = ({
         <Quantity>
           <Controller
             control={control}
-            name="ammount"
+            name="amount"
             render={({ field: { onChange }, fieldState: { error } }) => (
               <Form.Control
                 type="number"
