@@ -23,33 +23,44 @@ import { ShoppingModeModal } from "./shopping-mode/shopping-mode-modal/ShoppingM
 type Props = {};
 
 const ShoppingLists = (props: Props) => {
-  const {
-    isFetching,
-    isRefetching,
-    isFetched,
-    data: shoppingLists,
-  } = useQuery("shoppingLists", fetchShoppingLists);
-
-  const { isFetched: storesAreFetched, data: stores = [] } = useQuery(
-    "stores",
-    fetchStores
-  );
-
-  const { isFetched: itemsAreFetched, data: allItems } = useQuery(
-    "allItems",
-    getAllItems
-  );
-
-  const { isFetched: aislesAreFetched, data: aisles } = useQuery(
-    "aisles",
-    getAllAisles
-  );
-
   const [shouldShowShoppingModeModal, setShouldShowShoppingModeModal] =
     React.useState(false);
   const [shoppingModeStoreName, setShoppingModeStoreName] = React.useState("");
   const [shoppingModeStoreItemData, setShoppingModeStoreItemData] =
     React.useState<ItemData[]>([]);
+
+  const {
+    isFetching,
+    isRefetching,
+    isFetched,
+    data: shoppingLists,
+  } = useQuery("shoppingLists", fetchShoppingLists, {
+    enabled: !shouldShowShoppingModeModal,
+  });
+
+  const { isFetched: storesAreFetched, data: stores = [] } = useQuery(
+    "stores",
+    fetchStores,
+    {
+      enabled: !shouldShowShoppingModeModal,
+    }
+  );
+
+  const { isFetched: itemsAreFetched, data: allItems } = useQuery(
+    "allItems",
+    getAllItems,
+    {
+      enabled: !shouldShowShoppingModeModal,
+    }
+  );
+
+  const { isFetched: aislesAreFetched, data: aisles } = useQuery(
+    "aisles",
+    getAllAisles,
+    {
+      enabled: !shouldShowShoppingModeModal,
+    }
+  );
 
   const handleShopClick = (storeName: string, targetItems: Item[]) => {
     const itemDataArr: ItemData[] = targetItems.map((item: Item) => ({
