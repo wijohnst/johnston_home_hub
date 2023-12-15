@@ -14,6 +14,11 @@ export const RecipesModalWrapper = styled.div`
     margin: 0 0 0 0.25rem;
     cursor: pointer;
   }
+
+  .close-button-wrapper{
+    display: flex;
+    justify-content: flex-end;
+  }
 `;
 export const RecipesSearchFormWrapper = styled.section`
   .links-wrapper {

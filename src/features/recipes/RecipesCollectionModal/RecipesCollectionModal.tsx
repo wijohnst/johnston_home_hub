@@ -7,6 +7,7 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Stack from "react-bootstrap/Stack";
 import Button from "react-bootstrap/Button";
+import { CloseButton } from "react-bootstrap";
 
 import useFilter from "../../../hooks/useFilter";
 
@@ -58,6 +59,9 @@ const RecipesCollectionModal = ({ isShown, handleHide }: Props) => {
       size="lg"
     >
       <RecipesModalWrapper>
+        <div className="close-button-wrapper">
+          <CloseButton onClick={handleHide}/>
+        </div>
         {!selectedRecipe && <h1>Recipes</h1>}
         {isFetching && <span>Please wait. Fetching recipes...</span>}
         {isFetched && !selectedRecipe && (
